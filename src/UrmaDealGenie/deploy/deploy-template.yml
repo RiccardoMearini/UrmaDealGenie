@@ -1,0 +1,33 @@
+# PLACEHOLDER TEMPLATE - work in progress
+######################
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Deploy Lambda function'
+Resources:
+  LambdaZipsBucket:
+    Type: AWS::S3::Bucket
+
+  UrmaRole:
+    Type: AWS::IAM::Role
+    Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+              - Effect: Allow
+                Principal:
+                  Service: lambda.amazonaws.com
+                Action: sts:AssumeRole
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service role/AWSLambdaBasicExecutionRole
+
+  UrmaDealGenie:
+    DependsOn: CopyZips
+    Type: AWS::Lambda::Function
+    Properties:
+        Description: Example
+        Handler: "UrmaDealGenie::UrmaDealGenie.Function::FunctionHandler"
+        Runtime: dotnetcore3.1
+        Role: !GetAtt 'UrmaRole.Arn'
+        Timeout: 300
+        Code:
+            S3Bucket: !Ref 'LambdaZipsBucket'
+            S3Key: !Sub lambda/UrmaDealGenie.zip

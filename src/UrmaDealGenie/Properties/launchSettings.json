@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "Debug Lambda Local": {
+      "commandName": "Executable",
+      "executablePath": "%USERPROFILE%\\.dotnet\\tools\\dotnet-lambda-test-tool-3.1.exe",
+      "commandLineArgs": "--port 5550",
+      "workingDirectory": ".\\bin\\$(Configuration)\\netcoreapp3.1",
+      "environmentVariables": {
+        "APIKEY": "YOUR_API_KEY_HERE",
+        "SECRET": "YOUR_3COMMAS_SECRET_HERE"
+      }
+    }
+  }
+}
