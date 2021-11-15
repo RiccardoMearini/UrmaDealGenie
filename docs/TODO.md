@@ -14,3 +14,5 @@
   - lambda
   - event
   https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/RunLambdaSchedule.html
+  
+  ![URMA-GURD!!](urmagurd.png)
