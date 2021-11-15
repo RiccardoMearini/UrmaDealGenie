@@ -16,9 +16,9 @@ If you got some value out of this project, please consider donating. A lot of ti
 # Getting Started
 You will need the following (full details further below):
 1. A 3Commas account that is setup with at least 1 active DCA bot
-2. A new 3Commas API key and secret
-3. An Amazon Web Services account
-4. Latest UrmaDealGenie.zip package 
+1. A new 3Commas API key and secret
+1. An Amazon Web Services account
+1. Latest UrmaDealGenie.zip package 
 
 ## 3Commas DCA Bots
 If you haven't already, go checkout [TradeAlt's Trading Bots](https://youtu.be/ziy-9yYTrbc) tutorial YouTube playlist. It will get you setup with DCA trading bots with a safe and effective passive income trading bot setup. I cannot stress enough how important this guy's video series is! 
@@ -33,8 +33,9 @@ The Urma Deal Genie needs to connect to your 3Commas account, and it needs
 
 ## Create an AWS Account
 Amazon Web Services (AWS) has a free tier that allows several services to run free of charge. One of those free services is "Lambda functions". These are serverless functions that allow code to run in the cloud in your own AWS account, without being logged in or needing a PC running 24/7. 
-1. Go to [AWS Free Tier](https://aws.amazon.com/free/) and sign up, follow instructions and secure your account with 2FA.
-1. You will need a credit card, but this is to prevent fraud and bots (see [AWS Free Tier FAQs](https://aws.amazon.com/free/registration-faqs/)
+1. Go to [AWS Free Tier](https://aws.amazon.com/free/) and sign up
+1. You will need a credit card, but this is to prevent fraud and bots (see [AWS Free Tier FAQs](https://aws.amazon.com/free/registration-faqs/) )
+1. Make sure you secure your account with 2FA
 
 ## Download Urma Deal Genie files
 A Lambda function runs in the cloud, but first you need to download the code package and then upload it to your AWS account.
