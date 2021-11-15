@@ -91,6 +91,8 @@ Below these installation steps are install videos to help visualise how to deplo
     - Red dots/line (Error) count should be 0
 
 ## Install Videos
+These videos are a quick first pass. I'll see if I can slow them down or split them out into separate bits that relate directly to the steps above.
+### Installing Urma Deal Genie in AWS
 ![Deploy Urma Deal Genie in AWS](docs/DeployLambda.gif)
 
 ### Extra step - I missed this in the original capture!
