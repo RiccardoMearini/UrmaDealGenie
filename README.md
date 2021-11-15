@@ -45,6 +45,7 @@ A Lambda function runs in the cloud, but first you need to download the code pac
     - (These are identical except the first updates deals, the other just displays which deals would be affected)
  
 # Installation
+Below these installation steps are install videos to help visualise how to deploy Urma Deal Genie in AWS.
 1. Log in to AWS
 1. Switch region to your preferred
 1. Go to Lambda services
@@ -84,3 +85,8 @@ A Lambda function runs in the cloud, but first you need to download the code pac
     - Watch the “Error count and success rate” chart
     - Green dots/line (Success) count should be 1
     - Red dots/line (Error) count should be 0
+
+## Install Videos
+![Deploy Urma Deal Genie in AWS](docs/DeployLambda.gif)
+In addition to the above, steps, you need to edit the function handler:
+![Edit function handler](docs/SetLambdaHandler.gif)
