@@ -14,10 +14,11 @@ If you got some value out of this project, please consider donating. A lot of ti
 -   Contact me on Discord `Urma-Gurd#6475` if you want to donate other cryptocurrencies
 
 # Getting Started
-You will need:
+You will need the following (full details further below):
 1. A 3Commas account that is setup with at least 1 active DCA bot
+2. A new 3Commas API key and secret
 3. An Amazon Web Services account
-4. Latest UrmaDealGenie.zip package (see below)
+4. Latest UrmaDealGenie.zip package 
 
 ## 3Commas DCA Bots
 If you haven't already, go checkout [TradeAlt's Trading Bots](https://youtu.be/ziy-9yYTrbc) tutorial YouTube playlist. It will get you setup with DCA trading bots with a safe and effective passive income trading bot setup. I cannot stress enough how important this guy's video series is! 
