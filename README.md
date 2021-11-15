@@ -10,8 +10,8 @@ If you got some value out of this project, please consider donating. A lot of ti
 - Crypto Wallets:
   - LTC: MQ7gP6gme9TYgRr6kHHqwxzMWRyUpgQ5dC
   - BUSD: 0xac48d07fa2738121ca4ad0e79a764eadf515fa58	(BEP20 network or ERC20)
--   USDT:	0xac48d07fa2738121ca4ad0e79a764eadf515fa58	(BEP20 network or ERC20)
--   Contact me on Discord `Urma-Gurd#6475` if you want to donate other cryptocurrencies
+  - USDT: 0xac48d07fa2738121ca4ad0e79a764eadf515fa58	(BEP20 network or ERC20)
+- Contact me on Discord `Urma-Gurd#6475` if you want to donate other cryptocurrencies
 
 # Getting Started
 You will need the following (full details further below):
