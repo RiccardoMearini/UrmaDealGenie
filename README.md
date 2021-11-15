@@ -49,9 +49,9 @@ A Lambda function runs in the cloud, but first you need to download the code pac
 
 # Installation
 Below these installation steps are install videos to help visualise how to deploy Urma Deal Genie in AWS.
-1. Log in to AWS
-1. Switch region to your preferred
-1. Go to Lambda services
+1. Log in to [AWS Console](https://aws.amazon.com)
+1. Change the [current region](https://docs.aws.amazon.com/awsconsolehelpdocs/latest/gsg/select-region.html) to your preferred (e.g. London or Ohio)
+1. Go to [Lambda services](console.aws.amazon.com/lambda)
 1. Create function and set
     - Name = `UrmaDealGenie`
     - Runtime = `.NET Core 3.1`
