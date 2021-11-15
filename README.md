@@ -43,7 +43,7 @@ A Lambda function runs in the cloud, but first you need to download the code pac
     - [test-config-update-true.json](src/UrmaDealGenie/.lambda-test-tool/SavedRequests/test-config-update-true.json)
     - [test-config-update-false.json](src/UrmaDealGenie/.lambda-test-tool/SavedRequests/test-config-update-false.json)
     - (These are identical except the first updates deals, the other just displays which deals would be affected)
- 
+
 # Installation
 Below these installation steps are install videos to help visualise how to deploy Urma Deal Genie in AWS.
 1. Log in to AWS
@@ -64,6 +64,7 @@ Below these installation steps are install videos to help visualise how to deplo
     - Saved event name = `deal-genie-update-false`
     - Copy / past body of `test-config-update-false.json`
     - Modify this JSON document - e.g. delete rules you don’t want, change deal rules include/exclude terms to be relative to your bot names
+    - See [docs/ExampleConfigs.md](./docs/ExampleConfigs.md) for example configs with detailed explanations of rule settings
     - Click Save changes
     - Click Test and expand the Details and hopefully it runs!!
       - If it ran successfully, you can change UpdateDeals to “true” and see if your deals get updated. 
