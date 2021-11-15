@@ -1,3 +1,8 @@
+# Example Urma Deal Genie Configurations
+These example configurations can be used in the EventBridge JSON content input, or in the Lambda Test payloads.
+
+It is strongly recommended to test settings with the `"UpdateDeals": false` value set before you set it to true and update your deals. Make sure the number of deals the function says it thinks needs updating matches what you expect.
+
 ## Scale Urma bots TP% = SO count
 This is the original reason I created Urma Deal Genie, so that I can simply increase the TP% to match the deal's current SO count.
 
@@ -33,7 +38,6 @@ And finally there is no scaling applied to the TP%, because `TpScale` is set to 
     }
   ]
 }
-
 ```
 
 ## Multiple Deal Rules, with TP scaling
