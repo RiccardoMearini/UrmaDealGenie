@@ -30,6 +30,7 @@ The Urma Deal Genie needs to connect to your 3Commas account, and it needs
 1. Go to https://3commas.io/api_access_tokens and click "New API access token" 
 1. Give it a name like "UrmaDealGenie"
 1. Tick "Bots read" and "Bots write"
+1. Take a note of the API Key and Secret, you'll need them later in the instructions
 
 ## Create an AWS Account
 Amazon Web Services (AWS) has a free tier that allows several services to run free of charge. One of those free services is "Lambda functions". These are serverless functions that allow code to run in the cloud in your own AWS account, without being logged in or needing a PC running 24/7. 
