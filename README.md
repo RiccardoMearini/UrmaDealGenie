@@ -88,5 +88,7 @@ Below these installation steps are install videos to help visualise how to deplo
 
 ## Install Videos
 ![Deploy Urma Deal Genie in AWS](docs/DeployLambda.gif)
+
+### Extra step - I missed this in the original capture!
 In addition to the above, steps, you need to edit the function handler:
 ![Edit function handler](docs/SetLambdaHandler.gif)
