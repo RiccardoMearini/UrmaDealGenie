@@ -1,5 +1,7 @@
 # Urma-Gurd's 3Commas Deal Genie
-This is an Amazon Web Services (AWS) Lambda Function that runs regularly in the cloud, and updates configured 3Commas deals to change the Take Profit % based on sets of rules.
+This is an Amazon Web Services (AWS) Lambda Function that runs regularly in the cloud, and updates configured 3Commas deals to change the Take Profit % (TP) based on sets of rules.
+
+Typically this is used to automatically increase TP% as your bot deals buy more safety orders, so that they take advantage of the extra volume and volatility to make more profit.
 
 It requires an AWS account, and some basic knowledge of AWS would be useful. In future, if the demand is there, I can look at alternative deployment targets.
 
