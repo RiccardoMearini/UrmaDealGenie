@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrmaDealGenie", "src\UrmaDealGenie\UrmaDealGenie.csproj", "{D8431687-2A2B-4ECF-B663-DDB1BA7CC410}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrmaDealGenieApp", "src\UrmaDealGenieApp\UrmaDealGenieApp.csproj", "{7fc348fb-1613-44a4-a215-9ac7b15258b5}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrmaDealGenie.Tests", "test\UrmaDealGenie.Tests\UrmaDealGenie.Tests.csproj", "{DE5215C9-277D-40C7-B4F0-F67AC4CAD23D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{61CCDBA8-9E65-41E6-9647-47DB836318B7}"
