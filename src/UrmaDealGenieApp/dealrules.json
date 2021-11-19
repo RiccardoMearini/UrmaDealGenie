@@ -1,0 +1,32 @@
+{
+  "UpdateDeals": false,
+  "DealRules": [
+    {
+      "Rule": "Urma SO scaling",
+      "RuleType": "ScaleTp",
+      "BotNameIncludeTerms": "urma,hodl",
+      "BotNameExcludeTerms": "btc",
+      "IgnoreTtpDeals": true,
+      "MaxSafetyOrderCount": 0,
+      "TpScale": 1
+    },
+    {
+      "Rule": "BTC accumulator",
+      "RuleType": "ScaleTp",
+      "BotNameIncludeTerms": "btc",
+      "BotNameExcludeTerms": "urma",
+      "IgnoreTtpDeals": true,
+      "MaxSafetyOrderCount": 4,
+      "TpScale": 0.5
+    },
+    {
+      "Rule": "BNB generator",
+      "RuleType": "ScaleTp",
+      "BotNameIncludeTerms": "bnb gen",
+      "BotNameExcludeTerms": "",
+      "IgnoreTtpDeals": true,
+      "MaxSafetyOrderCount": 0,
+      "TpScale": 0.75
+    }
+  ]
+}
