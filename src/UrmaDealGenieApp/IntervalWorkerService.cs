@@ -25,8 +25,8 @@ public abstract class IntervalWorkerService : IHostedService
 
   public Task StartAsync(CancellationToken cancellationToken)
   {
-    Logger.LogInformation("Starting worker...");
-    timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(this.intervalMinutes));
+    Logger.LogInformation("Starting interval worker...");
+    timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(this.intervalMinutes));
     return Task.CompletedTask;
   }
 

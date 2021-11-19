@@ -7,7 +7,7 @@ public class DealGenieWorkerService : IntervalWorkerService
 {
   private Root? input;
   private string dealRulesFilename = "";
-  private JsonSerializerOptions jsonOptions = new JsonSerializerOptions { WriteIndented = true };
+  private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions { WriteIndented = true };
 
   public DealGenieWorkerService(ILogger<IntervalWorkerService> logger, IConfiguration configuration)
     : base(logger, configuration)
@@ -34,6 +34,6 @@ public class DealGenieWorkerService : IntervalWorkerService
         Logger.LogInformation(JsonSerializer.Serialize<List<DealResponse>>(response, this.jsonOptions));
       }
     }
-    Logger.LogInformation("Deal Genie finished");
+    Logger.LogInformation("Deal Genie completed");
   }
 }
