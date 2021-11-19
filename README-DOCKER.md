@@ -6,7 +6,7 @@ docker build -t urma-deal-genie -f Dockerfile .
 
 # Push image to Docker registry 
 ```
-docker push ghcr.io/UrmaGurd/urma-deal-genie:1.0
+docker push ghcr.io/urmagurd/urma-deal-genie:1.0
 ```
 
 # Run container from image
