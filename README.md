@@ -1,9 +1,9 @@
 # Urma-Gurd's 3Commas Deal Genie
-This is an Amazon Web Services (AWS) Lambda Function that runs regularly in the cloud, and updates configured 3Commas deals to change the Take Profit % (TP) based on sets of rules.
+This is simple function that runs every few minutes, and updates configured 3Commas deals to change the Take Profit % (TP) based on sets of rules.  It can be run as a standalone console application, a Docker container or a cloud hosted Amazon Web Services (AWS) Lambda Function.
 
 Typically this is used to automatically increase TP% as your bot deals buy more safety orders, so that they take advantage of the extra volume and volatility to make more profit.
 
-It requires an AWS account, and some basic knowledge of AWS would be useful. In future, if the demand is there, I can look at alternative deployment targets.
+The Lambda function requires an AWS account, and some basic knowledge of AWS would be useful. In future, if the demand is there, I can look at alternative deployment targets.
 
 # Donations
 If you got some value out of this project, please consider donating. A lot of time and effort went into creating this, and I'm hoping to expand the functionality to include more deal rules and functionality.
@@ -19,8 +19,13 @@ If you got some value out of this project, please consider donating. A lot of ti
 You will need the following (full details further below):
 1. A 3Commas account that is setup with at least 1 active DCA bot
 1. A new 3Commas API key and secret
-1. An Amazon Web Services account
-1. Latest UrmaDealGenie.zip package 
+2. Urma Deal Genie release, either:
+   - UrmaDealGenieApp.zip console application, or
+   - urmagurd/deal-genie Docker image, or
+   - UrmaDealGenie.zip AWS Lambda function package
+     - plus an Amazon Web Services (AWS) account
+
+See [UrmaDealGenie Releases](https://github.com/UrmaGurd/UrmaDealGenie/releases) for the zips, or [urmagurd/deal-genie Docker registry](https://hub.docker.com/repository/docker/urmagurd/deal-genie) for the Docker image.
 
 ## 3Commas DCA Bots
 If you haven't already, go checkout [TradeAlt's Trading Bots](https://youtu.be/ziy-9yYTrbc) tutorial YouTube playlist. It will get you setup with DCA trading bots with a safe and effective passive income trading bot setup. I cannot stress enough how important this guy's video series is! 
@@ -33,6 +38,29 @@ The Urma Deal Genie needs to connect to your 3Commas account, and it needs
 1. Give it a name like "UrmaDealGenie"
 1. Tick "Bots read" and "Bots write"
 1. Take a note of the API Key and Secret, you'll need them later in the instructions
+
+# Console Application
+This application requires .NET 6.0 runtime.
+1. Unzip the release UrmaDealGenieApp.x.zip file to a local folder
+2. Set environment variables APIKEY and SECRET
+   - Windows
+     ```
+     set APIKEY=YOUR_API_KEY_HERE
+     set SECRET=YOUR_3COMMAS_SECRET_HERE
+     ```
+   - Mac/Linux
+     ```
+     export APIKEY=YOUR_API_KEY_HERE
+     export SECRET=YOUR_3COMMAS_SECRET_HERE
+     ```
+3. Edit the `dealrules.json` to match your bots. See [docs/ExampleConfigs.md](./docs/ExampleConfigs.md) for example configs with detailed explanations of rule settings
+4. Run UrmaDealGenieApp
+
+
+# Run in a Docker Container
+See [README-DOCKER.md](./README-DOCKER.md)
+
+# Run in the Cloud using AWS Lambda Function
 
 ## Create an AWS Account
 Amazon Web Services (AWS) has a free tier that allows several services to run free of charge. One of those free services is "Lambda functions". These are serverless functions that allow code to run in the cloud in your own AWS account, without being logged in or needing a PC running 24/7. 
