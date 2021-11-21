@@ -3,7 +3,7 @@ This is simple function that runs every few minutes, and updates configured 3Com
 
 Typically this is used to automatically increase TP% as your bot deals buy more safety orders, so that they take advantage of the extra volume and volatility to make more profit.
 
-The Lambda function requires an AWS account, and some basic knowledge of AWS would be useful. In future, if the demand is there, I can look at alternative deployment targets.
+The application requires .NET 6.0 installed. The Docker container requires Docker Desktop installed. The Lambda function requires an AWS account, and some basic knowledge of AWS would be useful.
 
 # Donations
 If you got some value out of this project, please consider donating. A lot of time and effort went into creating this, and I'm hoping to expand the functionality to include more deal rules and functionality.
