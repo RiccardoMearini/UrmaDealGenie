@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  urma-deal-genie:
+    image: urmagurd/deal-genie:1.0
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes: 
+      - ./appsettings.json:/App/appsettings.json
+      - ./dealrules.json:/App/dealrules.json
+    env_file:
+      - ./docker.dev.env
