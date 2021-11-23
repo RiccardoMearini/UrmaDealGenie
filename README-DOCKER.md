@@ -5,12 +5,12 @@ These Docker commands need [Docker Desktop](https://docs.docker.com/desktop/) an
     ```
     docker run --rm -v $(pwd)/appsettings.json:/App/appsettings.json -v $(pwd)/dealrules.json:/App/dealrules.json --env-file=docker.env urmagurd/deal-genie:1.0
     ```
-1. Run container with docker-compose
+1. OR, simply run container with docker-compose, much easier
     ```
     docker-compose up
     ```
 
-# Build
+# Build Docker image
 These steps are for building a Docker image and optionally pushing to a Docker Hub registry. This is only really needed for UrmaGurd to do.
 1. Build Docker container from source
     ```
