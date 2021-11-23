@@ -75,7 +75,7 @@ Amazon Web Services (AWS) has a free tier that allows several services to run fr
 ## Download Urma Deal Genie files
 A Lambda function runs in the cloud, but first you need to download the code package and then upload it to your AWS account.
 1. Download the Lambda function package
-    - [UrmaDealGenie.zip](https://github.com/UrmaGurd/UrmaDealGenie/releases/download/beta/UrmaDealGenie-beta.zip)
+    - [UrmaDealGenie-beta1.1.zip](https://github.com/UrmaGurd/UrmaDealGenie/releases/download/beta/UrmaDealGenie-beta1.1.zip)
 1. Download the example .json configuration files
     - [test-config-update-true.json](src/UrmaDealGenie/.lambda-test-tool/SavedRequests/test-config-update-true.json)
     - [test-config-update-false.json](src/UrmaDealGenie/.lambda-test-tool/SavedRequests/test-config-update-false.json)
