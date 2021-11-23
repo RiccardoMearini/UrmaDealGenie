@@ -41,7 +41,7 @@ The Urma Deal Genie needs to connect to your 3Commas account, and it needs
 
 # Console Application
 This application requires [.NET 6.0 runtime](https://dotnet.microsoft.com/download/dotnet/6.0).
-1. Unzip the release UrmaDealGenieApp.x.zip file to a local folder
+1. Download and unzip the release [UrmaDealGenieApp.1.0.zip](https://github.com/UrmaGurd/UrmaDealGenie/releases/download/console-app-beta-1.0/UrmaDealGenieApp.1.0.zip) file to a local folder
 2. Set environment variables APIKEY and SECRET
    - Windows
      ```
