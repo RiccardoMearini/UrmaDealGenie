@@ -1,9 +1,28 @@
 {
   "UpdateDeals": false,
-  "DealRules": [
+  "SafetyOrderRangesDealRules": [
+    {
+      "Rule": "TradeAlts 30",
+      "RuleType": "FixedTp",
+      "BotNameIncludeTerms": "TradeAlts",
+      "BotNameExcludeTerms": "",
+      "IgnoreTtpDeals": true,
+      "SafteyOrderLevels": [
+        {
+          "0-3": 1,
+          "4-6": 2,
+          "7-9": 3,
+          "10-15": 4,
+          "16-20": 5,
+          "21-25": 6,
+          "26-30": 7
+        }
+      ]
+    }
+  ],
+  "ScalingTakeProfitDealRules": [
     {
       "Rule": "Urma SO scaling",
-      "RuleType": "ScaleTp",
       "BotNameIncludeTerms": "urma,hodl",
       "BotNameExcludeTerms": "btc",
       "IgnoreTtpDeals": true,
@@ -12,7 +31,6 @@
     },
     {
       "Rule": "BTC accumulator",
-      "RuleType": "ScaleTp",
       "BotNameIncludeTerms": "btc",
       "BotNameExcludeTerms": "urma",
       "IgnoreTtpDeals": true,
@@ -21,7 +39,6 @@
     },
     {
       "Rule": "BNB generator",
-      "RuleType": "ScaleTp",
       "BotNameIncludeTerms": "bnb gen",
       "BotNameExcludeTerms": "",
       "IgnoreTtpDeals": true,

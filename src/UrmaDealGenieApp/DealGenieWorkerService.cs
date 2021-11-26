@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 public class DealGenieWorkerService : IntervalWorkerService
 {
-  private Root? input;
+  private DealRuleSet? input;
   private string dealRulesFilename = "";
   private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions { WriteIndented = true };
 
@@ -26,7 +26,7 @@ public class DealGenieWorkerService : IntervalWorkerService
     if (this.dealRulesFilename != null)
     {
       // Deal settings can be changed and used without restarting worker
-      this.input = JsonSerializer.Deserialize<Root>(File.ReadAllText(this.dealRulesFilename));
+      this.input = JsonSerializer.Deserialize<DealRuleSet>(File.ReadAllText(this.dealRulesFilename));
       if (this.input != null)
       {
         Function dealGenie = new Function();

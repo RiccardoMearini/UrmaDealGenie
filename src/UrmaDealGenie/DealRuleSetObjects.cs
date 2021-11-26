@@ -6,29 +6,32 @@ using System.Text.Json.Serialization;
 /// </summary>
 namespace UrmaDealGenie
 {
-  public enum RuleType
+  public class DealRuleSet
   {
-    ScaleTp,
-    FixedTp
+    public bool UpdateDeals { get; set; }
+    public List<ScalingTakeProfitDealRule> ScalingTakeProfitDealRules { get; set; }
+    public List<SafetyOrderRangesDealRule> SafetyOrderRangesDealRules { get; set; }
   }
-  public class DealRule
+
+  public abstract class DealRuleBase
   {
     public string Rule { get; set; }
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public RuleType RuleType { get; set; }
     public string BotNameIncludeTerms { get; set; }
     public string BotNameExcludeTerms { get; set; }
     public bool IgnoreTtpDeals { get; set; }
+  }
+
+  public class ScalingTakeProfitDealRule : DealRuleBase
+  {
     public int MaxSafetyOrderCount { get; set; }
     public decimal TpScale { get; set; }
   }
 
-  public class Root
+  public class SafetyOrderRangesDealRule : DealRuleBase
   {
-    public bool UpdateDeals { get; set; }
-    public List<DealRule> DealRules { get; set; }
+    public Dictionary<string, string> SafetyOrderRanges { get; set; }
   }
-
+  
   public class DealResponse
   {
     public string Rule { get; set; }

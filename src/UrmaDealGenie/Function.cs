@@ -29,7 +29,7 @@ namespace UrmaDealGenie
     /// <param name="input">Json deserialized class</param>
     /// <param name="context">Context of the lambda</param>
     /// <returns>Result summary of the updated deals</returns>
-    public async Task<List<DealResponse>> FunctionHandler(Root input, ILambdaContext context)
+    public async Task<List<DealResponse>> FunctionHandler(DealRuleSet input, ILambdaContext context)
     {
       List<DealResponse> response = new List<DealResponse>();
       client = new Urma3cClient(
@@ -38,7 +38,7 @@ namespace UrmaDealGenie
 
       var updateDeals = input.UpdateDeals;
       Console.WriteLine($"updateDeals = {updateDeals}");
-      foreach (DealRule dealRule in input.DealRules)
+      foreach (ScalingTakeProfitDealRule dealRule in input.ScalingTakeProfitDealRules)
       {
         var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
         response.Add(updatedDeal);
@@ -46,14 +46,13 @@ namespace UrmaDealGenie
       return response;
     }
 
-    /// Process the deal rule
+    /// Process the Scaling Take Profit deal rule
     /// <param name="dealRule">Deal rule to be processed</param>
     /// <param name="updateDeal">If true, update this deal</param>
     /// <returns>Result summary of the updated deal</returns>
-    public async Task<DealResponse> ProcessDealRule(DealRule dealRule, bool updateDeal)
+    public async Task<DealResponse> ProcessDealRule(ScalingTakeProfitDealRule dealRule, bool updateDeal)
     {
       var rule = dealRule.Rule;
-      var ruleType = dealRule.RuleType;
       var includeTerms = dealRule.BotNameIncludeTerms;
       var excludeTerms = dealRule.BotNameExcludeTerms;
       var ignoreTtpDeals = dealRule.IgnoreTtpDeals;
@@ -61,7 +60,6 @@ namespace UrmaDealGenie
       var scaleTp = dealRule.TpScale;
 
       Console.WriteLine($"RULE = {rule}");
-      Console.WriteLine($"ruleType = {ruleType}");
       Console.WriteLine($"includeTerms = {includeTerms}");
       Console.WriteLine($"excludeTerms = {excludeTerms}");
       Console.WriteLine($"ignoreTtpDeals = {ignoreTtpDeals}");
