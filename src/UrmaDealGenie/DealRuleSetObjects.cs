@@ -29,7 +29,7 @@ namespace UrmaDealGenie
 
   public class SafetyOrderRangesDealRule : DealRuleBase
   {
-    public Dictionary<string, string> SafetyOrderRanges { get; set; }
+    public Dictionary<string, decimal> SafetyOrderRanges { get; set; }
   }
   
   public class DealResponse

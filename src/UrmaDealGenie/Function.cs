@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
 using XCommas.Net.Objects;
@@ -38,6 +39,14 @@ namespace UrmaDealGenie
 
       var updateDeals = input.UpdateDeals;
       Console.WriteLine($"updateDeals = {updateDeals}");
+
+      Console.WriteLine($"SafetyOrderRangesDealRules.Count = {input.SafetyOrderRangesDealRules.Count}");
+      foreach (SafetyOrderRangesDealRule dealRule in input.SafetyOrderRangesDealRules)
+      {
+        var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
+        response.Add(updatedDeal);
+      }
+
       foreach (ScalingTakeProfitDealRule dealRule in input.ScalingTakeProfitDealRules)
       {
         var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
@@ -67,11 +76,11 @@ namespace UrmaDealGenie
       Console.WriteLine($"scaleTp = {scaleTp}");
 
       // Get list of deals needing updating
-      List<Deal> deals = await client.GetDealsNeedingUpdate(includeTerms.Split(','), excludeTerms.Split(','), ignoreTtpDeals, scaleTp, maxSoCount);
-      DealResponse response = new DealResponse() 
-      { 
+      List<Deal> deals = await client.GetMatchingDealsScalingTakeProfit(includeTerms.Split(','), excludeTerms.Split(','), ignoreTtpDeals, scaleTp, maxSoCount);
+      DealResponse response = new DealResponse()
+      {
         Rule = rule,
-        NeedUpdatingCount = deals.Count 
+        NeedUpdatingCount = deals.Count
       };
       Console.WriteLine($"Found {response.NeedUpdatingCount} deals needing updating");
 
@@ -89,7 +98,7 @@ namespace UrmaDealGenie
             Console.WriteLine("Updating TP% for each deal...");
 
             // Automatically update the take profit of each deal using the specified TP scale modifier
-            int updatedCount = await client.AutoUpdateTakeProfit(deals, scaleTp, maxSoCount);
+            int updatedCount = await client.UpdateDealsScalingTakeProfit(deals, scaleTp, maxSoCount);
             response.UpdatedCount = updatedCount;
             Console.WriteLine($"Updated {response.UpdatedCount} deals");
           }
@@ -98,5 +107,65 @@ namespace UrmaDealGenie
       Console.WriteLine($"");
       return response;
     }
+
+    /// Process the Safety Order Ranges deal rule
+    /// <param name="dealRule">Deal rule to be processed</param>
+    /// <param name="updateDeal">If true, update this deal</param>
+    /// <returns>Result summary of the updated deal</returns>
+    public async Task<DealResponse> ProcessDealRule(SafetyOrderRangesDealRule dealRule, bool updateDeal)
+    {
+      var rule = dealRule.Rule;
+      var includeTerms = dealRule.BotNameIncludeTerms;
+      var excludeTerms = dealRule.BotNameExcludeTerms;
+      var ignoreTtpDeals = dealRule.IgnoreTtpDeals;
+      var soRanges = dealRule.SafetyOrderRanges;
+
+      Console.WriteLine($"RULE = {rule}");
+      Console.WriteLine($"includeTerms = {includeTerms}");
+      Console.WriteLine($"excludeTerms = {excludeTerms}");
+      Console.WriteLine($"ignoreTtpDeals = {ignoreTtpDeals}");
+      var soRangesDictionary = new Dictionary<Tuple<int, int>, decimal>();
+      foreach (var soRange in dealRule.SafetyOrderRanges.Keys)
+      {
+        string[] range = soRange.Split('-');
+        int lower = int.Parse(range[0]);
+        int upper = int.Parse(range[1]);
+        Console.WriteLine($"soRangeTp: {lower} to {upper}) = {dealRule.SafetyOrderRanges[soRange]}% TP");
+        soRangesDictionary.Add(new Tuple<int, int>(lower, upper), dealRule.SafetyOrderRanges[soRange]);
+      }
+
+      // Get list of deals needing updating
+      List<Deal> deals = await client.GetMatchingDealsSafetyOrderRanges(includeTerms.Split(','), excludeTerms.Split(','), ignoreTtpDeals, soRangesDictionary);
+      DealResponse response = new DealResponse()
+      {
+        Rule = rule,
+        NeedUpdatingCount = deals.Count
+      };
+      Console.WriteLine($"Found {response.NeedUpdatingCount} deals needing updating");
+
+      // #### Refactor this bit out to a separate method
+      if (updateDeal)
+      {
+        if (deals.Count > 0)
+        {
+          // Get a nice output of the deals to log
+          string outputDealSummaries = client.GetDealSummariesText(deals);
+          Console.WriteLine(outputDealSummaries);
+
+          if (updateDeal)
+          {
+            Console.WriteLine("Updating TP% for each deal...");
+
+            // Automatically update the take profit of each deal using the specified TP scale modifier
+            int updatedCount = await client.UpdateDealsSafetyOrderRanges(deals, soRangesDictionary);
+            response.UpdatedCount = updatedCount;
+            Console.WriteLine($"Updated {response.UpdatedCount} deals");
+          }
+        }
+      }
+      Console.WriteLine($"");
+      return response;
+    }
+
   }
 }

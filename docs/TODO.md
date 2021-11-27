@@ -6,6 +6,7 @@
   - links to Urma bots (with images of table, chart and settings)
   - config examples need to have sections - purpose/goal, how they work etc
   - how to stop - disable event bridge
+- limit: 100 deals? Remove this limit, or call multiple times in batches (parallel?)  
 - aws alert for error count or invocation missed
 - store config in S3 or dynamodb and remove from eventbridge
 - handle timeout or updating lots of deals in parallel?

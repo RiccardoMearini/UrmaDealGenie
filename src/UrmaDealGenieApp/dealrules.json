@@ -2,29 +2,38 @@
   "UpdateDeals": false,
   "SafetyOrderRangesDealRules": [
     {
+      "Rule": "Ftx Urma 30",
+      "BotNameIncludeTerms": "ftx",
+      "BotNameExcludeTerms": "CEL",
+      "IgnoreTtpDeals": true,
+      "SafetyOrderRanges": {
+        "0-2": 5,
+        "3-4": 10,
+        "5-7": 15
+      }
+    },
+    {
       "Rule": "TradeAlts 30",
       "RuleType": "FixedTp",
       "BotNameIncludeTerms": "TradeAlts",
       "BotNameExcludeTerms": "",
       "IgnoreTtpDeals": true,
-      "SafteyOrderLevels": [
-        {
-          "0-3": 1,
-          "4-6": 2,
-          "7-9": 3,
-          "10-15": 4,
-          "16-20": 5,
-          "21-25": 6,
-          "26-30": 7
-        }
-      ]
+      "SafetyOrderRanges": {
+        "0-3": 1,
+        "4-6": 2.5,
+        "7-9": 4,
+        "10-15": 5.5,
+        "16-20": 7,
+        "21-25": 8.5,
+        "26-30": 10
+      }
     }
   ],
   "ScalingTakeProfitDealRules": [
     {
       "Rule": "Urma SO scaling",
       "BotNameIncludeTerms": "urma,hodl",
-      "BotNameExcludeTerms": "btc",
+      "BotNameExcludeTerms": "btc,ftx",
       "IgnoreTtpDeals": true,
       "MaxSafetyOrderCount": 0,
       "TpScale": 1

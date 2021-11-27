@@ -3,7 +3,6 @@
   "DealRules": [
     {
       "Rule": "Urma SO scaling",
-      "RuleType": "ScaleTp",
       "BotNameIncludeTerms": "urma,hodl",
       "BotNameExcludeTerms": "btc",
       "IgnoreTtpDeals": true,
@@ -12,7 +11,6 @@
     },
     {
       "Rule": "BTC accumulator",
-      "RuleType": "ScaleTp",
       "BotNameIncludeTerms": "btc",
       "BotNameExcludeTerms": "urma",
       "IgnoreTtpDeals": true,
@@ -21,7 +19,6 @@
     },
     {
       "Rule": "BNB generator",
-      "RuleType": "ScaleTp",
       "BotNameIncludeTerms": "bnb gen",
       "BotNameExcludeTerms": "",
       "IgnoreTtpDeals": true,

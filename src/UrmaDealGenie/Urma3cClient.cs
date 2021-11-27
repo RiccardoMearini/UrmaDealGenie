@@ -23,17 +23,17 @@ namespace UrmaDealGenie
     }
 
     /// <summary>
-    /// Get list of deals needing to be updated.
+    /// Get list of deals that match the criteria for scaling take profit.
     /// Only return deals that match the include terms, but not the exclude terms, and haven't already been updated.
     /// Skip deals that haven't completed any SO yet.
     /// </summary>
     /// <param name="includeTerms">String array of terms that a bot name must contain</param>
     /// <param name="excludeTerms">String array of terms that a bot name must NOT contain</param>
     /// <param name="ignoreTtpDeals">Ignore TTP deals if True/param>
-    /// <param name="scapeTp">Scale modifier to use on the completed SO count when checking the TP %</param>    
+    /// <param name="scaleTp">Scale modifier to use on the completed SO count when checking the TP %</param>    
     /// <param name="maxSoCount">If more than 0, set TP based on a max SO count/param>
     /// <returns>List of deals needing to be updated</returns>
-    public async Task<List<Deal>> GetDealsNeedingUpdate(string[] includeTerms, string[] excludeTerms, bool ignoreTtpDeals, decimal scapeTp, int maxSoCount)
+    public async Task<List<Deal>> GetMatchingDealsScalingTakeProfit(string[] includeTerms, string[] excludeTerms, bool ignoreTtpDeals, decimal scaleTp, int maxSoCount)
     {
       var response = await client.GetDealsAsync(limit: 100, dealScope: DealScope.Active, dealOrder: DealOrder.CreatedAt);
 
@@ -53,8 +53,9 @@ namespace UrmaDealGenie
             {
               // Determine the SO count to compare against - if a max SO count is specified, don't go higher than it
               var soCount = maxSoCount > 0 ? Math.Min(maxSoCount, deal.CompletedSafetyOrdersCount) : deal.CompletedSafetyOrdersCount;
-              if (deal.CompletedSafetyOrdersCount > 0 && deal.TakeProfit < soCount * scapeTp)
+              if (deal.CompletedSafetyOrdersCount > 0 && deal.TakeProfit < soCount * scaleTp)
               {
+                Console.WriteLine($"### FOUND '{deal.BotName}':'{deal.Pair}', SO {deal.CompletedSafetyOrdersCount} => Set TP {soCount * scaleTp} %");
                 deals.Add(deal);
               }
             }
@@ -65,13 +66,13 @@ namespace UrmaDealGenie
     }
 
     /// <summary>
-    /// Automatically updates the take profit of the given deals
+    /// Updates the take profit of the given deals according to the scaling and max SO count
     /// </summary>
     /// <param name="deals">List of deals to modify</param>
     /// <param name="scaleTp">Scale modifier to use on the completed SO count when setting the TP %</param>
     /// <param name="maxSoCount">If more than 0, set TP based on a max SO count/param>
     /// <returns>Count of updated deals</returns>
-    public async Task<int> AutoUpdateTakeProfit(List<Deal> deals, decimal scaleTp, int maxSoCount)
+    public async Task<int> UpdateDealsScalingTakeProfit(List<Deal> deals, decimal scaleTp, int maxSoCount)
     {
       if (deals.Count > 0)
       {
@@ -81,6 +82,51 @@ namespace UrmaDealGenie
           // Determine the SO count to compare against - if a max SO count is specified, don't go higher than it
           var soCount = maxSoCount > 0 ? Math.Min(maxSoCount, deal.CompletedSafetyOrdersCount) : deal.CompletedSafetyOrdersCount;
           update.TakeProfit = soCount * scaleTp;
+          var response = await client.UpdateDealAsync(deal.Id, update);
+        }
+      }
+      return deals.Count;
+    }
+
+    public async Task<List<Deal>> GetMatchingDealsSafetyOrderRanges(string[] includeTerms, string[] excludeTerms, bool ignoreTtpDeals, Dictionary<Tuple<int, int>, decimal> soRanges)
+    {
+      var response = await client.GetDealsAsync(limit: 100, dealScope: DealScope.Active, dealOrder: DealOrder.CreatedAt);
+
+      List<Deal> deals = new List<Deal>();
+      foreach (var deal in response.Data)
+      {
+        // Ignore TTP deals if configured to
+        if (!deal.IsTrailingEnabled || (deal.IsTrailingEnabled && !ignoreTtpDeals))
+        {
+          // Include deals with botnames containing any of these terms 
+          if (includeTerms[0].Length == 0 ||
+            includeTerms.Any(s => deal.BotName.Contains(s, StringComparison.CurrentCultureIgnoreCase)))
+          {
+            // Exclude deals with botnames containing any of these terms 
+            if (excludeTerms[0].Length == 0 ||
+              !excludeTerms.Any(s => deal.BotName.Contains(s, StringComparison.CurrentCultureIgnoreCase)))
+            {
+              var newTp = soRanges.Single(x => x.Key.Item1 <= deal.CompletedSafetyOrdersCount && deal.CompletedSafetyOrdersCount <= x.Key.Item2).Value;
+              if (deal.CompletedSafetyOrdersCount > 0 && deal.TakeProfit < newTp)
+              {
+                Console.WriteLine($"### FOUND '{deal.BotName}':'{deal.Pair}', SO {deal.CompletedSafetyOrdersCount} => Set TP {newTp} %");
+                deals.Add(deal);
+              }
+            }
+          }
+        }
+      }
+      return deals;
+    }
+
+    public async Task<int> UpdateDealsSafetyOrderRanges(List<Deal> deals, Dictionary<Tuple<int, int>, decimal> soRanges)
+    {
+      if (deals.Count > 0)
+      {
+        foreach (Deal deal in deals)
+        {
+          DealUpdateData update = new DealUpdateData(deal.Id);
+          update.TakeProfit = soRanges.Single(x => x.Key.Item1 <= deal.CompletedSafetyOrdersCount && deal.CompletedSafetyOrdersCount <= x.Key.Item2).Value;
           var response = await client.UpdateDealAsync(deal.Id, update);
         }
       }
