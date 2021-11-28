@@ -14,7 +14,6 @@
     },
     {
       "Rule": "TradeAlts 30",
-      "RuleType": "FixedTp",
       "BotNameIncludeTerms": "TradeAlts",
       "BotNameExcludeTerms": "",
       "IgnoreTtpDeals": true,
