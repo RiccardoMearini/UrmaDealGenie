@@ -5,6 +5,8 @@ Typically this is used to automatically increase TP% as your bot deals buy more 
 
 The application requires .NET 6.0 installed. The Docker container requires Docker Desktop installed. The Lambda function requires an AWS account, and some basic knowledge of AWS would be useful.
 
+**NOTE:** Currently this doesn't work with Paper Trade accounts - thanks to "De smikkelman" for discovering this limitation!
+
 # Donations
 If you got some value out of this project, please consider donating. A lot of time and effort went into creating this, and I'm hoping to expand the functionality to include more deal rules and functionality.
 - [BuyMeACoffee/UrmaGurd](https://www.buymeacoffee.com/UrmaGurd)
