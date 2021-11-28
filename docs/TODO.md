@@ -1,7 +1,7 @@
 # TODO list
 - deal ranges
   - handle missing SOs in ranges
-  - handle missing 0 or starting above 1 etc.
+  - handle missing 0 or starting above 1 etc. when a deal is at that or lower SO count
   - how to have 1 TP per SO? e.g. 1=0.5, 2=1, 3=1.5, 4=1.75 etc
   - how to handle 7-end etc
 - instructions

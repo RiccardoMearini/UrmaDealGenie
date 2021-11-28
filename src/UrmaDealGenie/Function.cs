@@ -124,15 +124,25 @@ namespace UrmaDealGenie
       Console.WriteLine($"includeTerms = {includeTerms}");
       Console.WriteLine($"excludeTerms = {excludeTerms}");
       Console.WriteLine($"ignoreTtpDeals = {ignoreTtpDeals}");
-      var soRangesDictionary = new Dictionary<Tuple<int, int>, decimal>();
+      var soRangesDictionary = new Dictionary<int, decimal>();
+      int start = int.Parse(dealRule.SafetyOrderRanges.First().Key);
+      int end = start;
+      decimal takeProfit = 0;
       foreach (var soRange in dealRule.SafetyOrderRanges.Keys)
       {
-        string[] range = soRange.Split('-');
-        int lower = int.Parse(range[0]);
-        int upper = int.Parse(range[1]);
-        Console.WriteLine($"soRangeTp: {lower} to {upper}) = {dealRule.SafetyOrderRanges[soRange]}% TP");
-        soRangesDictionary.Add(new Tuple<int, int>(lower, upper), dealRule.SafetyOrderRanges[soRange]);
+        end = int.Parse(soRange);
+       Console.WriteLine($"#### end: {end}");
+        for (int safetyOrder = start; safetyOrder < end; safetyOrder++)
+        {
+          soRangesDictionary.Add(safetyOrder, takeProfit);
+          Console.WriteLine($"soRangeTp: {safetyOrder} = {takeProfit}% TP");
+        }
+        takeProfit = dealRule.SafetyOrderRanges[soRange];
+        start = end;
       }
+      soRangesDictionary.Add(end, takeProfit);
+      Console.WriteLine($"soRangeTp: {end}+ = {takeProfit}% TP");
+
 
       // Get list of deals needing updating
       List<Deal> deals = await client.GetMatchingDealsSafetyOrderRanges(includeTerms.Split(','), excludeTerms.Split(','), ignoreTtpDeals, soRangesDictionary);

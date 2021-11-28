@@ -88,7 +88,7 @@ namespace UrmaDealGenie
       return deals.Count;
     }
 
-    public async Task<List<Deal>> GetMatchingDealsSafetyOrderRanges(string[] includeTerms, string[] excludeTerms, bool ignoreTtpDeals, Dictionary<Tuple<int, int>, decimal> soRanges)
+    public async Task<List<Deal>> GetMatchingDealsSafetyOrderRanges(string[] includeTerms, string[] excludeTerms, bool ignoreTtpDeals, Dictionary<int, decimal> lookupTpFromSo)
     {
       var response = await client.GetDealsAsync(limit: 100, dealScope: DealScope.Active, dealOrder: DealOrder.CreatedAt);
 
@@ -106,10 +106,14 @@ namespace UrmaDealGenie
             if (excludeTerms[0].Length == 0 ||
               !excludeTerms.Any(s => deal.BotName.Contains(s, StringComparison.CurrentCultureIgnoreCase)))
             {
-              var newTp = soRanges.Single(x => x.Key.Item1 <= deal.CompletedSafetyOrdersCount && deal.CompletedSafetyOrdersCount <= x.Key.Item2).Value;
+              int closestSo = lookupTpFromSo.Where(x => x.Key <= deal.CompletedSafetyOrdersCount)
+                        .OrderByDescending(x => x.Key)
+                        .First().Key;
+            Console.WriteLine($"#### '{deal.BotName}':'{deal.Pair}', so {deal.CompletedSafetyOrdersCount}, closest lookup {closestSo}");
+              var newTp = lookupTpFromSo[closestSo];              
               if (deal.CompletedSafetyOrdersCount > 0 && deal.TakeProfit < newTp)
               {
-                Console.WriteLine($"### FOUND '{deal.BotName}':'{deal.Pair}', SO {deal.CompletedSafetyOrdersCount} => Set TP {newTp} %");
+                Console.WriteLine($"#### FOUND '{deal.BotName}':'{deal.Pair}', SO {deal.CompletedSafetyOrdersCount} => Set TP {newTp} %");
                 deals.Add(deal);
               }
             }
@@ -119,14 +123,14 @@ namespace UrmaDealGenie
       return deals;
     }
 
-    public async Task<int> UpdateDealsSafetyOrderRanges(List<Deal> deals, Dictionary<Tuple<int, int>, decimal> soRanges)
+    public async Task<int> UpdateDealsSafetyOrderRanges(List<Deal> deals, Dictionary<int, decimal> lookupTpFromSo)
     {
       if (deals.Count > 0)
       {
         foreach (Deal deal in deals)
         {
           DealUpdateData update = new DealUpdateData(deal.Id);
-          update.TakeProfit = soRanges.Single(x => x.Key.Item1 <= deal.CompletedSafetyOrdersCount && deal.CompletedSafetyOrdersCount <= x.Key.Item2).Value;
+          update.TakeProfit = lookupTpFromSo[deal.CompletedSafetyOrdersCount];
           var response = await client.UpdateDealAsync(deal.Id, update);
         }
       }

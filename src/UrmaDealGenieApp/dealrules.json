@@ -3,13 +3,13 @@
   "SafetyOrderRangesDealRules": [
     {
       "Rule": "Ftx Urma 7",
-      "BotNameIncludeTerms": "ftx",
+      "BotNameIncludeTerms": "ftx,urma",
       "BotNameExcludeTerms": "CEL",
       "IgnoreTtpDeals": true,
       "SafetyOrderRanges": {
-        "0-2": 1,
-        "3-4": 3,
-        "5-7": 4
+        "0": 1.5,
+        "2": 3,
+        "5": 5
       }
     },
     {
@@ -19,40 +19,17 @@
       "BotNameExcludeTerms": "",
       "IgnoreTtpDeals": true,
       "SafetyOrderRanges": {
-        "0-3": 1,
-        "4-6": 2.5,
-        "7-9": 4,
-        "10-15": 5.5,
-        "16-20": 7,
-        "21-25": 8.5,
-        "26-30": 10
+        "0": 1,
+        "4": 2.5,
+        "7": 4,
+        "10": 5.5,
+        "16": 7,
+        "21": 8.5,
+        "26": 10
       }
     }
   ],
   "ScalingTakeProfitDealRules": [
-    {
-      "Rule": "Urma SO scaling",
-      "BotNameIncludeTerms": "urma,hodl",
-      "BotNameExcludeTerms": "btc,ftx",
-      "IgnoreTtpDeals": true,
-      "MaxSafetyOrderCount": 0,
-      "TpScale": 1
-    },
-    {
-      "Rule": "BTC accumulator",
-      "BotNameIncludeTerms": "btc",
-      "BotNameExcludeTerms": "urma",
-      "IgnoreTtpDeals": true,
-      "MaxSafetyOrderCount": 4,
-      "TpScale": 0.5
-    },
-    {
-      "Rule": "BNB generator",
-      "BotNameIncludeTerms": "bnb gen",
-      "BotNameExcludeTerms": "",
-      "IgnoreTtpDeals": true,
-      "MaxSafetyOrderCount": 0,
-      "TpScale": 0.75
-    }
+
   ]
 }
