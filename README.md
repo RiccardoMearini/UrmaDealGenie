@@ -15,6 +15,10 @@ If you got some value out of this project, please consider donating. A lot of ti
   - USDT: 0xac48d07fa2738121ca4ad0e79a764eadf515fa58	(BEP20 network or ERC20)
 - Contact me on Discord `Urma-Gurd#6475` if you want to donate other cryptocurrencies
 
+# Deployment Options
+You can deploy Urma Deal Genie as an AWS Lambda Function (serverless), as a .NET Core application that runs on Mac/Linux/Windows, or as a Docker container.
+![Urma Deal Genie deployment diagrams](https://user-images.githubusercontent.com/13062477/143783386-62a458f5-dca6-476d-9107-77a89cabe478.png)
+
 # Getting Started
 You will need the following (full details further below):
 1. A 3Commas account that is setup with at least 1 active DCA bot
