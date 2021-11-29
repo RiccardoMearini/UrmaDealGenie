@@ -19,6 +19,7 @@ namespace UrmaDealGenie
     public string BotNameIncludeTerms { get; set; }
     public string BotNameExcludeTerms { get; set; }
     public bool IgnoreTtpDeals { get; set; }
+    public bool AllowTpReduction { get; set; }
   }
 
   public class ScalingTakeProfitDealRule : DealRuleBase
