@@ -1,7 +1,5 @@
-# Edit 'ver' and run this with from solution root:
-# source ./build/build.sh
-
-export ver=beta-2.1
+# Set 'ver' env variable, and run this command with from solution root:
+#   source ./build/build.sh
 
 # Build AWS Package
 dotnet restore ./src/UrmaDealGenie
