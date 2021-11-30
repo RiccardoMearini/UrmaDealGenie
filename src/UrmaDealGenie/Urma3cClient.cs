@@ -106,12 +106,12 @@ namespace UrmaDealGenie
     /// <param name="excludeTerms">String array of terms that a bot name must NOT contain</param>
     /// <param name="ignoreTtpDeals">Ignore TTP deals if True</param>
     /// <param name="allowTpReduction">Allow new TP to be less than the current TP</param>
-    /// <param name="lookupTpFromSo">Lookup of Take Profits from ranges of Safety Orders</param>
+    /// <param name="soRangesDictionary">Lookup of Take Profits from dictionary of Safety Order ranges</param>
     /// <returns>List of deals needing to be updated</returns>
     public async Task<List<Deal>> GetMatchingDealsSafetyOrderRanges(
       string[] includeTerms, string[] excludeTerms,
       bool ignoreTtpDeals, bool allowTpReduction,
-      Dictionary<int, decimal> lookupTpFromSo)
+      Dictionary<int, decimal> soRangesDictionary)
     {
       var response = await client.GetDealsAsync(limit: 100, dealScope: DealScope.Active, dealOrder: DealOrder.CreatedAt);
 
@@ -130,19 +130,21 @@ namespace UrmaDealGenie
               !excludeTerms.Any(s => deal.BotName.Contains(s, StringComparison.CurrentCultureIgnoreCase)))
             {
               // Lookup the closest TP to use from the completed safety count
-              var lookupResult = lookupTpFromSo.Where(x => x.Key <= deal.CompletedSafetyOrdersCount)
+              var lookupResult = soRangesDictionary.Where(x => x.Key <= deal.CompletedSafetyOrdersCount)
                                             .OrderByDescending(x => x.Key);
-              if (lookupResult != null && lookupResult.Count() > 1)
+            Console.WriteLine($"  ## '{deal.BotName}':'{deal.Pair}', SO {deal.CompletedSafetyOrdersCount}, lookupResult.Count {lookupResult.Count()}");
+
+              if (lookupResult != null && lookupResult.Count() >= 1)
               {
                 int closestSo = lookupResult.First().Key;
-                decimal newTp = lookupTpFromSo[closestSo];
-                Console.WriteLine($"#### '{deal.BotName}':'{deal.Pair}', SO {deal.CompletedSafetyOrdersCount}, closest lookup {closestSo}");
+                decimal newTp = soRangesDictionary[closestSo];
+            Console.WriteLine($"  ## '{deal.BotName}':'{deal.Pair}', SO {deal.CompletedSafetyOrdersCount}, closest SO lookup {closestSo}");
 
                 // This deal needs updating, but only if the TP needs increasing
                 // OR TP needs decreasing and we're allowed to reduce TP
                 if (deal.TakeProfit < newTp || (newTp < deal.TakeProfit && allowTpReduction))
                 {
-                  Console.WriteLine($"'{deal.BotName}':'{deal.Pair}' TP {deal.TakeProfit}% needs updating - SO {deal.CompletedSafetyOrdersCount} => new TP {newTp}%");
+                  Console.WriteLine($"Deal '{deal.BotName}':'{deal.Pair}', TP {deal.TakeProfit}% needs updating - SO {deal.CompletedSafetyOrdersCount} => new TP {newTp}%");
                   deals.Add(deal);
                 }
               }
@@ -157,16 +159,16 @@ namespace UrmaDealGenie
     /// Updates the take profit of the given deals according to the scaling and max SO count
     /// </summary>
     /// <param name="deals">List of deals to modify</param>
-    /// <param name="lookupTpFromSo">Lookup of Take Profits from ranges of Safety Orders</param>
+    /// <param name="soRangesDictionary">Lookup of Take Profits from dictionary of Safety Order ranges</param>
     /// <returns>Count of updated deals</returns>
-    public async Task<int> UpdateDealsSafetyOrderRanges(List<Deal> deals, Dictionary<int, decimal> lookupTpFromSo)
+    public async Task<int> UpdateDealsSafetyOrderRanges(List<Deal> deals, Dictionary<int, decimal> soRangesDictionary)
     {
       if (deals.Count > 0)
       {
         foreach (Deal deal in deals)
         {
           DealUpdateData update = new DealUpdateData(deal.Id);
-          update.TakeProfit = lookupTpFromSo[deal.CompletedSafetyOrdersCount];
+          update.TakeProfit = soRangesDictionary[deal.CompletedSafetyOrdersCount];
           var response = await client.UpdateDealAsync(deal.Id, update);
         }
       }
