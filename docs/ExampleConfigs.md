@@ -29,7 +29,6 @@ And finally there is no scaling applied to the TP%, because `TpScale` is set to 
   "DealRules": [
     {
       "Rule": "Urma SO scaling",
-      "RuleType": "ScaleTp",
       "BotNameIncludeTerms": "urma,hodl",
       "BotNameExcludeTerms": "btc",
       "IgnoreTtpDeals": true,
@@ -58,7 +57,6 @@ And finally there is scaling applied to the TP%, because `TpScale` is set to `0.
   "DealRules": [
     {
       "Rule": "Urma SO scaling",
-      "RuleType": "ScaleTp",
       "BotNameIncludeTerms": "urma,hodl",
       "BotNameExcludeTerms": "btc",
       "IgnoreTtpDeals": true,
@@ -67,7 +65,6 @@ And finally there is scaling applied to the TP%, because `TpScale` is set to `0.
     },
     {
       "Rule": "BTC accumulator",
-      "RuleType": "ScaleTp",
       "BotNameIncludeTerms": "btc",
       "BotNameExcludeTerms": "urma",
       "IgnoreTtpDeals": true,

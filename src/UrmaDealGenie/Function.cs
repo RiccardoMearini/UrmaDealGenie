@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
 using XCommas.Net.Objects;
@@ -29,7 +30,7 @@ namespace UrmaDealGenie
     /// <param name="input">Json deserialized class</param>
     /// <param name="context">Context of the lambda</param>
     /// <returns>Result summary of the updated deals</returns>
-    public async Task<List<DealResponse>> FunctionHandler(Root input, ILambdaContext context)
+    public async Task<List<DealResponse>> FunctionHandler(DealRuleSet input, ILambdaContext context)
     {
       List<DealResponse> response = new List<DealResponse>();
       client = new Urma3cClient(
@@ -38,7 +39,17 @@ namespace UrmaDealGenie
 
       var updateDeals = input.UpdateDeals;
       Console.WriteLine($"updateDeals = {updateDeals}");
-      foreach (DealRule dealRule in input.DealRules)
+      Console.WriteLine($"======================");
+      Console.WriteLine($"SafetyOrderRangesDealRules.Count = {input.SafetyOrderRangesDealRules.Count}");
+      foreach (SafetyOrderRangesDealRule dealRule in input.SafetyOrderRangesDealRules)
+      {
+        var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
+        response.Add(updatedDeal);
+      }
+
+      Console.WriteLine($"======================");
+      Console.WriteLine($"ScalingTakeProfitDealRules.Count = {input.ScalingTakeProfitDealRules.Count}");
+      foreach (ScalingTakeProfitDealRule dealRule in input.ScalingTakeProfitDealRules)
       {
         var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
         response.Add(updatedDeal);
@@ -46,35 +57,102 @@ namespace UrmaDealGenie
       return response;
     }
 
-    /// Process the deal rule
+    /// Process the Scaling Take Profit deal rule
     /// <param name="dealRule">Deal rule to be processed</param>
     /// <param name="updateDeal">If true, update this deal</param>
     /// <returns>Result summary of the updated deal</returns>
-    public async Task<DealResponse> ProcessDealRule(DealRule dealRule, bool updateDeal)
+    public async Task<DealResponse> ProcessDealRule(ScalingTakeProfitDealRule dealRule, bool updateDeal)
     {
       var rule = dealRule.Rule;
-      var ruleType = dealRule.RuleType;
       var includeTerms = dealRule.BotNameIncludeTerms;
       var excludeTerms = dealRule.BotNameExcludeTerms;
       var ignoreTtpDeals = dealRule.IgnoreTtpDeals;
+      var allowTpReduction = dealRule.AllowTpReduction;
       var maxSoCount = dealRule.MaxSafetyOrderCount;
       var scaleTp = dealRule.TpScale;
 
+      Console.WriteLine($"----------------------");
       Console.WriteLine($"RULE = {rule}");
-      Console.WriteLine($"ruleType = {ruleType}");
-      Console.WriteLine($"includeTerms = {includeTerms}");
-      Console.WriteLine($"excludeTerms = {excludeTerms}");
-      Console.WriteLine($"ignoreTtpDeals = {ignoreTtpDeals}");
-      Console.WriteLine($"maxSoCount = {maxSoCount}");
-      Console.WriteLine($"scaleTp = {scaleTp}");
+      Console.WriteLine($" includeTerms = {includeTerms}");
+      Console.WriteLine($" excludeTerms = {excludeTerms}");
+      Console.WriteLine($" ignoreTtpDeals = {ignoreTtpDeals}");
+      Console.WriteLine($" allowTpReduction = {allowTpReduction}");
+      Console.WriteLine($" maxSoCount = {maxSoCount}");
+      Console.WriteLine($" scaleTp = {scaleTp}");
 
-      // Get list of deals needing updating
-      List<Deal> deals = await client.GetDealsNeedingUpdate(includeTerms.Split(','), excludeTerms.Split(','), ignoreTtpDeals, scaleTp, maxSoCount);
-      DealResponse response = new DealResponse() 
-      { 
+      DealResponse response = new DealResponse()
+      {
         Rule = rule,
-        NeedUpdatingCount = deals.Count 
+        NeedUpdatingCount = 0
       };
+
+      if (scaleTp > 0)
+      {
+        // Get list of deals needing updating
+        List<Deal> deals = await client.GetMatchingDealsScalingTakeProfit(includeTerms.Split(','), excludeTerms.Split(','), ignoreTtpDeals, allowTpReduction, scaleTp, maxSoCount);
+        response.NeedUpdatingCount = deals.Count;
+        Console.WriteLine($"Found {response.NeedUpdatingCount} deals needing updating");
+
+        // #### Refactor this bit out to a separate method
+        if (updateDeal)
+        {
+          if (deals.Count > 0)
+          {
+            // Get a nice output of the deals to log
+            string outputDealSummaries = client.GetDealSummariesText(deals);
+            Console.WriteLine(outputDealSummaries);
+
+            if (updateDeal)
+            {
+              Console.WriteLine("Updating TP% for each deal...");
+
+              // Automatically update the take profit of each deal using the specified TP scale modifier
+              int updatedCount = await client.UpdateDealsScalingTakeProfit(deals, scaleTp, maxSoCount);
+              response.UpdatedCount = updatedCount;
+              Console.WriteLine($"Updated {response.UpdatedCount} deals");
+            }
+          }
+        }
+      }
+      else
+      {
+        // TODO throw errors and return errors in responses
+        Console.WriteLine($"Error: scaleTp must be more than 0");        
+      }
+      Console.WriteLine($"");
+      return response;
+    }
+
+    /// Process the Safety Order Ranges deal rule
+    /// <param name="dealRule">Deal rule to be processed</param>
+    /// <param name="updateDeal">If true, update this deal</param>
+    /// <returns>Result summary of the updated deal</returns>
+    public async Task<DealResponse> ProcessDealRule(SafetyOrderRangesDealRule dealRule, bool updateDeal)
+    {
+      var rule = dealRule.Rule;
+      var includeTerms = dealRule.BotNameIncludeTerms;
+      var excludeTerms = dealRule.BotNameExcludeTerms;
+      var ignoreTtpDeals = dealRule.IgnoreTtpDeals;
+      var allowTpReduction = dealRule.AllowTpReduction;
+      var soRanges = dealRule.SafetyOrderRanges;
+
+      Console.WriteLine($"----------------------");
+      Console.WriteLine($"RULE = {rule}");
+      Console.WriteLine($" includeTerms = {includeTerms}");
+      Console.WriteLine($" excludeTerms = {excludeTerms}");
+      Console.WriteLine($" ignoreTtpDeals = {ignoreTtpDeals}");
+      Console.WriteLine($" allowTpReduction = {allowTpReduction}");
+
+      Dictionary<int, decimal> soRangesDictionary = GetSafetyOrderRangesDictionary(dealRule);
+      // Get list of deals needing updating
+      List<Deal> deals = await client.GetMatchingDealsSafetyOrderRanges(
+        includeTerms.Split(','),
+        excludeTerms.Split(','),
+        ignoreTtpDeals,
+        allowTpReduction,
+        soRangesDictionary);
+
+      DealResponse response = new DealResponse() { Rule = rule, NeedUpdatingCount = deals.Count };
       Console.WriteLine($"Found {response.NeedUpdatingCount} deals needing updating");
 
       // #### Refactor this bit out to a separate method
@@ -91,7 +169,7 @@ namespace UrmaDealGenie
             Console.WriteLine("Updating TP% for each deal...");
 
             // Automatically update the take profit of each deal using the specified TP scale modifier
-            int updatedCount = await client.AutoUpdateTakeProfit(deals, scaleTp, maxSoCount);
+            int updatedCount = await client.UpdateDealsSafetyOrderRanges(deals, soRangesDictionary);
             response.UpdatedCount = updatedCount;
             Console.WriteLine($"Updated {response.UpdatedCount} deals");
           }
@@ -99,6 +177,35 @@ namespace UrmaDealGenie
       }
       Console.WriteLine($"");
       return response;
+    }
+
+    /// <summary>
+    /// Return a complete dictionary of safety order ranges and their take profits,
+    /// according to specified deal rule.  This will include each safety order level from 1 upwards.
+    /// </summary>
+    /// <param name="dealRule">The safety order ranges deal rule</param>
+    /// <returns>Dictionary of safety order ranges and their take profits</returns>
+    private Dictionary<int, decimal> GetSafetyOrderRangesDictionary(SafetyOrderRangesDealRule dealRule)
+    {
+      var soRangesDictionary = new Dictionary<int, decimal>();
+      int start = int.Parse(dealRule.SafetyOrderRanges.First().Key);
+      int end = start;
+      decimal takeProfit = 0;
+      foreach (var soRange in dealRule.SafetyOrderRanges.Keys)
+      {
+        end = int.Parse(soRange);
+        for (int safetyOrder = start; safetyOrder < end; safetyOrder++)
+        {
+          soRangesDictionary.Add(safetyOrder, takeProfit);
+          Console.WriteLine($" soRangeTp: {safetyOrder} = {takeProfit}% TP");
+        }
+        takeProfit = dealRule.SafetyOrderRanges[soRange];
+        start = end;
+      }
+      // Add the last SO level (which will include all higher SO counts)
+      soRangesDictionary.Add(end, takeProfit);
+      Console.WriteLine($" soRangeTp: {end}+ = {takeProfit}% TP");
+      return soRangesDictionary;
     }
   }
 }
