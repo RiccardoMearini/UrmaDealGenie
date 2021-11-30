@@ -9,8 +9,9 @@
 *.user
 *.userosscache
 *.sln.docstates
-docker.dev.env
+*.dev.*
 .DS_Store
+*.zip
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
