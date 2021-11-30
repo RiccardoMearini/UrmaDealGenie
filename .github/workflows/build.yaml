@@ -20,9 +20,8 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --configuration Release --no-restore
-      - name: Set environment variables
+      - name: Test
         env: 
           APIKEY: ${{ secrets.APIKEY }}
           SECRET: ${{ secrets.SECRET }}
-      - name: Test
         run: dotnet test --no-restore --verbosity normal
