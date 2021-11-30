@@ -7,7 +7,9 @@ dotnet lambda package UrmaDealGenieAWS-beta-2.0.zip -pl ./src/UrmaDealGenie
 
 dotnet restore ./src/UrmaDealGenieApp
 dotnet publish ./src/UrmaDealGenieApp -c Release -o ./src/UrmaDealGenieApp/publish
-zip UrmaDealGenieApp-beta-2.0.zip ./src/UrmaDealGenieApp/publish/
+
+# Sort this out so that it unzips to a folder called UrmaDealGenieApp
+zip UrmaDealGenieApp-beta-2.0.zip ./src/UrmaDealGenieApp/publish/*
 
 # Windows zip app
 Compress-Archive -Update ./src/UrmaDealGenieApp/publish/* UrmaDealGenieApp.zip
