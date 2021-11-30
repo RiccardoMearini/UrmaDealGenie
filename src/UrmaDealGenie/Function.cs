@@ -197,14 +197,14 @@ namespace UrmaDealGenie
         for (int safetyOrder = start; safetyOrder < end; safetyOrder++)
         {
           soRangesDictionary.Add(safetyOrder, takeProfit);
-          Console.WriteLine($" soRangeTp: {safetyOrder} = {takeProfit}% TP");
+          Console.WriteLine($" soRangesDictionary: {safetyOrder} = {takeProfit}% TP");
         }
         takeProfit = dealRule.SafetyOrderRanges[soRange];
         start = end;
       }
       // Add the last SO level (which will include all higher SO counts)
       soRangesDictionary.Add(end, takeProfit);
-      Console.WriteLine($" soRangeTp: {end}+ = {takeProfit}% TP");
+      Console.WriteLine($" soRangesDictionary: {end}+ = {takeProfit}% TP");
       return soRangesDictionary;
     }
   }
