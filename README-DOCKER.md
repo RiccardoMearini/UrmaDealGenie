@@ -3,7 +3,7 @@ These Docker commands need [Docker Desktop](https://docs.docker.com/desktop/) an
 1. Edit the docker.env file to add your APIKEY and SECRET
 1. Run container with app settings and environment variable files
     ```
-    docker run --rm -v $(pwd)/appsettings.json:/App/appsettings.json -v $(pwd)/dealrules.json:/App/dealrules.json --env-file=docker.env urmagurd/deal-genie:1.0
+    docker run --rm -v $(pwd)/appsettings.json:/App/appsettings.json -v $(pwd)/dealrules.json:/App/dealrules.json --env-file=docker.env urmagurd/deal-genie:beta-2.1
     ```
 1. OR, simply run container with docker-compose, much easier
     ```
