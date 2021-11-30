@@ -132,7 +132,7 @@ namespace UrmaDealGenie
               // Lookup the closest TP to use from the completed safety count
               var lookupResult = lookupTpFromSo.Where(x => x.Key <= deal.CompletedSafetyOrdersCount)
                                             .OrderByDescending(x => x.Key);
-              if (lookupResult != null && lookupResult.Count() == 1)
+              if (lookupResult != null && lookupResult.Count() > 1)
               {
                 int closestSo = lookupResult.First().Key;
                 decimal newTp = lookupTpFromSo[closestSo];
