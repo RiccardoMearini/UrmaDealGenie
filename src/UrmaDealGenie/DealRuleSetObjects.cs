@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 /// <summary>
 /// Serialisable input and response classes for the lambda function.
