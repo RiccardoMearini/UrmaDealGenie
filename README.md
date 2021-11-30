@@ -55,7 +55,7 @@ This application requires .NET 6.0 Runtime:
 _First off, **SORRY** this is so complicated!! I'm working on making this one-click!_
 
 To install and configure the Urma Deal Genie console application:
-1. Download and unzip the release [UrmaDealGenieApp-beta-2.1.zip](https://github.com/UrmaGurd/UrmaDealGenie/releases/download/app-beta-2.1/UrmaDealGenieApp-beta-2.1.zip) file to a local folder
+1. Download and unzip the release [UrmaDealGenieApp-beta-2.2.zip](https://github.com/UrmaGurd/UrmaDealGenie/releases/download/app-beta-2.2/UrmaDealGenieApp-beta-2.2.zip file to a local folder
 2. Find and edit the `dealrules.json` to match your bots. See [docs/ExampleConfigs.md](./docs/ExampleConfigs.md) for example configs with detailed explanations of rule settings
 3. Open a command/terminal window:
    - On Windows go to Start->Command Prompt
@@ -93,7 +93,7 @@ Amazon Web Services (AWS) has a free tier that allows several services to run fr
 ## Download Urma Deal Genie files
 A Lambda function runs in the cloud, but first you need to download the code package and then upload it to your AWS account.
 1. Download the Lambda function package
-    - [UrmaDealGenie-beta1.1.zip](https://github.com/UrmaGurd/UrmaDealGenie/releases/download/beta/UrmaDealGenie-beta1.1.zip)
+    - [UrmaDealGenieAWS-beta-2.2.zip](https://github.com/UrmaGurd/UrmaDealGenie/releases/download/aws-beta-2.2/UrmaDealGenieAWS-beta-2.2.zip)
 1. Download the example .json configuration files
     - [test-config-update-true.json](src/UrmaDealGenie/.lambda-test-tool/SavedRequests/test-config-update-true.json)
     - [test-config-update-false.json](src/UrmaDealGenie/.lambda-test-tool/SavedRequests/test-config-update-false.json)
@@ -108,7 +108,7 @@ Below these installation steps are install videos to help visualise how to deplo
     - Name = `UrmaDealGenie`
     - Runtime = `.NET Core 3.1`
 1. In “Code” tab, click “Upload from”
-    - Click Upload and select the previously downloaded `UrmaGurdGenie.zip` file
+    - Click Upload and select the previously downloaded `UrmaGurdGenieAWS-xxx.zip` file
     - Click “Save”
 1. In “Code” tab, edit “Runtime settings” to set:
     - Handler = `UrmaDealGenie::UrmaDealGenie.Function::FunctionHandler`
