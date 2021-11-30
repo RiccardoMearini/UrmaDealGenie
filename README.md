@@ -26,9 +26,9 @@ You will need the following (full details further below):
 1. A 3Commas account that is setup with at least 1 active DCA bot
 1. A new 3Commas API key and secret
 2. Urma Deal Genie release, either:
-   - UrmaDealGenieApp.zip console application, or
+   - UrmaDealGenieApp-_(version)_.zip console application, or
    - urmagurd/deal-genie Docker image, or
-   - UrmaDealGenie.zip AWS Lambda function package
+   - UrmaDealGenieAWS-_(version)_.zip AWS Lambda function package
      - plus an Amazon Web Services (AWS) account
 
 See [UrmaDealGenie Releases](https://github.com/UrmaGurd/UrmaDealGenie/releases) for the zips, or [urmagurd/deal-genie Docker registry](https://hub.docker.com/repository/docker/urmagurd/deal-genie) for the Docker image.
@@ -51,9 +51,17 @@ This application requires .NET 6.0 Runtime:
   - [MacOS x64 .NET 6.0 installer](https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-6.0.0-macos-x64-installer)
   - For other installers, go to [.NET 6.0 runtime](https://dotnet.microsoft.com/download/dotnet/6.0) and download appropriate **installer** under ".NET Runtime 6.0.0
 " section
+## Setup and Run
+_First off, **SORRY** this is so complicated!! I'm working on making this one-click!_
+
 To install and configure the Urma Deal Genie console application:
-1. Download and unzip the release [UrmaDealGenieApp.1.0.zip](https://github.com/UrmaGurd/UrmaDealGenie/releases/download/console-app-beta-1.0/UrmaDealGenieApp.1.0.zip) file to a local folder
-2. Set environment variables APIKEY and SECRET
+1. Download and unzip the release [UrmaDealGenieApp-beta-2.1.zip](https://github.com/UrmaGurd/UrmaDealGenie/releases/download/app-beta-2.1/UrmaDealGenieApp-beta-2.1.zip) file to a local folder
+2. Find and edit the `dealrules.json` to match your bots. See [docs/ExampleConfigs.md](./docs/ExampleConfigs.md) for example configs with detailed explanations of rule settings
+3. Open a command/terminal window:
+   - On Windows go to Start->Command Prompt
+   - On Mac launch Terminal
+   - navigate to the folder you unzipped files to (e.g. `cd UrmaDealGenieApp`)
+4. In the console/terminal window, set environment variables for the APIKEY and SECRET
    - Windows
      ```
      set APIKEY=YOUR_API_KEY_HERE
@@ -64,8 +72,11 @@ To install and configure the Urma Deal Genie console application:
      export APIKEY=YOUR_API_KEY_HERE
      export SECRET=YOUR_3COMMAS_SECRET_HERE
      ```
-3. Edit the `dealrules.json` to match your bots. See [docs/ExampleConfigs.md](./docs/ExampleConfigs.md) for example configs with detailed explanations of rule settings
-4. Run UrmaDealGenieApp
+5. Run UrmaDealGenieApp
+   - Windows/Mac/Linux
+     ```
+     dotnet UrmaDealGenieApp.dll
+     ```
 
 
 # Run in a Docker Container
