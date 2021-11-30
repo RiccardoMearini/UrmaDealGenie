@@ -18,10 +18,10 @@ These steps are for building a Docker image and optionally pushing to a Docker H
     ```
 1. Push image to Docker registry 
     ```
-    docker push urmagurd/deal-genie:1.0
+    docker push urmagurd/deal-genie:beta-2.1
     ```
    Obviously you can only push to a registry for which you have access to.
 1. Running with your own local docker.dev.env file (this is same as above run command but with .dev.env)
     ```
-    docker run --rm -v $(pwd)/appsettings.json:/App/appsettings.json -v $(pwd)/dealrules.json:/App/dealrules.json --env-file=docker.dev.env urmagurd/deal-genie:1.0
+    docker run --rm -v $(pwd)/appsettings.json:/App/appsettings.json -v $(pwd)/dealrules.json:/App/dealrules.json --env-file=docker.dev.env urmagurd/deal-genie:beta-2.1
     ```
