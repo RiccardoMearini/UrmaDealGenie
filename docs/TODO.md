@@ -1,4 +1,7 @@
 # TODO list
+- one-click install with shortcuts for Windows and Mac
+- github actions for a build pipeline
+  https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 - instructions
   - need default timeout to be longer
   - video of tests
