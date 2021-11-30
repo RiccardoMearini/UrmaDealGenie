@@ -15,21 +15,24 @@ using System.IO;
 
 namespace UrmaDealGenie.Tests
 {
-    public class FunctionTest
+  public class FunctionTest
+  {
+    [Fact]
+    public async void TestFunctionCall()
     {
-        [Fact]
-        public async void TestFunctionCall()
-        {
+      // Invoke the lambda function and confirm it loads and processes the deal rules.
+      var function = new Function();
+      var context = new TestLambdaContext();
+      var text = File.ReadAllText("dealrules.json");
+      Console.WriteLine($"{text}");
 
-            // Invoke the lambda function and confirm the string was upper cased.
-            var function = new Function();
-            var context = new TestLambdaContext();
-            var text = File.ReadAllText("dealrules.json");
-            Console.WriteLine($"{text}");
-            var input = JsonSerializer.Deserialize<DealRuleSet>(text);
-            var dealResponses = await function.FunctionHandler(input, context);
+      var apiKey = Environment.GetEnvironmentVariable("APIKEY");
+      Console.WriteLine($"apiKey = {apiKey}");
 
-            Assert.Equal(5, dealResponses.Count);
-        }
+      Console.WriteLine($"Calling function handler...");
+      var input = JsonSerializer.Deserialize<DealRuleSet>(text);
+      var dealResponses = await function.FunctionHandler(input, context);
+      Assert.Equal(5, dealResponses.Count);
     }
+  }
 }

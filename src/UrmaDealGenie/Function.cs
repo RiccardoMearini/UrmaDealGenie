@@ -33,9 +33,16 @@ namespace UrmaDealGenie
     public async Task<List<DealResponse>> FunctionHandler(DealRuleSet input, ILambdaContext context)
     {
       List<DealResponse> response = new List<DealResponse>();
-      client = new Urma3cClient(
-        Environment.GetEnvironmentVariable("APIKEY"),
-        Environment.GetEnvironmentVariable("SECRET"));
+      var apiKey = Environment.GetEnvironmentVariable("APIKEY");
+      var secret = Environment.GetEnvironmentVariable("SECRET");
+
+      if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(secret))
+      {
+        Console.WriteLine($"ERROR: Missing APIKEY and/or SECRET environment variables");
+      }
+      else
+      {
+      client = new Urma3cClient(apiKey, secret);
 
       var updateDeals = input.UpdateDeals;
       Console.WriteLine($"updateDeals = {updateDeals}");
@@ -53,6 +60,7 @@ namespace UrmaDealGenie
       {
         var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
         response.Add(updatedDeal);
+      }
       }
       return response;
     }
