@@ -22,10 +22,12 @@ jobs:
         run: dotnet restore ./src/UrmaDealGenieApp
       - name: Build/publish console application
         run: dotnet publish ./src/UrmaDealGenieApp -c Release --no-restore -o ./src/UrmaDealGenieApp/UrmaDealGenieApp
+
       - name: Package artefacts
-        run: |
-          cd ./src/UrmaDealGenieApp
-          zip ../../UrmaDealGenieApp-test.zip ./UrmaDealGenieApp/*
+        uses: papeloto/action-zip@v1
+        with:
+          files: ./src/UrmaDealGenieApp/UrmaDealGenieApp
+          dest: UrmaDealGenieApp-test.zip          
 
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
@@ -34,4 +36,4 @@ jobs:
           prerelease: true
           title: "Development Build"
           files: |
-            ../../UrmaDealGenieApp-test.zip
+            UrmaDealGenieApp-test.zip
