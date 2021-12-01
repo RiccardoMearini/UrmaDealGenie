@@ -31,20 +31,20 @@ jobs:
           files: ./src/UrmaDealGenieApp/publish
           dest: UrmaDealGenieApp-${{github.event.release.tag_name}}.zip          
 
-      - name: Move tag from temporary release to this new release
-        uses: actions/github-script@v3
-        with:
-          github-token: ${{ github.token }}
-          script: |
-            try {
-                await github.git.deleteRef({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  ref: "tags/${{github.event.release.tag_name}}"
-                })
-            } catch (e) {
-              console.log("The ${{github.event.release.tag_name}} tag doesn't exist yet: " + e)
-            }
+      # - name: Move tag from temporary release to this new release
+      #   uses: actions/github-script@v3
+      #   with:
+      #     github-token: ${{ github.token }}
+      #     script: |
+      #       try {
+      #           await github.git.deleteRef({
+      #             owner: context.repo.owner,
+      #             repo: context.repo.repo,
+      #             ref: "tags/${{github.event.release.tag_name}}"
+      #           })
+      #       } catch (e) {
+      #         console.log("The ${{github.event.release.tag_name}} tag doesn't exist yet: " + e)
+      #       }
 #            await github.git.createRef({
 #              owner: context.repo.owner,
 #              repo: context.repo.repo,
@@ -52,7 +52,7 @@ jobs:
 #              sha: context.sha
 #            })
 
-      - name: Create release
+      - name: Create release using temporary release's tag
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
