@@ -43,7 +43,7 @@ jobs:
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "${{github.event.release.tag_name}}"
+          automatic_release_tag: "lambda-${{github.event.release.tag_name}}"
           prerelease: true
           title: "Urma Deal Genie AWS Lambda - ${{github.event.release.tag_name}}"
           files: |
@@ -55,7 +55,7 @@ jobs:
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "${{github.event.release.tag_name}}"
+          automatic_release_tag: "app-${{github.event.release.tag_name}}"
           prerelease: true
           title: "Urma Deal Genie Console App - ${{github.event.release.tag_name}}"
           files: |
