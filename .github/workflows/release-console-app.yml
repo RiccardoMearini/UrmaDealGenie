@@ -1,9 +1,9 @@
-# Create a new GitHub release, triggered when a temporary release is created
-name: Release console app
+# Create a new GitHub release, triggered when a release is created and replaces that temporary release
+name: Release AWS Lambda & Console App
 
 on:
   release:
-    types: [created] # TODO created or published or both?
+    types: [published]
 
 jobs:
   build:
@@ -21,38 +21,37 @@ jobs:
           dotnet-version: ${{ matrix.dotnet-version }}
 
       - name: Restore dependencies
-        run: dotnet restore ./src/UrmaDealGenieApp
+        run: |
+          dotnet restore
+          dotnet tool install Amazon.Lambda.Tools
+          dotnet tool install Amazon.Lambda.TestTool-3.1
+        # dotnet new -i Amazon.Lambda.Templates::*
+        
+      - name: Build/package AWS Lambda function
+        run: dotnet lambda package UrmaDealGenieAWS-${{github.event.release.tag_name}}.zip -pl ./src/UrmaDealGenie
+
       - name: Build/publish console application
         run: dotnet publish ./src/UrmaDealGenieApp -c Release --no-restore -o ./src/UrmaDealGenieApp/publish
 
-      - name: Package artefacts
+      - name: Zip console application
         uses: papeloto/action-zip@v1
         with:
           files: ./src/UrmaDealGenieApp/publish
           dest: UrmaDealGenieApp-${{github.event.release.tag_name}}.zip          
 
-      # - name: Move tag from temporary release to this new release
-      #   uses: actions/github-script@v3
-      #   with:
-      #     github-token: ${{ github.token }}
-      #     script: |
-      #       try {
-      #           await github.git.deleteRef({
-      #             owner: context.repo.owner,
-      #             repo: context.repo.repo,
-      #             ref: "tags/${{github.event.release.tag_name}}"
-      #           })
-      #       } catch (e) {
-      #         console.log("The ${{github.event.release.tag_name}} tag doesn't exist yet: " + e)
-      #       }
-#            await github.git.createRef({
-#              owner: context.repo.owner,
-#              repo: context.repo.repo,
-#              ref: "refs/tags/${{github.event.release.tag_name}}",
-#              sha: context.sha
-#            })
+      - name: Create AWS Lambda release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "${{github.event.release.tag_name}}"
+          prerelease: true
+          title: "Urma Deal Genie Console App - ${{github.event.release.tag_name}}"
+          files: |
+            UrmaDealGenieAWS-${{github.event.release.tag_name}}.zip
+            ./src/UrmaDealGenieApp/.lambda-test-tool/SavedRequests/test-config-update-false.json
+            ./src/UrmaDealGenieApp/.lambda-test-tool/SavedRequests/test-config-update-true.json
 
-      - name: Create release using temporary release's tag
+      - name: Create Console Application release
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
@@ -62,4 +61,3 @@ jobs:
           files: |
             UrmaDealGenieApp-${{github.event.release.tag_name}}.zip
             ./src/UrmaDealGenieApp/dealrules.json
-
