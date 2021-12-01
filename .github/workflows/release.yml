@@ -23,8 +23,8 @@ jobs:
       - name: Restore dependencies
         run: |
           dotnet restore
-          dotnet tool install Amazon.Lambda.Tools
-          dotnet tool install Amazon.Lambda.TestTool-3.1
+          dotnet tool install --global Amazon.Lambda.Tools
+          dotnet tool install --global Amazon.Lambda.TestTool-3.1
         # dotnet new -i Amazon.Lambda.Templates::*
         
       - name: Build/package AWS Lambda function
