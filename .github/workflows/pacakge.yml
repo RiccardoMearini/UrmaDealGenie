@@ -23,7 +23,7 @@ jobs:
       - name: Build/publish console application
         run: dotnet publish ./src/UrmaDealGenieApp -c Release --no-restore -o ./src/UrmaDealGenieApp/UrmaDealGenieApp
       - name: Package artefacts
-        run: cd  ./src/UrmaDealGenieApp
+        run: cd ./src/UrmaDealGenieApp
              zip ../../UrmaDealGenieApp-test.zip ./UrmaDealGenieApp/*
 
       - uses: "marvinpinto/action-automatic-releases@latest"
