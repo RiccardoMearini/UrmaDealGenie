@@ -1,8 +1,9 @@
+# Create a new GitHub release, triggered when a temporary release is created
 name: Release console app
 
 on:
   release:
-    types: [created]
+    types: [created] # TODO created or published or both?
 
 jobs:
   build:
@@ -30,25 +31,35 @@ jobs:
           files: ./src/UrmaDealGenieApp/publish
           dest: UrmaDealGenieApp-${{github.event.release.tag_name}}.zip          
 
+      - name: Move tag from temporary release to this new release
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            try {
+                await github.git.deleteRef({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: "tags/${{github.event.release.tag_name}}"
+                })
+            } catch (e) {
+              console.log("The ${{github.event.release.tag_name}} tag doesn't exist yet: " + e)
+            }
+#            await github.git.createRef({
+#              owner: context.repo.owner,
+#              repo: context.repo.repo,
+#              ref: "refs/tags/${{github.event.release.tag_name}}",
+#              sha: context.sha
+#            })
+
       - name: Create release
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
+          automatic_release_tag: "${{github.event.release.tag_name}}"
           prerelease: true
           title: "Urma Deal Genie Console App - ${{github.event.release.tag_name}}"
           files: |
             UrmaDealGenieApp-${{github.event.release.tag_name}}.zip
             ./src/UrmaDealGenieApp/dealrules.json
 
-      - name: Assign tag
-        uses: actions/github-script@v3
-        with:
-          github-token: ${{ github.token }}
-          script: |
-            github.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: "refs/tags/${{github.event.release.tag_name}}",
-              sha: context.sha
-            })
