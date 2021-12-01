@@ -45,7 +45,7 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "${{github.event.release.tag_name}}"
           prerelease: true
-          title: "Urma Deal Genie Console App - ${{github.event.release.tag_name}}"
+          title: "Urma Deal Genie AWS Lambda - ${{github.event.release.tag_name}}"
           files: |
             UrmaDealGenieAWS-${{github.event.release.tag_name}}.zip
             ./src/UrmaDealGenieApp/.lambda-test-tool/SavedRequests/test-config-update-false.json
