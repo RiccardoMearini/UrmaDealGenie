@@ -1,9 +1,8 @@
 name: Release console app
 
 on:
-  push:
-    tags:
-      - "v*"
+  release:
+    types: [created]
 
 jobs:
   build:
