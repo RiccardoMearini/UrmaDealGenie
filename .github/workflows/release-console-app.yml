@@ -1,4 +1,4 @@
-name: Create new release for the console application 
+name: Release console app
 
 on:
   workflow_dispatch
@@ -21,20 +21,21 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore ./src/UrmaDealGenieApp
       - name: Build/publish console application
-        run: dotnet publish ./src/UrmaDealGenieApp -c Release --no-restore -o ./src/UrmaDealGenieApp/UrmaDealGenieApp
+        run: dotnet publish ./src/UrmaDealGenieApp -c Release --no-restore -o ./src/UrmaDealGenieApp/publish
 
       - name: Package artefacts
         uses: papeloto/action-zip@v1
         with:
-          files: ./src/UrmaDealGenieApp/UrmaDealGenieApp
+          files: ./src/UrmaDealGenieApp/publish
           dest: UrmaDealGenieApp-test.zip          
 
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - name: Create release
+        uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "latest"
           prerelease: true
-          title: "Development Build"
+          title: "Urma Deal Genie Console App  ${{ github.event.release.tag_name }}"
           files: |
             UrmaDealGenieApp-test.zip
-            dealrules.json
+            ./src/UrmaDealGenieApp/dealrules.json
