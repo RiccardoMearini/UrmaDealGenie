@@ -1,6 +1,7 @@
-name: Build and Unit Test
+name: Create deployment packages
 
-on: [push]
+on:
+  workflow_dispatch
 
 jobs:
   build:
@@ -17,11 +18,7 @@ jobs:
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore ./src/UrmaDealGenieApp
       - name: Build
-        run: dotnet build --configuration Release --no-restore
-      - name: Test
-        env: 
-          APIKEY: ${{ secrets.APIKEY }}
-          SECRET: ${{ secrets.SECRET }}
-        run: dotnet test --no-restore --verbosity normal
+        run: dotnet lambda package UrmaDealGenieAWS-test.zip -pl ./src/UrmaDealGenie
+

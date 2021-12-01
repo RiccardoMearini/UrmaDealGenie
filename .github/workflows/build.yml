@@ -1,0 +1,26 @@
+name: Build and Unit Test
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: ["6.0"]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+      - name: Test
+        env:
+          APIKEY: ${{ secrets.APIKEY }}
+          SECRET: ${{ secrets.SECRET }}
+        run: dotnet test --no-restore --verbosity normal
