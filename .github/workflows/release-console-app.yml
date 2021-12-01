@@ -1,4 +1,4 @@
-name: Create deployment packages
+name: Create new release for the console application 
 
 on:
   workflow_dispatch
@@ -37,3 +37,4 @@ jobs:
           title: "Development Build"
           files: |
             UrmaDealGenieApp-test.zip
+            dealrules.json
