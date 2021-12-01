@@ -1,4 +1,8 @@
-# Create a new GitHub release, triggered when a release is created and replaces that temporary release
+# Create a new GitHub release, triggered when a new release is published.
+# Two release tags are created:
+# - the AWS Lambda Function and this will re-use the trigering release tag
+# - the Console Application will create a new release tag copies from the triggering release tag
+
 name: Release AWS Lambda & Console App
 
 on:
@@ -25,11 +29,24 @@ jobs:
           dotnet restore
           dotnet tool install --global Amazon.Lambda.Tools
           dotnet tool install --global Amazon.Lambda.TestTool-3.1
-        # dotnet new -i Amazon.Lambda.Templates::*
-        
+
+      # AWS Lambda Function  
       - name: Build/package AWS Lambda function
         run: dotnet lambda package UrmaDealGenieAWS-${{github.event.release.tag_name}}.zip -pl ./src/UrmaDealGenie
 
+      - name: Create AWS Lambda release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "${{github.event.release.tag_name}}"
+          prerelease: true
+          title: "Urma Deal Genie AWS Lambda - ${{github.event.release.tag_name}}"
+          files: |
+            UrmaDealGenieAWS-${{github.event.release.tag_name}}.zip
+            ./src/UrmaDealGenie/.lambda-test-tool/SavedRequests/test-config-update-false.json
+            ./src/UrmaDealGenie/.lambda-test-tool/SavedRequests/test-config-update-true.json
+
+      # Console Application  
       - name: Build/publish console application
         run: dotnet publish ./src/UrmaDealGenieApp -c Release --no-restore -o ./src/UrmaDealGenieApp/publish
 
@@ -38,18 +55,6 @@ jobs:
         with:
           files: ./src/UrmaDealGenieApp/publish
           dest: UrmaDealGenieApp-${{github.event.release.tag_name}}.zip          
-
-      - name: Create AWS Lambda release
-        uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "lambda-${{github.event.release.tag_name}}"
-          prerelease: true
-          title: "Urma Deal Genie AWS Lambda - ${{github.event.release.tag_name}}"
-          files: |
-            UrmaDealGenieAWS-${{github.event.release.tag_name}}.zip
-            ./src/UrmaDealGenieApp/.lambda-test-tool/SavedRequests/test-config-update-false.json
-            ./src/UrmaDealGenieApp/.lambda-test-tool/SavedRequests/test-config-update-true.json
 
       - name: Create Console Application release
         uses: "marvinpinto/action-automatic-releases@latest"
