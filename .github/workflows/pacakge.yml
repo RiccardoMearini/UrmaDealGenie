@@ -17,10 +17,20 @@ jobs:
         uses: actions/setup-dotnet@v1.7.2
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
+
       - name: Restore dependencies
         run: dotnet restore ./src/UrmaDealGenieApp
-      - name: Build
+      - name: Build/publish console application
         run: dotnet publish ./src/UrmaDealGenieApp -c Release --no-restore -o ./src/UrmaDealGenieApp/UrmaDealGenieApp
+      - name: Package artefacts
+        run: cd  ./src/UrmaDealGenieApp
+             zip ../../UrmaDealGenieApp-test.zip ./UrmaDealGenieApp/*
 
-
-
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Development Build"
+          files: |
+            ../../UrmaDealGenieApp-test.zip
