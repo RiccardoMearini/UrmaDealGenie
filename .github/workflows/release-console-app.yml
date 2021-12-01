@@ -28,7 +28,7 @@ jobs:
         uses: papeloto/action-zip@v1
         with:
           files: ./src/UrmaDealGenieApp/publish
-          dest: UrmaDealGenieApp-test.zip          
+          dest: UrmaDealGenieApp-${{github.event.release.tag_name}}.zip          
 
       - name: Create release
         uses: "marvinpinto/action-automatic-releases@latest"
@@ -36,7 +36,19 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "latest"
           prerelease: true
-          title: "Urma Deal Genie Console App  ${{ github.event.release.tag_name }}"
+          title: "Urma Deal Genie Console App - ${{github.event.release.tag_name}}"
           files: |
-            UrmaDealGenieApp-test.zip
+            UrmaDealGenieApp-${{github.event.release.tag_name}}.zip
             ./src/UrmaDealGenieApp/dealrules.json
+
+      - name: Assign tag
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            github.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/${{github.event.release.tag_name}}",
+              sha: context.sha
+            })
