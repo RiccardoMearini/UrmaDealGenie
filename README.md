@@ -38,6 +38,8 @@ If you haven't already, go checkout [TradeAlt's Trading Bots](https://youtu.be/z
 
 The Urma Deal Genie works with DCA bot deals, and uses bot names to determine which deals to apply rules to. So try to name your bots with meaningful names that represent the strategy of that bot. e.g. "TA Safer BUSD" or "BTC HODL" or "Urma 250"
 
+Checkout the [Urma DCA bot settings](docs/UrmaBotSettings.md) for a low budget, higher profit alternative to TradeAlt's settings.
+
 ### Create a 3Commas API key and secret
 The Urma Deal Genie needs to connect to your 3Commas account, and it needs 
 1. Go to https://3commas.io/api_access_tokens and click "New API access token" 
