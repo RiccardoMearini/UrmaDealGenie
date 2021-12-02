@@ -48,7 +48,7 @@ jobs:
 
       # Console Application  
       - name: Build/publish console application
-        run: dotnet publish ./src/UrmaDealGenieApp -c Release --no-restore -o ./src/UrmaDealGenieApp/publish
+        run: dotnet publish ./src/UrmaDealGenieApp -c Release --no-restore -o ./src/UrmaDealGenieApp/UrmaDealGenieApp
 
       - name: Zip console application
         uses: papeloto/action-zip@v1
