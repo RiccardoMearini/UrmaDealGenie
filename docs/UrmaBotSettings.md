@@ -1,5 +1,7 @@
 # Urma Gurd's Bot Settings
-See original [Urma Bot Settings spreadsheet](https://docs.google.com/spreadsheets/d/1LgUG2TREEW3yxchwoJCXrNUdA9F7lrIxT2D2I0uxJ4E/edit#gid=65642394)
+A low cost 3Commas DCA bot setting, designed to cover 60% drop with a small number of safety orders that drive the TP price down.
+
+These settings work well with the [Urma Deal Genie](../README.md) which modifies the TP% as the deal buys more volume with scaled SOs.
 
 ## Basic concept
 In July 2021 I set out to find 3Commas DCA bot settings that meet the following goals:		
@@ -57,5 +59,9 @@ In July 2021 I set out to find 3Commas DCA bot settings that meet the following 
 - Be prepared to add funds to a deal when it is 6 or 7 Safety Orders deep to help bring average entry price down further and close deal quicker		
 - Look for coins with good daily volatility (look at "Best Pairs" spreadsheet tab for some coin ideas)		
 - Don't chase meme/pump coins with poor fundamentals (possibly with exception of DOGE) 		
+
+## See Also
+- Original [Urma Bot Settings spreadsheet](https://docs.google.com/spreadsheets/d/1LgUG2TREEW3yxchwoJCXrNUdA9F7lrIxT2D2I0uxJ4E/edit#gid=65642394) including numerous backtests and comparison of settings
+- (TradeAlts Discord)[https://discord.gg/tradealts] for an amazingly supportvie community that loves crypto and bots
 
 ![Urma Gurd!!](urmagurd.png)
