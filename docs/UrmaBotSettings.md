@@ -62,6 +62,6 @@ In July 2021 I set out to find 3Commas DCA bot settings that meet the following 
 
 ## See Also
 - Original [Urma Bot Settings spreadsheet](https://docs.google.com/spreadsheets/d/1LgUG2TREEW3yxchwoJCXrNUdA9F7lrIxT2D2I0uxJ4E/edit#gid=65642394) including numerous backtests and comparison of settings
-- (TradeAlts Discord)[https://discord.gg/tradealts] for an amazingly supportvie community that loves crypto and bots
+- [TradeAlts Discord]([https://discord.gg/tradealts) for an amazingly supportvie community that loves crypto and bots
 
 ![Urma Gurd!!](urmagurd.png)
