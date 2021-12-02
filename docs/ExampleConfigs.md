@@ -9,6 +9,6 @@
 - Multiple rules could be applied to the same deal, but this isn't recommended
 
 ## Examples by Rule Type
-- [Safety Order Ranges Deal Rules](ExampleConfigs-SafetyOrderRanges.md)
 - [Scaling Take Profit Deal Rules](ExampleConfigs-ScalingTakeProfits.md)
+- [Safety Order Ranges Deal Rules](ExampleConfigs-SafetyOrderRanges.md)
 
