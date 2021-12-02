@@ -21,6 +21,6 @@ jobs:
         run: dotnet build --configuration Release --no-restore
       - name: Test
         env:
-          APIKEY: ${{ secrets.APIKEY }}
-          SECRET: ${{ secrets.SECRET }}
+          APIKEY: ${{ secrets.XCOMMAS_APIKEY }}
+          SECRET: ${{ secrets.XCOMMAS_SECRET }}
         run: dotnet test --no-restore --verbosity normal
