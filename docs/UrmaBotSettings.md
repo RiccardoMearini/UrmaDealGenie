@@ -35,11 +35,11 @@ In July 2021 I set out to find 3Commas DCA bot settings that meet the following 
 - It's easier to add funds to small bots to help bring down the average entry price, rather than larger bots.		
 - Running multiple small bots reduces the impact on my capital of one coin getting stuck.<br/>
   If one bot gets stuck at 70% price drop for a while, that's a smaller % of my capital. 
-# CONS			
+## CONS			
 - With so few safety orders there are big gaps between SOs 4 to 7, that means price can get stuck between SOs so not going high enough to take profit, and not dropping low enough to hit another safety order and bring TP down.
 - Backtesting the May 2021 crash shows that coins can get stuck even with TA safer settings but more coins tend to get stuck with Urma bots even though overall the profit is still higher with Urma bots.
 
-# Tips
+## Tips
 - Watch and FULLY understand TradeAlts DCA Strategy, especially videos 1-4 in Bot Trading series		
 - Don't overextend with Urma bots, keep them within your capital/bankroll as it is important that all Safety Orders are filled in a price crash		
 - Use the Risk Monitor spreadsheet to manage your risk.		
