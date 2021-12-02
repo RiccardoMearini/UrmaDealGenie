@@ -82,7 +82,7 @@ To install and configure the Urma Deal Genie console application:
 
 
 # Run in a Docker Container
-See [README-DOCKER.md](./README-DOCKER.md)
+See [README-DOCKER.md](./docs/README-DOCKER.md)
 
 # Run in the Cloud using AWS Lambda Function
 
