@@ -2,6 +2,7 @@
 # Two release tags are created:
 # - the AWS Lambda Function and this will re-use the trigering release tag
 # - the Console Application will create a new release tag copies from the triggering release tag
+# Plus a Docker image of the Console Application is built and pushed to Docker Hub
 
 name: Release AWS Lambda & Console App
 
