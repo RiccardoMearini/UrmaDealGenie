@@ -1,7 +1,7 @@
 # Urma-Gurd's 3Commas Deal Genie
 This is simple function that runs every few minutes, and updates configured 3Commas deals to change the Take Profit % (TP) based on sets of rules.  It can be run as a standalone console application, a Docker container or a cloud hosted Amazon Web Services (AWS) Lambda Function.
 
-Typically this is used to automatically increase TP% as your bot deals buy more safety orders, so that they take advantage of the extra volume and volatility to make more profit.
+Typically this is used to automatically increase TP% as your bot deals buy more safety orders, so that they take advantage of the extra volume and volatility to make more profit. This strategy works really well with the [Urma DCA bot settings](docs/UrmaBotSettings.md) which scale volume at a high rate over a small number of safety orders. 
 
 The application requires .NET 6.0 installed. The Docker container requires Docker Desktop installed. The Lambda function requires an AWS account, and some basic knowledge of AWS would be useful.
 
