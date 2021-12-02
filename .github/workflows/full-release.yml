@@ -82,6 +82,5 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./src/UrmaDealGenieApp/
-          file: ./Dockerfile
           push: true
           tags: urmagurd/deal-genie:${{github.event.release.tag_name}}
