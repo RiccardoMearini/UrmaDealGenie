@@ -31,7 +31,7 @@ Each rule type section has rules within it.
 - each rule is defined within a set of curly braces `{ }`
 - multiple rules can be defined, and there must be a comma between them (typically after the first rule's final curly brace}
 - the last rule within a rule section must not have a comma after it
-- the `...` in the examples below indicated snipped out content, this is for illustration only
+- the `...` in the examples below indicate snipped out content, this is for illustration only
 ```
 {
   "UpdateDeals": false,
