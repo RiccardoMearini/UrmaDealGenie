@@ -9,13 +9,7 @@
 - Multiple rules could be applied to the same deal, but this isn't recommended
 
 ## Main Structure of Configuration File
-The JSON snippet below shows the overall structure of a configuration. There is a set of {} braces around the entire config, with at least 3 sections:
-- UpdateDeals can be true or false.
-  - true means the deals are updated as per the rule criteria
-  - false means the deals that would be updated are shown but not updated. This is useful for testing your rules first.
-- [ScalingTakeProfitDealRules](ExampleConfigs-ScalingTakeProfits.md) is a rule type section that contains 1 or more rules of the same type
-- [SafetyOrderRangesDealRules](ExampleConfigs-SafetyOrderRanges.md) is a rule type section that contains 1 or more rules of the same type
-- You must have at least 1 rule of any type
+The JSON snippet below shows the overall structure of a configuration. 
 ```
 {
   "UpdateDeals": false,
@@ -23,6 +17,14 @@ The JSON snippet below shows the overall structure of a configuration. There is 
   "SafetyOrderRangesDealRules": [ ... ]
 }
 ```
+There is a set of {} braces around the entire config, with at least 3 sections:
+- UpdateDeals can be true or false.
+  - true means the deals are updated as per the rule criteria
+  - false means the deals that would be updated are shown but not updated. This is useful for testing your rules first.
+- [ScalingTakeProfitDealRules](ExampleConfigs-ScalingTakeProfits.md) is a rule type section that contains 1 or more rules of the same type
+- [SafetyOrderRangesDealRules](ExampleConfigs-SafetyOrderRanges.md) is a rule type section that contains 1 or more rules of the same type
+- You must have at least 1 rule of any type
+
 ## Defining Multiple Rules
 Each rule type section has rules within it.
 - the rules are defined within the square braces `[ ]` of the rule section
