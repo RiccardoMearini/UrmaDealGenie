@@ -7,6 +7,11 @@
   - finding matching deals based on a set of criteria
   - applying changes to deals (e.g. the TP)
 - Multiple rules could be applied to the same deal, but this isn't recommended
+- Most of the configuration is made up of key/value pairs
+  - these pairs are separated by a colon `:`
+  - keys are on the left side of a colons, and enclosed in quotes `"`
+  - values are on the right side and can be with or without quotes (numbers and booleans without, text with)
+  - boolean values must be either `true` of `false`
 
 ## Main Structure of Configuration File
 The JSON snippet below shows the overall structure of a configuration. 
