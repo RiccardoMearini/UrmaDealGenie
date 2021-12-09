@@ -28,9 +28,11 @@ If you have a bot that increases volume to cover a big drop, but when you hit th
         "5": 0.5
       }
     }
-  ]
+  ],
+  "ScalingTakeProfitDealRules": [ ]
 }
 ```
+
 ### Explanation of settings
 - `UpdateDeals` - deals will be updated
 - there is only 1 rule under the `SafetyOrderRangesDealRules` section that is named `Bots with 5 safeties` (name it as you wish)
