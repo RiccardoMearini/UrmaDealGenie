@@ -11,6 +11,7 @@ Modify the TP% of each matching deal so that the TP% equals the SO count number.
 ```
 {
   "UpdateDeals": false,
+  "SafetyOrderRangesDealRules": [ ],
   "ScalingTakeProfitDealRules": [
     {
       "Rule": "Urma SO scaling",
@@ -48,6 +49,7 @@ Run 2 deal rules to modify 2 different types of deals at the same time:
 ```
 {
   "UpdateDeals": true,
+  "SafetyOrderRangesDealRules": [ ],
   "ScalingTakeProfitDealRules": [
     {
       "Rule": "Urma SO scaling",
