@@ -49,10 +49,7 @@ Run 2 deal rules to modify 2 different types of deals at the same time:
 ```
 {
   "UpdateDeals": true,
-<<<<<<< HEAD
-=======
   "SafetyOrderRangesDealRules": [ ],
->>>>>>> main
   "ScalingTakeProfitDealRules": [
     {
       "Rule": "Urma SO scaling",

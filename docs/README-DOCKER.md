@@ -4,11 +4,7 @@ These Docker commands need [Docker Desktop](https://docs.docker.com/desktop/) an
 1. Run container with app settings and environment variable files
     - **Mac/Linux**
     ```
-<<<<<<< HEAD:docs/README-DOCKER.md
-    docker run --rm -v $(pwd)/appsettings.json:/App/appsettings.json -v $(pwd)/dealrules.json:/App/dealrules.json --env-file=docker.env urmagurd/deal-genie:beta-2.1
-=======
     docker run --rm -v $(pwd)/appsettings.json:/App/appsettings.json -v $(pwd)/dealrules.json:/App/dealrules.json --env-file=docker.env urmagurd/deal-genie:beta-2.2
->>>>>>> main:README-DOCKER.md
     ```
     - **Windows** (not tested, so this might not be right) - substituting _yourpath_ in the 2 places below with the path to your `appsettings.json`, `dealrules.json` and `docker.env` files.    
     ```
