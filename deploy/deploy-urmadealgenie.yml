@@ -87,6 +87,7 @@ Resources:
               - "UrmaDealGenie"
               - "Arn"
           Id: "TargetFunctionV1"
+          Input: '{ "LoadFromS3": false }'
 
   PermissionForEventsToInvokeLambda: 
     Type: AWS::Lambda::Permission

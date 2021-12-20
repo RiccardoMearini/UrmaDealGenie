@@ -29,7 +29,7 @@ namespace UrmaDealGenie
     ///      MaxSafetyOrderCount = modify deals less than max SO count
     ///      IgnoreTtpDeals = true - ignore deals with TTP enabled
     /// </summary>
-    /// <param name="input">Optional input deal rules</param>
+    /// <param name="input">Input deal rules, or flag to trigger load from S3</param>
     /// <param name="context">Context of the lambda</param>
     /// <returns>Result summary of the updated deals</returns>
     public async Task<List<DealResponse>> FunctionHandler(DealRuleSet dealRuleSet, ILambdaContext context)
@@ -44,14 +44,19 @@ namespace UrmaDealGenie
       }
       else
       {
-        if (dealRuleSet == null)
+        Console.WriteLine($"LoadFromS3 = {dealRuleSet.LoadFromS3}");
+        if (dealRuleSet.LoadFromS3)
         {
           // Load deal rules configuration from S3 bucket
           // TODO: #### urmagurd bucket needs to be user specified
           string dealRulesString = await BucketFileReader.ReadObjectDataAsync(RegionEndpoint.EUWest1, "urmagurd", "dealrules.json");
-          if (string.IsNullOrEmpty(dealRulesString))
+          if (!string.IsNullOrEmpty(dealRulesString))
           {
             dealRuleSet = JsonSerializer.Deserialize<DealRuleSet>(dealRulesString);
+          }
+          else
+          {
+            dealRuleSet = null;
           }
         }
 
@@ -60,7 +65,6 @@ namespace UrmaDealGenie
         {
           var updateDeals = dealRuleSet.UpdateDeals;
           Console.WriteLine($"updateDeals = {updateDeals}");
-          Console.WriteLine($"dealRuleSet = {dealRuleSet}");
 
           client = new Urma3cClient(apiKey, secret);
           Console.WriteLine($"======================");
@@ -81,7 +85,7 @@ namespace UrmaDealGenie
         }
         else
         {
-          Console.WriteLine($"Error: cannot find deal rules from S3 bucket or from input parameter");
+          Console.WriteLine($"Error: cannot find deal rules from input parameter or S3 bucket");
         }
       }
       return response;
