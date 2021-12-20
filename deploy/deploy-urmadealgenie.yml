@@ -1,0 +1,93 @@
+# PLACEHOLDER TEMPLATE - work in progress
+######################
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Deploy Lambda function'
+
+Parameters:
+  APIKEY:
+    Type: String
+    Description: 3commas API key with "Bots read" and "Bots write" permissions
+  SECRET:
+    Type: String
+    Description: 3commas API secret for the ApiKey
+  DealRules:
+    Type: String
+    Description: The Urma Deal Genie deal rules specified in JSON format
+
+Resources:
+  # https://aws.amazon.com/blogs/infrastructure-and-automation/deploying-aws-lambda-functions-using-aws-cloudformation-the-portable-way/
+  # How to copy lambda from global S3 to regional S3 for lambda to load from
+  # LambdaZipsBucket:
+  #   Type: AWS::S3::Bucket
+  # CopyZips:
+  #   Type: Custom::CopyZips
+  #   Properties:
+  #     ServiceToken: !GetAtt 'CopyZipsFunction.Arn'
+  #     DestBucket: !Ref 'LambdaZipsBucket'
+  #     SourceBucket: !Ref 'QSS3BucketName'
+  #     Prefix: !Ref 'QSS3KeyPrefix'
+  #     Objects:
+  #       - functions/packages/MyFunction/lambda.zip
+
+  LambdaZipsBucket:
+    Type: AWS::S3::Bucket
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+
+  UrmaDealGenie:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: UrmaDealGenie
+      Description: Urma Deal Genie lambda function
+      Handler: "UrmaDealGenie::UrmaDealGenie.Function::FunctionHandler"
+      Runtime: dotnetcore3.1
+      Role: !GetAtt 'LambdaExecutionRole.Arn'
+      Timeout: 120
+      Code:
+        S3Bucket: "urmagurd"
+        S3Key: "UrmaDealGenieAWS-beta-2.2.zip"
+      Environment:
+        Variables:
+          APIKEY: !Ref APIKEY
+          SECRET: !Ref SECRET
+
+  ScheduledRule: 
+    Type: AWS::Events::Rule
+    Properties: 
+      Name: UrmaDealGenie-Schedule
+      Description: "Urma Deal Genie Scheduled rule"
+      ScheduleExpression: "rate(5 minutes)"
+      State: "ENABLED"
+      Targets: 
+        - 
+          Arn: 
+            Fn::GetAtt: 
+              - "UrmaDealGenie"
+              - "Arn"
+          Id: "TargetFunctionV1"
+          # Input: '{ "UpdateDeals": true, "SafetyOrderRangesDealRules": [ { "Rule": "Lauren Urma Exit", "BotNameIncludeTerms": "lauren", "BotNameExcludeTerms": "", "IgnoreTtpDeals": true, "AllowTpReduction": true, "SafetyOrderRanges": { "1": 0.1, "2": 0.1, "3": 0.1, "4": 0.1, "5": 0.1, "6": 0.1, "7": 0.1 } } ], "ScalingTakeProfitDealRules": [ { "Rule": "Urma SO scaling", "BotNameIncludeTerms": "urma,ftx", "BotNameExcludeTerms": "hodl,lauren", "IgnoreTtpDeals": true, "AllowTpReduction": false, "MaxSafetyOrderCount": 0, "TpScale": 1 }, { "Rule": "Urma HODL", "BotNameIncludeTerms": "hodl", "BotNameExcludeTerms": "", "IgnoreTtpDeals": true, "AllowTpReduction": true, "MaxSafetyOrderCount": 0, "TpScale": 0.75 } ] }'
+          Input: !Ref DealRules
+
+  PermissionForEventsToInvokeLambda: 
+    Type: AWS::Lambda::Permission
+    Properties: 
+      FunctionName: !Ref "UrmaDealGenie"
+      Action: "lambda:InvokeFunction"
+      Principal: "events.amazonaws.com"
+      SourceArn: 
+        Fn::GetAtt: 
+          - "ScheduledRule"
+          - "Arn"
