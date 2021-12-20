@@ -37,6 +37,7 @@ namespace UrmaDealGenie
       List<DealResponse> response = new List<DealResponse>();
       var apiKey = Environment.GetEnvironmentVariable("APIKEY");
       var secret = Environment.GetEnvironmentVariable("SECRET");
+      var bucket = Environment.GetEnvironmentVariable("BUCKET");
 
       if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(secret))
       {
@@ -48,8 +49,8 @@ namespace UrmaDealGenie
         if (dealRuleSet.LoadFromS3)
         {
           // Load deal rules configuration from S3 bucket
-          // TODO: #### urmagurd bucket needs to be user specified
-          string dealRulesString = await BucketFileReader.ReadObjectDataAsync(RegionEndpoint.EUWest1, "urmagurd", "dealrules.json");
+          RegionEndpoint region = RegionEndpoint.GetBySystemName(Environment.GetEnvironmentVariable("AWS_REGION"));
+          string dealRulesString = await BucketFileReader.ReadObjectDataAsync(region, bucket, "dealrules.json");
           if (!string.IsNullOrEmpty(dealRulesString))
           {
             dealRuleSet = JsonSerializer.Deserialize<DealRuleSet>(dealRulesString);

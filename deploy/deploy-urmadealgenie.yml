@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'Deploy Lambda function'
+Description: 'Deploy Urma Deal Genie Lambda function'
 
 Parameters:
   ApiKey:
@@ -16,23 +16,6 @@ Parameters:
     Description: Filename of the lambda function package in S3
 
 Resources:
-  # https://aws.amazon.com/blogs/infrastructure-and-automation/deploying-aws-lambda-functions-using-aws-cloudformation-the-portable-way/
-  # How to copy lambda from global S3 to regional S3 for lambda to load from
-  # LambdaZipsBucket:
-  #   Type: AWS::S3::Bucket
-  # CopyZips:
-  #   Type: Custom::CopyZips
-  #   Properties:
-  #     ServiceToken: !GetAtt 'CopyZipsFunction.Arn'
-  #     DestBucket: !Ref 'LambdaZipsBucket'
-  #     SourceBucket: !Ref 'QSS3BucketName'
-  #     Prefix: !Ref 'QSS3KeyPrefix'
-  #     Objects:
-  #       - functions/packages/MyFunction/lambda.zip
-
-  LambdaZipsBucket:
-    Type: AWS::S3::Bucket
-
   LambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -73,6 +56,7 @@ Resources:
         Variables:
           APIKEY: !Ref ApiKey
           SECRET: !Ref ApiSecret
+          BUCKET: !Ref S3Bucket
 
   ScheduledRule: 
     Type: AWS::Events::Rule
