@@ -7,6 +7,7 @@ This is here for reference if you want to create your own .NET Lambda function t
 dotnet tool install --global Amazon.Lambda.Tools
 dotnet tool update --global Amazon.Lambda.Tools
 dotnet tool install -g Amazon.Lambda.TestTool-3.1
+dotnet add package AWSSDK.S3
 dotnet new -i Amazon.Lambda.Templates::*
 ```
 ## Create .NET lambda function

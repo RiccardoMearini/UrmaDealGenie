@@ -8,9 +8,12 @@ Parameters:
   ApiSecret:
     Type: String
     Description: 3commas API secret for the ApiKey
-  DealRules:
+  S3Bucket:
     Type: String
-    Description: JSON document containing Urma Deal Genie rules
+    Description: Name of the S3 bucket containing the lambda package and config
+  PackageFilename:
+    Type: String
+    Description: Filename of the lambda function package in S3
 
 Resources:
   # https://aws.amazon.com/blogs/infrastructure-and-automation/deploying-aws-lambda-functions-using-aws-cloudformation-the-portable-way/
@@ -33,8 +36,7 @@ Resources:
   LambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      RoleName: Urmagurd-LambdaExecutionRole
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -44,6 +46,16 @@ Resources:
             - lambda.amazonaws.com
           Action:
           - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies: 
+        - PolicyName: "Urmagurd-ReadS3"
+          PolicyDocument: 
+            Version: "2012-10-17"
+            Statement: 
+              - Effect: Allow
+                Action: s3:GetObject
+                Resource: !Sub arn:aws:s3:::${S3Bucket}/*
 
   UrmaDealGenie:
     Type: AWS::Lambda::Function
@@ -55,8 +67,8 @@ Resources:
       Role: !GetAtt 'LambdaExecutionRole.Arn'
       Timeout: 120
       Code:
-        S3Bucket: "urmagurd"
-        S3Key: "UrmaDealGenieAWS-beta-2.2.zip"
+        S3Bucket: !Ref S3Bucket
+        S3Key: !Ref PackageFilename
       Environment:
         Variables:
           APIKEY: !Ref ApiKey
@@ -70,13 +82,11 @@ Resources:
       ScheduleExpression: "rate(5 minutes)"
       State: "ENABLED"
       Targets: 
-        - 
-          Arn: 
+        - Arn: 
             Fn::GetAtt: 
               - "UrmaDealGenie"
               - "Arn"
           Id: "TargetFunctionV1"
-          Input: !Ref DealRules
 
   PermissionForEventsToInvokeLambda: 
     Type: AWS::Lambda::Permission
