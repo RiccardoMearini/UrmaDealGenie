@@ -1,0 +1,41 @@
+{
+  "UpdateDeals": false,
+  "SafetyOrderRangesDealRules": [
+    {
+      "Rule": "Lauren Urma Exit",
+      "BotNameIncludeTerms": "lauren",
+      "BotNameExcludeTerms": "",
+      "IgnoreTtpDeals": true,
+      "AllowTpReduction": true,
+      "SafetyOrderRanges": {
+        "1": 0.1,
+        "2": 0.3,
+        "3": 0.5,
+        "4": 0.7,
+        "5": 1,
+        "6": 1.5,
+        "7": 2
+      }
+    }
+  ],
+  "ScalingTakeProfitDealRules": [
+    {
+      "Rule": "Urma SO scaling",
+      "BotNameIncludeTerms": "urma,ftx",
+      "BotNameExcludeTerms": "hodl,lauren",
+      "IgnoreTtpDeals": true,
+      "AllowTpReduction": false,
+      "MaxSafetyOrderCount": 0,
+      "TpScale": 1
+    },
+    {
+      "Rule": "Urma HODL",
+      "BotNameIncludeTerms": "hodl",
+      "BotNameExcludeTerms": "",
+      "IgnoreTtpDeals": true,
+      "AllowTpReduction": true,
+      "MaxSafetyOrderCount": 0,
+      "TpScale": 0.75
+    }
+  ]
+}

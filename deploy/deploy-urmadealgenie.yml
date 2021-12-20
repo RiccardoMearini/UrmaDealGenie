@@ -1,18 +1,16 @@
-# PLACEHOLDER TEMPLATE - work in progress
-######################
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Deploy Lambda function'
 
 Parameters:
-  APIKEY:
+  ApiKey:
     Type: String
     Description: 3commas API key with "Bots read" and "Bots write" permissions
-  SECRET:
+  ApiSecret:
     Type: String
     Description: 3commas API secret for the ApiKey
   DealRules:
     Type: String
-    Description: The Urma Deal Genie deal rules specified in JSON format
+    Description: JSON document containing Urma Deal Genie rules
 
 Resources:
   # https://aws.amazon.com/blogs/infrastructure-and-automation/deploying-aws-lambda-functions-using-aws-cloudformation-the-portable-way/
@@ -61,8 +59,8 @@ Resources:
         S3Key: "UrmaDealGenieAWS-beta-2.2.zip"
       Environment:
         Variables:
-          APIKEY: !Ref APIKEY
-          SECRET: !Ref SECRET
+          APIKEY: !Ref ApiKey
+          SECRET: !Ref ApiSecret
 
   ScheduledRule: 
     Type: AWS::Events::Rule
@@ -78,7 +76,6 @@ Resources:
               - "UrmaDealGenie"
               - "Arn"
           Id: "TargetFunctionV1"
-          # Input: '{ "UpdateDeals": true, "SafetyOrderRangesDealRules": [ { "Rule": "Lauren Urma Exit", "BotNameIncludeTerms": "lauren", "BotNameExcludeTerms": "", "IgnoreTtpDeals": true, "AllowTpReduction": true, "SafetyOrderRanges": { "1": 0.1, "2": 0.1, "3": 0.1, "4": 0.1, "5": 0.1, "6": 0.1, "7": 0.1 } } ], "ScalingTakeProfitDealRules": [ { "Rule": "Urma SO scaling", "BotNameIncludeTerms": "urma,ftx", "BotNameExcludeTerms": "hodl,lauren", "IgnoreTtpDeals": true, "AllowTpReduction": false, "MaxSafetyOrderCount": 0, "TpScale": 1 }, { "Rule": "Urma HODL", "BotNameIncludeTerms": "hodl", "BotNameExcludeTerms": "", "IgnoreTtpDeals": true, "AllowTpReduction": true, "MaxSafetyOrderCount": 0, "TpScale": 0.75 } ] }'
           Input: !Ref DealRules
 
   PermissionForEventsToInvokeLambda: 
