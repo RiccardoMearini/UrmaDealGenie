@@ -54,7 +54,7 @@ It's actually easier than you think, and my CloudFormation template makes it muc
     - `UrmaDealGenieAWS-x.x.zip` release package file
     - `dealrules.json` file, modified with your rules
     - `deploy-urmadealgenie.yml` CloudFormation template file which tells AWS what how to deploy Urma Deal Genie
-1.Deploy Urma Deal Genie with my CloudFormation template file (it's really easy), specifying your 3c API key & secret
+1. Deploy Urma Deal Genie with my CloudFormation template file (it's really easy), specifying your 3c API key & secret
 
 And that's it. Detailed steps below, and feel free to DM me on Discord if you get stuck or just want some guidance. I'm always happy to help people set this up.
 
