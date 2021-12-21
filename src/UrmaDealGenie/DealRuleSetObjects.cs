@@ -7,6 +7,7 @@ namespace UrmaDealGenie
 {
   public class DealRuleSet
   {
+    public bool LoadFromS3 { get; set; }
     public bool UpdateDeals { get; set; }
     public List<ScalingTakeProfitDealRule> ScalingTakeProfitDealRules { get; set; }
     public List<SafetyOrderRangesDealRule> SafetyOrderRangesDealRules { get; set; }

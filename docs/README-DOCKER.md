@@ -24,7 +24,7 @@ These steps are for building a Docker image and optionally pushing to a Docker H
     ```
 1. Push image to Docker registry 
     ```
-    docker push urmagurd/deal-genie:beta-2.1
+    docker push urmagurd/deal-genie:beta-2.2
     ```
    Obviously you can only push to a registry for which you have access to.
 1. Running with your own local docker.dev.env file (this is same as above run command but with .dev.env)

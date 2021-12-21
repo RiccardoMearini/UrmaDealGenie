@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Amazon;
 using Amazon.Lambda.Core;
 using XCommas.Net.Objects;
 
@@ -27,14 +29,15 @@ namespace UrmaDealGenie
     ///      MaxSafetyOrderCount = modify deals less than max SO count
     ///      IgnoreTtpDeals = true - ignore deals with TTP enabled
     /// </summary>
-    /// <param name="input">Json deserialized class</param>
+    /// <param name="input">Input deal rules, or flag to trigger load from S3</param>
     /// <param name="context">Context of the lambda</param>
     /// <returns>Result summary of the updated deals</returns>
-    public async Task<List<DealResponse>> FunctionHandler(DealRuleSet input, ILambdaContext context)
+    public async Task<List<DealResponse>> FunctionHandler(DealRuleSet dealRuleSet, ILambdaContext context)
     {
       List<DealResponse> response = new List<DealResponse>();
       var apiKey = Environment.GetEnvironmentVariable("APIKEY");
       var secret = Environment.GetEnvironmentVariable("SECRET");
+      var bucket = Environment.GetEnvironmentVariable("BUCKET");
 
       if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(secret))
       {
@@ -42,25 +45,49 @@ namespace UrmaDealGenie
       }
       else
       {
-      client = new Urma3cClient(apiKey, secret);
+        Console.WriteLine($"LoadFromS3 = {dealRuleSet.LoadFromS3}");
+        if (dealRuleSet.LoadFromS3)
+        {
+          // Load deal rules configuration from S3 bucket
+          RegionEndpoint region = RegionEndpoint.GetBySystemName(Environment.GetEnvironmentVariable("AWS_REGION"));
+          string dealRulesString = await BucketFileReader.ReadObjectDataAsync(region, bucket, "dealrules.json");
+          if (!string.IsNullOrEmpty(dealRulesString))
+          {
+            dealRuleSet = JsonSerializer.Deserialize<DealRuleSet>(dealRulesString);
+          }
+          else
+          {
+            dealRuleSet = null;
+          }
+        }
 
-      var updateDeals = input.UpdateDeals;
-      Console.WriteLine($"updateDeals = {updateDeals}");
-      Console.WriteLine($"======================");
-      Console.WriteLine($"SafetyOrderRangesDealRules.Count = {input.SafetyOrderRangesDealRules.Count}");
-      foreach (SafetyOrderRangesDealRule dealRule in input.SafetyOrderRangesDealRules)
-      {
-        var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
-        response.Add(updatedDeal);
-      }
+        // By now we should have a deal rule set from S3 bucket or input parameter
+        if (dealRuleSet != null)
+        {
+          var updateDeals = dealRuleSet.UpdateDeals;
+          Console.WriteLine($"updateDeals = {updateDeals}");
 
-      Console.WriteLine($"======================");
-      Console.WriteLine($"ScalingTakeProfitDealRules.Count = {input.ScalingTakeProfitDealRules.Count}");
-      foreach (ScalingTakeProfitDealRule dealRule in input.ScalingTakeProfitDealRules)
-      {
-        var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
-        response.Add(updatedDeal);
-      }
+          client = new Urma3cClient(apiKey, secret);
+          Console.WriteLine($"======================");
+          Console.WriteLine($"SafetyOrderRangesDealRules.Count = {dealRuleSet.SafetyOrderRangesDealRules.Count}");
+          foreach (SafetyOrderRangesDealRule dealRule in dealRuleSet.SafetyOrderRangesDealRules)
+          {
+            var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
+            response.Add(updatedDeal);
+          }
+
+          Console.WriteLine($"======================");
+          Console.WriteLine($"ScalingTakeProfitDealRules.Count = {dealRuleSet.ScalingTakeProfitDealRules.Count}");
+          foreach (ScalingTakeProfitDealRule dealRule in dealRuleSet.ScalingTakeProfitDealRules)
+          {
+            var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
+            response.Add(updatedDeal);
+          }
+        }
+        else
+        {
+          Console.WriteLine($"Error: cannot find deal rules from input parameter or S3 bucket");
+        }
       }
       return response;
     }
@@ -125,7 +152,7 @@ namespace UrmaDealGenie
       else
       {
         // TODO throw errors and return errors in responses
-        Console.WriteLine($"Error: scaleTp must be more than 0");        
+        Console.WriteLine($"Error: scaleTp must be more than 0");
       }
       Console.WriteLine($"");
       return response;
