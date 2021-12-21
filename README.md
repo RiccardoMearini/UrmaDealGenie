@@ -65,7 +65,7 @@ Amazon Web Services (AWS) has a free tier that allows several services to run fr
 1. Make sure you secure your account with 2FA
 
 ## 2. Create an S3 Bucket
-An S3 buckets are like cloud file storage. You create a "bucket" which is a bit like a folder, and you upload files to it. Each bucket has a globally unique name (whatever you name it, there won't be another with the same name in the world).
+An S3 bucket is like cloud file storage. You create a "bucket" which is a bit like a folder, and you upload files to it. Each bucket has a globally unique name (whatever you name it, there won't be another with the same name in the world).
 1. Go to [S3 Management Console](https://s3.console.aws.amazon.com) and click "Create bucket"
 1. Give the bucket a name (e.g. `urmadealgenie-somerandomnumbers`)
 1. Choose a region (doesn't really matter, but just remember which region you choose, e.g. `eu-west-2` London)
