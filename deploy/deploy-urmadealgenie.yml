@@ -11,15 +11,33 @@ Parameters:
   S3Bucket:
     Type: String
     Description: Name of the S3 bucket containing the lambda package and config
-  PackageFilename:
+  S3PackageFilename:
     Type: String
     Description: Filename of the lambda function package in S3
 
 Resources:
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: UrmaDealGenie
+      Description: Urma Deal Genie lambda function
+      Handler: "UrmaDealGenie::UrmaDealGenie.Function::FunctionHandler"
+      Runtime: dotnetcore3.1
+      Role: !GetAtt 'LambdaExecutionRole.Arn'
+      Timeout: 120
+      Code:
+        S3Bucket: !Ref S3Bucket
+        S3Key: !Ref S3PackageFilename
+      Environment:
+        Variables:
+          APIKEY: !Ref ApiKey
+          SECRET: !Ref ApiSecret
+          BUCKET: !Ref S3Bucket
+
   LambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: Urmagurd-LambdaExecutionRole
+      RoleName: UrmaDealGenie-LambdaExecutionRole
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -40,43 +58,25 @@ Resources:
                 Action: s3:GetObject
                 Resource: !Sub arn:aws:s3:::${S3Bucket}/*
 
-  UrmaDealGenie:
-    Type: AWS::Lambda::Function
-    Properties:
-      FunctionName: UrmaDealGenie
-      Description: Urma Deal Genie lambda function
-      Handler: "UrmaDealGenie::UrmaDealGenie.Function::FunctionHandler"
-      Runtime: dotnetcore3.1
-      Role: !GetAtt 'LambdaExecutionRole.Arn'
-      Timeout: 120
-      Code:
-        S3Bucket: !Ref S3Bucket
-        S3Key: !Ref PackageFilename
-      Environment:
-        Variables:
-          APIKEY: !Ref ApiKey
-          SECRET: !Ref ApiSecret
-          BUCKET: !Ref S3Bucket
-
   ScheduledRule: 
     Type: AWS::Events::Rule
     Properties: 
-      Name: UrmaDealGenie-Schedule
+      Name: UrmaDealGenie-ScheduledRule
       Description: "Urma Deal Genie Scheduled rule"
       ScheduleExpression: "rate(5 minutes)"
       State: "ENABLED"
       Targets: 
         - Arn: 
             Fn::GetAtt: 
-              - "UrmaDealGenie"
+              - "LambdaFunction"
               - "Arn"
           Id: "TargetFunctionV1"
-          Input: '{ "LoadFromS3": false }'
+          Input: '{ "LoadFromS3": true }'
 
   PermissionForEventsToInvokeLambda: 
     Type: AWS::Lambda::Permission
     Properties: 
-      FunctionName: !Ref "UrmaDealGenie"
+      FunctionName: !Ref "LambdaFunction"
       Action: "lambda:InvokeFunction"
       Principal: "events.amazonaws.com"
       SourceArn: 
