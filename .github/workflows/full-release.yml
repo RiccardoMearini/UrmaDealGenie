@@ -59,9 +59,8 @@ jobs:
           dotnet publish ./src/UrmaDealGenieApp -c Release -o ./src/UrmaDealGenieApp/UrmaDealGenieApp-osx-x64 -p:PublishSingleFile=true --self-contained false -r osx-x64
           cd ./src/UrmaDealGenieApp/UrmaDealGenieApp-osx-x64
           ls
-          mv ./src/UrmaDealGenieApp/UrmaDealGenieApp-osx-x64/UrmaDealGenieApp.exe ./src/UrmaDealGenieApp/UrmaDealGenieApp-osx-x64/UrmaDealGenieApp-osx-x64.exe 
+          mv ./src/UrmaDealGenieApp/UrmaDealGenieApp-osx-x64/UrmaDealGenieApp ./src/UrmaDealGenieApp/UrmaDealGenieApp-osx-x64/UrmaDealGenieApp-osx-x64
 
-      # TODO: Put architecture label in the .exe, and upload both
       - name: Create Console Application release
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
@@ -71,7 +70,7 @@ jobs:
           title: "Urma Deal Genie Console App - ${{github.event.release.tag_name}}"
           files: |
             ./src/UrmaDealGenieApp/UrmaDealGenieApp-win10-x64/UrmaDealGenieApp-win10-x64.exe
-            ./src/UrmaDealGenieApp/UrmaDealGenieApp-osx-x64/UrmaDealGenieApp-osx-x64.exe
+            ./src/UrmaDealGenieApp/UrmaDealGenieApp-osx-x64/UrmaDealGenieApp-osx-x64
             ./src/UrmaDealGenieApp/dealrules.json
 
       # Build and push Docker image containing Console Application
