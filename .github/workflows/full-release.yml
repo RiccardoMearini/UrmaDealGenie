@@ -49,10 +49,7 @@ jobs:
 
       # Console Application win10-x64
       - name: Build/publish console application
-        run: dotnet publish ./src/UrmaDealGenieApp -c Release \
-              -o ./src/UrmaDealGenieApp/UrmaDealGenieApp \
-              -p:PublishSingleFile=true --self-contained false \
-              -r win10-x64
+        run: dotnet publish ./src/UrmaDealGenieApp -c Release -o ./src/UrmaDealGenieApp/UrmaDealGenieApp -p:PublishSingleFile=true --self-contained false -r win10-x64
 
       - name: Zip console application
         uses: papeloto/action-zip@v1
