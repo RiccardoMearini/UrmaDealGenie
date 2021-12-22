@@ -50,10 +50,14 @@ jobs:
 
       # Console Applications
       - name: Build/publish console application win10-x64
-        run: dotnet publish ./src/UrmaDealGenieApp -c Release -o ./src/UrmaDealGenieApp/UrmaDealGenieAppRelease -p:PublishSingleFile=true --self-contained false -r win10-x64
+        run: |
+          dotnet publish ./src/UrmaDealGenieApp -c Release -o ./src/UrmaDealGenieApp/UrmaDealGenieApp-win10-x64 -p:PublishSingleFile=true --self-contained false -r win10-x64
+          mv ./src/UrmaDealGenieApp/UrmaDealGenieApp-osx-x64/UrmaDealGenieApp.exe ./src/UrmaDealGenieApp/UrmaDealGenieApp-win10-x64/UrmaDealGenieApp-win10-x64.exe           
 
       - name: Build/publish console application osx-x64
-        run: dotnet publish ./src/UrmaDealGenieApp -c Release -o ./src/UrmaDealGenieApp/UrmaDealGenieAppRelease -p:PublishSingleFile=true --self-contained false -r osx-x64
+        run: |
+          dotnet publish ./src/UrmaDealGenieApp -c Release -o ./src/UrmaDealGenieApp/UrmaDealGenieApp-osx-x64 -p:PublishSingleFile=true --self-contained false -r osx-x64
+          mv ./src/UrmaDealGenieApp/UrmaDealGenieApp-osx-x64/UrmaDealGenieApp.exe ./src/UrmaDealGenieApp/UrmaDealGenieApp-osx-x64/UrmaDealGenieApp-osx-x64.exe 
 
       # TODO: Put architecture label in the .exe, and upload both
       - name: Create Console Application release
@@ -64,7 +68,8 @@ jobs:
           prerelease: true
           title: "Urma Deal Genie Console App - ${{github.event.release.tag_name}}"
           files: |
-            UrmaDealGenieApp-${{github.event.release.tag_name}}.exe
+            ./src/UrmaDealGenieApp/UrmaDealGenieApp-win10-x64/UrmaDealGenieApp-win10-x64.exe
+            ./src/UrmaDealGenieApp/UrmaDealGenieApp-osx-x64/UrmaDealGenieApp-osx-x64.exe
             ./src/UrmaDealGenieApp/dealrules.json
 
       # Build and push Docker image containing Console Application
