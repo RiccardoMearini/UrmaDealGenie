@@ -52,7 +52,9 @@ jobs:
       - name: Build/publish console application win10-x64
         run: |
           dotnet publish ./src/UrmaDealGenieApp -c Release -o ./src/UrmaDealGenieApp/UrmaDealGenieApp-win10-x64 -p:PublishSingleFile=true --self-contained false -r win10-x64
-          mv ./src/UrmaDealGenieApp/UrmaDealGenieApp-osx-x64/UrmaDealGenieApp.exe ./src/UrmaDealGenieApp/UrmaDealGenieApp-win10-x64/UrmaDealGenieApp-win10-x64.exe           
+          cd ./src/UrmaDealGenieApp/UrmaDealGenieApp-win10-x64
+          ls
+          mv ./src/UrmaDealGenieApp/UrmaDealGenieApp-win10-x64/UrmaDealGenieApp.exe ./src/UrmaDealGenieApp/UrmaDealGenieApp-win10-x64/UrmaDealGenieApp-win10-x64.exe           
 
       - name: Build/publish console application osx-x64
         run: |
