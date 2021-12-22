@@ -47,9 +47,12 @@ jobs:
             ./src/UrmaDealGenie/.lambda-test-tool/SavedRequests/test-config-update-false.json
             ./src/UrmaDealGenie/.lambda-test-tool/SavedRequests/test-config-update-true.json
 
-      # Console Application  
+      # Console Application win10-x64
       - name: Build/publish console application
-        run: dotnet publish ./src/UrmaDealGenieApp -c Release --no-restore -o ./src/UrmaDealGenieApp/UrmaDealGenieApp
+        run: dotnet publish ./src/UrmaDealGenieApp -c Release \
+              -o ./src/UrmaDealGenieApp/UrmaDealGenieApp \
+              -p:PublishSingleFile=true --self-contained false \
+              -r win10-x64
 
       - name: Zip console application
         uses: papeloto/action-zip@v1

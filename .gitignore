@@ -12,6 +12,7 @@
 *.dev.*
 .DS_Store
 *.zip
+*.exe
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

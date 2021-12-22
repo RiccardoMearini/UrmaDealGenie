@@ -8,9 +8,10 @@ dotnet restore
 dotnet lambda package UrmaDealGenieAWS-${ver}.zip -pl ./src/UrmaDealGenie
 
 # Build .NET Core Application Package
-dotnet publish ./src/UrmaDealGenieApp -c Release -o ./src/UrmaDealGenieApp/UrmaDealGenieApp
-cd  ./src/UrmaDealGenieApp
-zip ../../UrmaDealGenieApp-${ver}.zip ./UrmaDealGenieApp/*
+dotnet publish ./src/UrmaDealGenieApp -c Release \
+  -o ./src/UrmaDealGenieApp/UrmaDealGenieApp-${ver} \
+  -p:PublishSingleFile=true --self-contained false \
+  -r win10-x64
 
 # Build docker image and push to registry
 docker build -t urmagurd/deal-genie:${ver} -f Dockerfile .
@@ -20,11 +21,4 @@ cd ../..
 
 # Remove temporary app publish folder
 rm -r ./src/UrmaDealGenieApp/UrmaDealGenieApp
-
-###########################################
-# Publish single file .NET Core Application
-dotnet publish ./src/UrmaDealGenieApp -c Release \
-  -o ./src/UrmaDealGenieApp/UrmaDealGenieApp \
-  -p:PublishSingleFile=true --self-contained false \
-  -r win10-x64 
 
