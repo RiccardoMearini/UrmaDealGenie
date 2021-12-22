@@ -44,19 +44,27 @@ jobs:
           title: "Urma Deal Genie AWS Lambda - ${{github.event.release.tag_name}}"
           files: |
             UrmaDealGenieAWS-${{github.event.release.tag_name}}.zip
+            ./deploy/deploy-urmadealgenie.yml
+            ./src/UrmaDealGenieApp/dealrules.json
             ./src/UrmaDealGenie/.lambda-test-tool/SavedRequests/test-config-update-false.json
-            ./src/UrmaDealGenie/.lambda-test-tool/SavedRequests/test-config-update-true.json
 
       # Console Application win10-x64
       - name: Build/publish console application
-        run: dotnet publish ./src/UrmaDealGenieApp -c Release -o ./src/UrmaDealGenieApp/UrmaDealGenieApp-${{github.event.release.tag_name}} -p:PublishSingleFile=true --self-contained false -r win10-x64
+        run: |
+          dotnet publish ./src/UrmaDealGenieApp -c Release \
+            -o ./src/UrmaDealGenieApp/UrmaDealGenieApp-${{github.event.release.tag_name}} \
+            -p:PublishSingleFile=true --self-contained false \
+            -r win10-x64
 
-      - name: Zip console application
-        uses: papeloto/action-zip@v1
-        with:
-          files: ./src/UrmaDealGenieApp/publish
-          dest: UrmaDealGenieApp-${{github.event.release.tag_name}}.zip
+      # Console Application osx-x64
+      - name: Build/publish console application
+        run: |
+          dotnet publish ./src/UrmaDealGenieApp -c Release \
+            -o ./src/UrmaDealGenieApp/UrmaDealGenieApp-${{github.event.release.tag_name}} \
+            -p:PublishSingleFile=true --self-contained false \
+            -r osx-x64
 
+      # TODO: Put architecture label in the .exe, and upload both
       - name: Create Console Application release
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
@@ -65,7 +73,7 @@ jobs:
           prerelease: true
           title: "Urma Deal Genie Console App - ${{github.event.release.tag_name}}"
           files: |
-            UrmaDealGenieApp-${{github.event.release.tag_name}}.zip
+            UrmaDealGenieApp-${{github.event.release.tag_name}}.exe
             ./src/UrmaDealGenieApp/dealrules.json
 
       # Build and push Docker image containing Console Application
