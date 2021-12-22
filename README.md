@@ -143,7 +143,7 @@ To install and configure the Urma Deal Genie console application:
    - On Windows go to Start->Command Prompt
    - On Mac launch Terminal
    - On Linux... I dunno, google it?
-   - navigate to the folder you downloaded the files to (e.g. `cd UrmaDealGenieApp`)
+   - navigate to the folder you downloaded the files to (e.g. `cd c:\UrmaDealGenieApp`)
 6. In the console/terminal window, set environment variables for the APIKEY and SECRET
    - Windows
      ```
