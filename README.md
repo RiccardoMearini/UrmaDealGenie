@@ -155,17 +155,10 @@ To install and configure the Urma Deal Genie console application:
      export APIKEY=YOUR_API_KEY_HERE
      export SECRET=YOUR_3COMMAS_SECRET_HERE
      ```
-5. Run UrmaDealGenieApp depending on your operating system
-   - Windows
+5. Run UrmaDealGenieApp depending on your operating system, Windows, Mac or Linux:
      ```
      UrmaDealGenieApp-win10-x64.exe
-     ```
-   - Mac
-     ```
      UrmaDealGenieApp-osx-x64
-     ```
-   - Mac
-     ```
      UrmaDealGenieApp-linux-x64
      ```
 That's it. It will run in until you stop it by pressing Ctrl+C
