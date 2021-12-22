@@ -24,11 +24,10 @@ The AWS Lambda function requires an AWS account (free). The application requires
 You will need the following (full details further below):
 1. A 3Commas account that is setup with at least 1 active DCA bot
 1. A new 3Commas API key and secret
-2. Urma Deal Genie release, either:
-   - UrmaDealGenieApp-_(version)_.zip console application, or
-   - urmagurd/deal-genie Docker image, or
-   - UrmaDealGenieAWS-_(version)_.zip AWS Lambda function package
-     - plus an Amazon Web Services (AWS) account
+1. Urma Deal Genie release, either:
+   - `UrmaDealGenieAWS-{ver}.zip` AWS Lambda function package, or
+   - `UrmaDealGenieApp-win10-64.exe`, `UrmaDealGenieApp-osx-64` or `UrmaDealGenieApp-linux-x64` console application, or
+   - `urmagurd/deal-genie:{ver}` Docker image
 
 See [UrmaDealGenie Releases](https://github.com/UrmaGurd/UrmaDealGenie/releases) for the zips, or [urmagurd/deal-genie Docker registry](https://hub.docker.com/repository/docker/urmagurd/deal-genie) for the Docker image.
 
@@ -51,7 +50,7 @@ It's actually easier than you think, and my CloudFormation template makes it muc
 1. Create a [new account in  AWS (free)](https://aws.amazon.com/free/)
 1. Create an “S3 bucket” to upload files to (easy)
 1. Upload 3 files from my release:
-    - `UrmaDealGenieAWS-x.x.zip` release package file
+    - `UrmaDealGenieAWS-{ver}.zip` release package file
     - `dealrules.json` file, modified with your rules
     - `deploy-urmadealgenie.yml` CloudFormation template file which tells AWS what how to deploy Urma Deal Genie
 1. Deploy Urma Deal Genie with my CloudFormation template file (it's really easy), specifying your 3c API key & secret
@@ -74,9 +73,9 @@ An S3 bucket is like cloud file storage. You create a "bucket" which is a bit li
 ## 3. Upload Urma Deal Genie files to S3 Bucket
 An AWS Lambda function is code that runs in the cloud, but first you need to download Urma Deal Genie files and upload them to your S3 bucket.
 1. Download the Urma Deal Genie files from my GitHub to your PC:
-    - [UrmaDealGenieAWS-2.3.zip](https://github.com/UrmaGurd/UrmaDealGenie/releases/download/aws-2.3/UrmaDealGenieAWS-2.3.zip)
-    - [dealrules.json](https://github.com/UrmaGurd/UrmaDealGenie/releases/download/aws-2.3/dealrules.json)
-    - [deploy-urmadealgenie.yml](https://github.com/UrmaGurd/UrmaDealGenie/releases/download/aws-2.3/deploy-urmadealgenie.yml)
+    - [UrmaDealGenieAWS-2.3.zip](https://github.com/UrmaGurd/UrmaDealGenie/releases/download/2.3/UrmaDealGenieAWS-2.3.zip)
+    - [dealrules.json](https://github.com/UrmaGurd/UrmaDealGenie/releases/download/2.3/dealrules.json)
+    - [deploy-urmadealgenie.yml](https://github.com/UrmaGurd/UrmaDealGenie/releases/download/2.3//deploy-urmadealgenie.yml)
 1. Go to [S3 Management Console](https://s3.console.aws.amazon.com/s3) and click on your bucket that you created above.
 1. Click "Upload" and choose the 3 files above that you downloaded to the S3 bucket (drag and drop them, or browse for them), and click "Upload"
 1. Click on the `deploy-urmadealgenie.yml` file and copy the `Object URL` 
@@ -136,13 +135,16 @@ This application requires .NET 6.0 Runtime:
 _First off, **SORRY** this is so complicated!! I'm working on making this one-click!_
 
 To install and configure the Urma Deal Genie console application:
-1. Download and unzip the release [UrmaDealGenieApp-beta-2.2.zip](https://github.com/UrmaGurd/UrmaDealGenie/releases/download/app-beta-2.2/UrmaDealGenieApp-beta-2.2.zip file to a local folder
-2. Find and edit the `dealrules.json` to match your bots. See [docs/ExampleConfigs.md](./docs/ExampleConfigs.md) for example configs with detailed explanations of rule settings
-3. Open a command/terminal window:
+1. Download [UrmaDealGenieApp release files](https://github.com/UrmaGurd/UrmaDealGenie/releases/tag/app-2.3 ) depending on your operating system file to a local folder, e.g. `c:\UrmaDealGenieApp`
+   - `dealrules.json`
+   - `UrmaDealGenieApp-win10-x64.exe`, or `UrmaDealGenieApp-osx-x64` or `UrmaDealGenieApp-linux-x64`
+4. Edit `dealrules.json` file on your machine to match your bots. See [docs/ExampleConfigs.md](./docs/ExampleConfigs.md) for example configs with detailed explanations of rule settings
+5. Open a command/terminal window:
    - On Windows go to Start->Command Prompt
    - On Mac launch Terminal
-   - navigate to the folder you unzipped files to (e.g. `cd UrmaDealGenieApp`)
-4. In the console/terminal window, set environment variables for the APIKEY and SECRET
+   - On Linux... I dunno, google it?
+   - navigate to the folder you downloaded the files to (e.g. `cd UrmaDealGenieApp`)
+6. In the console/terminal window, set environment variables for the APIKEY and SECRET
    - Windows
      ```
      set APIKEY=YOUR_API_KEY_HERE
@@ -153,12 +155,20 @@ To install and configure the Urma Deal Genie console application:
      export APIKEY=YOUR_API_KEY_HERE
      export SECRET=YOUR_3COMMAS_SECRET_HERE
      ```
-5. Run UrmaDealGenieApp
-   - Windows/Mac/Linux
+5. Run UrmaDealGenieApp depending on your operating system
+   - Windows
      ```
-     dotnet UrmaDealGenieApp.dll
+     UrmaDealGenieApp-win10-x64.exe
      ```
-
+   - Mac
+     ```
+     UrmaDealGenieApp-osx-x64
+     ```
+   - Mac
+     ```
+     UrmaDealGenieApp-linux-x64
+     ```
+That's it. It will run in until you stop it by pressing Ctrl+C
 
 # Run in a Docker Container
 See [README-DOCKER.md](./docs/README-DOCKER.md)
