@@ -48,21 +48,12 @@ jobs:
             ./src/UrmaDealGenieApp/dealrules.json
             ./src/UrmaDealGenie/.lambda-test-tool/SavedRequests/test-config-update-false.json
 
-      # Console Application win10-x64
-      - name: Build/publish console application
-        run: |
-          dotnet publish ./src/UrmaDealGenieApp -c Release \
-            -o ./src/UrmaDealGenieApp/UrmaDealGenieApp-${{github.event.release.tag_name}} \
-            -p:PublishSingleFile=true --self-contained false \
-            -r win10-x64
+      # Console Applications
+      - name: Build/publish console application win10-x64
+        run: dotnet publish ./src/UrmaDealGenieApp -c Release -o ./src/UrmaDealGenieApp/UrmaDealGenieApp-${{github.event.release.tag_name}} -p:PublishSingleFile=true --self-contained false -r win10-x64
 
-      # Console Application osx-x64
-      - name: Build/publish console application
-        run: |
-          dotnet publish ./src/UrmaDealGenieApp -c Release \
-            -o ./src/UrmaDealGenieApp/UrmaDealGenieApp-${{github.event.release.tag_name}} \
-            -p:PublishSingleFile=true --self-contained false \
-            -r osx-x64
+      - name: Build/publish console application osx-x64
+        run: dotnet publish ./src/UrmaDealGenieApp -c Release -o ./src/UrmaDealGenieApp/UrmaDealGenieApp-${{github.event.release.tag_name}} -p:PublishSingleFile=true --self-contained false -r osx-x64
 
       # TODO: Put architecture label in the .exe, and upload both
       - name: Create Console Application release
