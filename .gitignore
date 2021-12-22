@@ -13,8 +13,9 @@
 .DS_Store
 *.zip
 *.exe
-UrmaDealGenieApp-osx-x64
 UrmaDealGenieApp-win10-x64
+UrmaDealGenieApp-osx-x64
+UrmaDealGenieApp-linux-x64
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
