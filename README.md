@@ -1,5 +1,5 @@
 # Urma-Gurd's 3Commas Deal Genie
-This is simple function that runs every few minutes, and updates configured 3Commas deals to change the Take Profit % (TP) based on sets of rules.  It can be run as a cloud hosted Amazon Web Services (AWS) Lambda Function (preferred!), a standalone console application or a Docker container.
+This is a simple function that runs every few minutes, and updates configured 3Commas deals to change the Take Profit % (TP) based on sets of rules.  It can be run as a cloud hosted Amazon Web Services (AWS) Lambda Function (preferred!), a standalone console application or a Docker container.
 
 Typically Urma Deal Genie is used to automatically increase TP% as your bot deals buy more safety orders, so that they take advantage of the extra volume and volatility to make more profit. This strategy works really well with the [Urma DCA bot settings](docs/UrmaBotSettings.md) which scale volume at a high rate over a small number of safety orders. 
 
@@ -17,7 +17,7 @@ If you got some value out of this project, please consider donating. A lot of ti
 
 # Deployment Options
 You can deploy Urma Deal Genie as an AWS Lambda Function (serverless), as a .NET Core application that runs on Mac/Linux/Windows, or as a Docker container.
-![Urma Deal Genie deployment diagrams](https://user-images.githubusercontent.com/13062477/143783386-62a458f5-dca6-476d-9107-77a89cabe478.png)
+![Urma Deal Genie deployment diagrams](https://user-images.githubusercontent.com/13062477/147111837-617c9ed1-47a8-43ef-a338-c40e96e5d582.png)
 The AWS Lambda function requires an AWS account (free). The application requires .NET 6.0 installed. The Docker container requires Docker Desktop installed. 
 
 # Getting Started
@@ -108,6 +108,9 @@ This is how you can see if Urma Deal Genie is running and is successful or has e
 1. Click on "Logs" tab under Monitor
     - Click on a recent log file
     - Scroll down the log file and see if the logging shows the function is running and finding deals
+
+**!!!Coming Soon!!! - Alarms and Monitor Dashboard**
+![MonitorAlarms](https://user-images.githubusercontent.com/13062477/147112029-3d6466c1-664b-4d9b-9a80-b020201b4cc6.jpg)
 
 ## Testing Rules
 It's useful to test rules without updating your deals. Here's how:
