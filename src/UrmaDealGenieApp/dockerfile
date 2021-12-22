@@ -1,8 +1,8 @@
 FROM mcr.microsoft.com/dotnet/runtime:6.0
 
-COPY ./UrmaDealGenieAppRelease/ App/
+COPY ./UrmaDealGenieApp-linux-x64/ App/
 COPY ./dealrules.json App/
 COPY ./appsettings.json App/
 WORKDIR /App
 
-ENTRYPOINT ["dotnet", "UrmaDealGenieApp.exe"]
+ENTRYPOINT ["./UrmaDealGenieApp-linux-x64", ""]
