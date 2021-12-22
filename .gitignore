@@ -13,6 +13,7 @@
 .DS_Store
 *.zip
 *.exe
+UrmaDealGenieAppRelease
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

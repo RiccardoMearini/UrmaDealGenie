@@ -9,7 +9,7 @@ dotnet lambda package UrmaDealGenieAWS-${ver}.zip -pl ./src/UrmaDealGenie
 
 # Build .NET Core Application Package
 dotnet publish ./src/UrmaDealGenieApp -c Release \
-  -o ./src/UrmaDealGenieApp/UrmaDealGenieApp-${ver} \
+  -o ./src/UrmaDealGenieApp/UrmaDealGenieAppRelease \
   -p:PublishSingleFile=true --self-contained false \
   -r win10-x64
 
@@ -21,4 +21,3 @@ cd ../..
 
 # Remove temporary app publish folder
 rm -r ./src/UrmaDealGenieApp/UrmaDealGenieApp
-
