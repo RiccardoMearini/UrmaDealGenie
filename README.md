@@ -54,5 +54,6 @@ There are several ways to run UrmaDealGenie, but the original and preferred way 
 - [Console Application](./docs/README-CONSOLE-APPLICATION.md) on Windows, Mac OSX or Linux
 - [Docker Container](./docs/README-DOCKER.md) for how to run UrmaDealGenie in a Docker container
 
+## Deployment Diagrams
 ![Urma Deal Genie deployment diagrams](https://user-images.githubusercontent.com/13062477/147111837-617c9ed1-47a8-43ef-a338-c40e96e5d582.png)
 
