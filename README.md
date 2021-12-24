@@ -49,7 +49,7 @@ The Urma Deal Genie needs to connect to your 3Commas account, and it needs
 1. Take a note of the API Key and Secret, you'll need them later in the instructions
 
 # Install Instructions for UrmaDealGenie
-There are several ways to run UrmaDealGenie, but the original and preferred way is AWS.
+There are several ways to run UrmaDealGenie, but the original and preferred way is Amazon Web Services (AWS):
 - [Amazon Web Services](./docs/README-AWS.md) (for free!)
 - [Console Application](./docs/README-CONSOLE-APPLICATION.md) on Windows, Mac OSX or Linux
 - [Docker Container](./docs/README-DOCKER.md) for how to run UrmaDealGenie in a Docker container
