@@ -1,4 +1,4 @@
-# Console Application
+# Run as a .NET Core Console Application
 This application requires .NET 6.0 Runtime:
   - [Windows x64 .NET 6.0 installer](https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-6.0.0-windows-x64-installer)
   - [MacOS x64 .NET 6.0 installer](https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-6.0.0-macos-x64-installer)
