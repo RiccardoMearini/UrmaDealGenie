@@ -87,7 +87,7 @@ An AWS CloudFormation stack is a bit like install kits for AWS. You create a "st
 1. Enter the S3 URL to the `deploy-urmadealgenie.yml` file, or just upload the file you downloaded
 1. Enter a `Stack name` (e.g. UrmaDealGenie, or make up whatever you want)
 1. Enter Parameters:
-    - `ApiKey` (that you created above in 3Commas)
+    - `ApiKey` (that you [created in 3Commas](/README.md#create-a-3commas-api-key-and-secret))
     - `ApiSecret` (ditto)
     - `S3Bucket` (name of the bucket you created)
     - `S3PackageFilename` (name of the UrmaDealGenie zip file you uploaded to the bucket)
