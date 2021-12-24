@@ -68,7 +68,7 @@ It's useful to test rules without updating your deals. Here's how:
 1. Go to [Lambda services](https://console.aws.amazon.com/lambda)
 1. Click on the "UrmaDealGenie" (or similar name) function
 1. Click on “Test” tab, create new Test event and save it
-    - Saved event name = `deal-genie-update-false`
+    - Saved event name = `deal-genie-update-false` (or similar)
     - Copy / past body of `test-config-update-false.json`
     - Modify this JSON document - e.g. delete rules you don’t want, change deal rules include/exclude terms to be relative to your bot names
     - See [docs/ExampleConfigs.md](./docs/ExampleConfigs.md) for example configs with detailed explanations of rule settings
@@ -77,3 +77,4 @@ It's useful to test rules without updating your deals. Here's how:
       - If it ran successfully, you can change UpdateDeals to “true” and see if your deals get updated. 
       - It is strongly recommended to modify the rules’ include/exclude terms fields so that the number of deals that need updating is just a few to start with.
 
+![image](https://user-images.githubusercontent.com/13062477/147366727-0626c45f-b4d8-4614-b5cc-5c47bcd3a18b.png)
