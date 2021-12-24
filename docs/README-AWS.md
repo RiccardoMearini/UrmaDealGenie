@@ -51,7 +51,7 @@ An AWS CloudFormation stack is a bit like install kits for AWS. You create a "st
 And that's it! The Urma Deal Genie will run every 5 minutes and use the `dealrules.json` file in your bucket as the rule configuration.
 ## Monitoring Urma Deal Genie
 This is how you can see if Urma Deal Genie is running and is successful or has errors. Remember it will take 5 minutes at least before you can see any results.
-1. Go to [Lambda services](https://console.aws.amazon.com/lambda)
+1. Go to [Lambda services](https://console.aws.amazon.com/cloudwatch/dashboards)
 1. Click on the "UrmaDealGenie" function
 1. Click on “Monitor” tab and look at "Metrics"
     - Watch the “Error count and success rate” chart
@@ -60,9 +60,6 @@ This is how you can see if Urma Deal Genie is running and is successful or has e
 1. Click on "Logs" tab under Monitor
     - Click on a recent log file
     - Scroll down the log file and see if the logging shows the function is running and finding deals
-
-**!!!Coming Soon!!! - Alarms and Monitor Dashboard**
-![MonitorAlarms](https://user-images.githubusercontent.com/13062477/147112029-3d6466c1-664b-4d9b-9a80-b020201b4cc6.jpg)
 
 ## Testing Rules
 It's useful to test rules without updating your deals. Here's how:
@@ -77,3 +74,4 @@ It's useful to test rules without updating your deals. Here's how:
     - Click Test and expand the Details and hopefully it runs!!
       - If it ran successfully, you can change UpdateDeals to “true” and see if your deals get updated. 
       - It is strongly recommended to modify the rules’ include/exclude terms fields so that the number of deals that need updating is just a few to start with.
+
