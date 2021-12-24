@@ -18,12 +18,12 @@ To install and configure the Urma Deal Genie console application:
    - On Linux... I dunno, google it?
    - navigate to the folder you downloaded the files to (e.g. `cd c:\UrmaDealGenieApp`)
 6. In the console/terminal window, set environment variables for the APIKEY and SECRET
-   - Windows
+   - **Windows**
      ```
      set APIKEY=YOUR_API_KEY_HERE
      set SECRET=YOUR_3COMMAS_SECRET_HERE
      ```
-   - Mac/Linux
+   - **Mac/Linux**
      ```
      export APIKEY=YOUR_API_KEY_HERE
      export SECRET=YOUR_3COMMAS_SECRET_HERE
