@@ -10,16 +10,26 @@ Parameters:
     Description: 3commas API secret for the ApiKey
   S3Bucket:
     Type: String
-    Description: Name of the S3 bucket containing the lambda package and config
+    Description: Name of the S3 bucket containing the lambda function package and config
   S3PackageFilename:
     Type: String
     Description: Filename of the lambda function package in S3
+  StatusEmailAddress:
+    Type: String
+    Description: Optional email address to receive error status updates
+  LambdaFunctionName:
+    Type: String
+    Description: Name for the lambda function (default 'UrmaDealGenie')
+    Default: 'UrmaDealGenie'
+
+Conditions:
+  CreateEmailSubscription: !Not [!Equals [!Ref "StatusEmailAddress", ""]]
 
 Resources:
   LambdaFunction:
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: UrmaDealGenie
+      FunctionName: !Sub '${LambdaFunctionName}'
       Description: Urma Deal Genie lambda function
       Handler: "UrmaDealGenie::UrmaDealGenie.Function::FunctionHandler"
       Runtime: dotnetcore3.1
@@ -37,7 +47,7 @@ Resources:
   LambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: UrmaDealGenie-LambdaExecutionRole
+      RoleName: !Sub '${LambdaFunctionName}-LambdaExecutionRole'
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -61,7 +71,7 @@ Resources:
   ScheduledRule: 
     Type: AWS::Events::Rule
     Properties: 
-      Name: UrmaDealGenie-ScheduledRule
+      Name: !Sub '${LambdaFunctionName}-ScheduledRule'
       Description: "Urma Deal Genie Scheduled rule"
       ScheduleExpression: "rate(5 minutes)"
       State: "ENABLED"
@@ -83,3 +93,94 @@ Resources:
         Fn::GetAtt: 
           - "ScheduledRule"
           - "Arn"
+
+  AlarmSNSTopic:
+    Type: AWS::SNS::Topic
+    Condition: CreateEmailSubscription
+    Properties:
+      TopicName: ErrorStatusEmail
+      Subscription:
+        - Protocol: email
+          Endpoint: !Ref StatusEmailAddress
+
+  LambdaAlarmInvocations:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      ActionsEnabled: true
+      AlarmDescription: !Sub 'Alarm for invocations of the ${LambdaFunctionName} lambda function'
+      AlarmName: !Sub '${LambdaFunctionName}-Alarm-Invocations'
+      AlarmActions: 
+        - !If
+          - CreateEmailSubscription
+          - !Ref AlarmSNSTopic
+          - !Ref 'AWS::NoValue'       
+      ComparisonOperator: LessThanOrEqualToThreshold
+      EvaluationPeriods: 1
+      MetricName: Invocations
+      Namespace: AWS/Lambda
+      Statistic: Average
+      Threshold: 0
+      DatapointsToAlarm: 1
+      Dimensions:
+        - Name: FunctionName
+          Value: !Sub '${LambdaFunctionName}'
+      Period: 180
+      TreatMissingData: missing
+
+  LambdaAlarmError:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      ActionsEnabled: true
+      AlarmDescription: !Sub 'Alarm for when errors occur in the ${LambdaFunctionName} lambda function'
+      AlarmName: !Sub '${LambdaFunctionName}-Alarm-Errors'
+      AlarmActions: 
+        - !If
+          - CreateEmailSubscription
+          - !Ref AlarmSNSTopic
+          - !Ref 'AWS::NoValue'       
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      EvaluationPeriods: 1
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Statistic: Average
+      Threshold: 1
+      DatapointsToAlarm: 1
+      Dimensions:
+        - Name: FunctionName
+          Value: !Sub '${LambdaFunctionName}'
+      Period: 180
+      TreatMissingData: missing
+
+  LambdaAlarmDuration:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      ActionsEnabled: true
+      AlarmDescription: !Sub 'Alarm for a too short duration of the ${LambdaFunctionName} lambda function'
+      AlarmName: !Sub '${LambdaFunctionName}-Alarm-Duration'
+      AlarmActions: 
+        - !If
+          - CreateEmailSubscription
+          - !Ref AlarmSNSTopic
+          - !Ref 'AWS::NoValue'       
+      ComparisonOperator: LessThanOrEqualToThreshold
+      EvaluationPeriods: 1
+      MetricName: Duration
+      Namespace: AWS/Lambda
+      Statistic: Average
+      Threshold: 1000
+      DatapointsToAlarm: 1
+      Dimensions:
+        - Name: FunctionName
+          Value: !Sub '${LambdaFunctionName}'
+      Period: 180
+      TreatMissingData: missing
+
+  AlarmDashboard:
+    Type: AWS::CloudWatch::Dashboard
+    DependsOn: 
+      - LambdaAlarmInvocations
+      - LambdaAlarmError
+      - LambdaAlarmDuration
+    Properties:
+      DashboardName: !Sub '${LambdaFunctionName}'
+      DashboardBody: !Sub '{ "widgets": [ { "height": 6, "width": 8, "y": 2, "x": 16, "type": "metric", "properties": { "period": 60, "metrics": [ [ "AWS/Lambda", "Invocations", "FunctionName", "${LambdaFunctionName}", { "stat": "Sum" } ] ], "region": "eu-west-1", "title": "Invocations" } }, { "height": 6, "width": 8, "y": 2, "x": 0, "type": "metric", "properties": { "period": 60, "metrics": [ [ "AWS/Lambda", "Duration", "FunctionName", "${LambdaFunctionName}", { "stat": "Minimum" } ], [ "...", { "stat": "Average" } ], [ "...", { "stat": "Maximum" } ] ], "region": "eu-west-1", "view": "timeSeries", "stacked": false, "setPeriodToTimeRange": true } }, { "height": 6, "width": 8, "y": 2, "x": 8, "type": "metric", "properties": { "period": 60, "metrics": [ [ "AWS/Lambda", "Errors", "FunctionName", "${LambdaFunctionName}", { "id": "errors", "stat": "Sum", "color": "#d13212" } ], [ ".", "Invocations", ".", ".", { "id": "invocations", "stat": "Sum", "visible": false } ], [ { "expression": "100 - 100 * errors / MAX([errors, invocations])", "label": "Success rate (%)", "id": "availability", "yAxis": "right" } ] ], "region": "eu-west-1", "title": "Error count and success rate (%)", "yAxis": { "right": { "max": 100 } }, "view": "timeSeries", "setPeriodToTimeRange": true, "stacked": false } }, { "type": "alarm", "x": 0, "y": 0, "width": 24, "height": 2, "properties": { "title": "Alarms", "alarms": [ "arn:aws:cloudwatch:eu-west-1:477792836188:alarm:${LambdaFunctionName}-Alarm-Duration", "arn:aws:cloudwatch:eu-west-1:477792836188:alarm:${LambdaFunctionName}-Alarm-Errors", "arn:aws:cloudwatch:eu-west-1:477792836188:alarm:${LambdaFunctionName}-Alarm-Invocations" ] } } ] }'
