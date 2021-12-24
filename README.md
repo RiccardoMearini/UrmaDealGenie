@@ -45,15 +45,9 @@ The Urma Deal Genie needs to connect to your 3Commas account, and it needs
 1. Tick "Bots read" and "Bots write"
 1. Take a note of the API Key and Secret, you'll need them later in the instructions
 
-# Run in the Cloud using AWS Lambda Function (preferred)
-See [README-AWS.md](./docs/README-AWS.md) for how to install and run UrmaDealGenie in Amazon Web Services (for free!)
-
-# Console Application
-See [README-CONSOLE-APPLICATION.md](./docs/README-CONSOLE-APPLICATION.md) for how to install and run UrmaDealGenie on:
-- Windows 
-- Mac OSX
-- Linux
-
-# Run in a Docker Container
-See [README-DOCKER.md](./docs/README-DOCKER.md) for how to run UrmaDealGenie in a Docker container
+# Running UrmaDealGenie
+There are several ways to run UrmaDealGenie, but the original and preferred way is AWS.
+- [Amazon Web Services](./docs/README-AWS.md) (for free!)
+- [Console Application](./docs/README-CONSOLE-APPLICATION.md) on Windows, Mac OSX or Linux
+- [Docker Container](./docs/README-DOCKER.md) for how to run UrmaDealGenie in a Docker container
 
