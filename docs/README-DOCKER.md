@@ -1,6 +1,6 @@
 # Run Urma Deal Genie in a Docker container
 These Docker commands need [Docker Desktop](https://docs.docker.com/desktop/) and [docker-compose](https://docs.docker.com/compose/install/) installed with file share access to your local drive. The commands should be run in the same folder as the `docker.env` and `appsettings.json` and `docker-compose.yml` files.
-1. Edit the docker.env file to add your APIKEY and SECRET
+1. Edit the docker.env file to add your [APIKEY and SECRET](/README.md#create-a-3commas-api-key-and-secret)
 1. Run container with app settings and environment variable files
     - **Mac/Linux**
     ```
