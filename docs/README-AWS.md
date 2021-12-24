@@ -78,3 +78,12 @@ It's useful to test rules without updating your deals. Here's how:
       - It is strongly recommended to modify the rules’ include/exclude terms fields so that the number of deals that need updating is just a few to start with.
 
 ![image](https://user-images.githubusercontent.com/13062477/147366727-0626c45f-b4d8-4614-b5cc-5c47bcd3a18b.png)
+
+## Uninstall / Delete 
+To remove UrmaDealGenie (permanently, or before installing a newer version), you simply delete the CloudFormation stack:
+1. Go to [CloudFormation](https://console.aws.amazon.com/cloudformation)
+1. Select the UrmaDealGenie (or similar name) stack 
+1. Click Delete and then Delete Stack to confirm
+
+That's it, takes a few minutes to complete deletion.
+
