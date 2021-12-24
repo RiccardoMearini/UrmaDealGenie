@@ -87,3 +87,8 @@ To remove UrmaDealGenie (permanently, or before installing a newer version), you
 
 That's it, takes a few minutes to complete deletion.
 
+## Billing
+UrmaDealGenie uses the free tier of AWS. To confirm you are not paying a penny:
+1. Go to [Cost Explorer](https://console.aws.amazon.com/cost-management/home#/custom)
+1. The graph and table below it should show $0
+
