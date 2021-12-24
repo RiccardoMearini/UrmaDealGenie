@@ -49,7 +49,7 @@ The Urma Deal Genie needs to connect to your 3Commas account, and it needs
 See [README-AWS.md](./docs/README-AWS.md) for how to install and run UrmaDealGenie in Amazon Web Services (for free!)
 
 # Console Application
-See [README-CONSOLE-APPLICATION.md](./docs/READMNE.CONSOLE-APPLICATION.md) for how to install and run UrmaDealGenie on:
+See [README-CONSOLE-APPLICATION.md](./docs/README.CONSOLE-APPLICATION.md) for how to install and run UrmaDealGenie on:
 - Windows 
 - Mac OSX
 - Linux
