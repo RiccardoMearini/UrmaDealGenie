@@ -16,8 +16,11 @@ If you got some value out of this project, please consider donating. A lot of ti
 - Contact me on Discord `Urma-Gurd#6475` if you want to donate other cryptocurrencies
 
 # Deployment Options
-You can deploy Urma Deal Genie as an AWS Lambda Function (serverless), as a .NET Core application that runs on Mac/Linux/Windows, or as a Docker container.
-![Urma Deal Genie deployment diagrams](https://user-images.githubusercontent.com/13062477/147111837-617c9ed1-47a8-43ef-a338-c40e96e5d582.png)
+You can deploy Urma Deal Genie as: 
+- an AWS Lambda Function (serverless)
+- a .NET Core application that runs on Mac/Linux/Windows
+- a Docker container
+
 The AWS Lambda function requires an AWS account (free). The application requires .NET 6.0 installed. The Docker container requires Docker Desktop installed. 
 
 # Getting Started
@@ -31,14 +34,14 @@ You will need the following (full details further below):
 
 See [UrmaDealGenie Releases](https://github.com/UrmaGurd/UrmaDealGenie/releases) for the zips, or [urmagurd/deal-genie Docker registry](https://hub.docker.com/repository/docker/urmagurd/deal-genie) for the Docker image.
 
-## 3Commas DCA Bots
+# 3Commas DCA Bots
 If you haven't already, go checkout [TradeAlt's Trading Bots](https://youtu.be/ziy-9yYTrbc) tutorial YouTube playlist. It will get you setup with DCA trading bots with a safe and effective passive income trading bot setup. I cannot stress enough how important this guy's video series is! 
 
 The Urma Deal Genie works with DCA bot deals, and uses bot names to determine which deals to apply rules to. So try to name your bots with meaningful names that represent the strategy of that bot. e.g. "TA Safer BUSD" or "BTC HODL" or "Urma 250"
 
 Checkout the [Urma DCA bot settings](docs/UrmaBotSettings.md) for a low budget, higher profit alternative to TradeAlt's settings.
 
-### Create a 3Commas API key and secret
+# Create a 3Commas API key and secret
 The Urma Deal Genie needs to connect to your 3Commas account, and it needs 
 1. Go to https://3commas.io/api_access_tokens and click "New API access token" 
 1. Give it a name like "UrmaDealGenie"
@@ -50,4 +53,6 @@ There are several ways to run UrmaDealGenie, but the original and preferred way 
 - [Amazon Web Services](./docs/README-AWS.md) (for free!)
 - [Console Application](./docs/README-CONSOLE-APPLICATION.md) on Windows, Mac OSX or Linux
 - [Docker Container](./docs/README-DOCKER.md) for how to run UrmaDealGenie in a Docker container
+
+![Urma Deal Genie deployment diagrams](https://user-images.githubusercontent.com/13062477/147111837-617c9ed1-47a8-43ef-a338-c40e96e5d582.png)
 
