@@ -76,7 +76,7 @@ namespace UrmaDealGenie
     }
 
     /// <summary>
-    /// Updates the take profit of the given deals according to the scaling and max SO count
+    /// Updates the take profit of the given deals according to the deals list, scaling and max SO count
     /// </summary>
     /// <param name="deals">List of deals to modify</param>
     /// <param name="scaleTp">Scale modifier to use on the completed SO count when setting the TP %</param>
@@ -156,7 +156,7 @@ namespace UrmaDealGenie
     }
 
     /// <summary>
-    /// Updates the take profit of the given deals according to the scaling and max SO count
+    /// Updates the take profit of the given deals according to the deals list and lookup
     /// </summary>
     /// <param name="deals">List of deals to modify</param>
     /// <param name="soRangesDictionary">Lookup of Take Profits from dictionary of Safety Order ranges</param>
@@ -169,6 +169,79 @@ namespace UrmaDealGenie
         {
           DealUpdateData update = new DealUpdateData(deal.Id);
           update.TakeProfit = soRangesDictionary[deal.CompletedSafetyOrdersCount];
+          var response = await client.UpdateDealAsync(deal.Id, update);
+        }
+      }
+      return deals.Count;
+    }
+
+    /// <summary>
+    /// Get list of deals that match the criteria for ranges of safety orders with a Active Safety Orders Count (aka MASTC).
+    /// Only return deals that match the include terms, but not the exclude terms, and that need updating.
+    /// </summary>
+    /// <param name="includeTerms">String array of terms that a bot name must contain</param>
+    /// <param name="excludeTerms">String array of terms that a bot name must NOT contain</param>
+    /// <param name="ignoreTtpDeals">Ignore TTP deals if True</param>
+    /// <param name="soRangesDictionary">Lookup of Active Safety Orders Count from dictionary of Safety Order ranges</param>
+    /// <returns>List of deals needing to be updated</returns>
+    public async Task<List<Deal>> GetMatchingDealsActiveSafetyOrdersCountRanges(
+      string[] includeTerms, string[] excludeTerms,
+      bool ignoreTtpDeals,
+      Dictionary<int, int> soRangesDictionary)
+    {
+      var response = await client.GetDealsAsync(limit: 100, dealScope: DealScope.Active, dealOrder: DealOrder.CreatedAt);
+
+      List<Deal> deals = new List<Deal>();
+      foreach (var deal in response.Data)
+      {
+        // Ignore TTP deals if configured to
+        if (!deal.IsTrailingEnabled || (deal.IsTrailingEnabled && !ignoreTtpDeals))
+        {
+          // Include deals with botnames containing any of these terms 
+          if (includeTerms[0].Length == 0 ||
+            includeTerms.Any(s => deal.BotName.Contains(s, StringComparison.CurrentCultureIgnoreCase)))
+          {
+            // Exclude deals with botnames containing any of these terms 
+            if (excludeTerms[0].Length == 0 ||
+              !excludeTerms.Any(s => deal.BotName.Contains(s, StringComparison.CurrentCultureIgnoreCase)))
+            {
+              // Lookup the closest MASTC to use from the completed safety count
+              var lookupResult = soRangesDictionary.Where(x => x.Key <= deal.CompletedSafetyOrdersCount)
+                                                   .OrderByDescending(x => x.Key);
+
+              if (lookupResult != null && lookupResult.Count() >= 1)
+              {
+                int closestSo = lookupResult.First().Key;
+                int newMastc = soRangesDictionary[closestSo];
+
+                // This deal needs updating
+                if (deal.ActiveSafetyOrdersCount != newMastc)
+                {
+                  Console.WriteLine($"Deal '{deal.BotName}':'{deal.Pair}', current SO {deal.CompletedSafetyOrdersCount}, Active Safety Order Count {deal.ActiveSafetyOrdersCount} needs updating => new value {newMastc}");
+                  deals.Add(deal);
+                }
+              }
+            }
+          }
+        }
+      }
+      return deals;
+    }
+
+    /// <summary>
+    /// Updates the Active Safety Order Count of the given deals according to the deals list and lookup
+    /// </summary>
+    /// <param name="deals">List of deals to modify</param>
+    /// <param name="soRangesDictionary">Lookup of Active Safety Order Count from dictionary of Safety Order ranges</param>
+    /// <returns>Count of updated deals</returns>
+    public async Task<int> UpdateDealsActiveSafetyOrderCountRanges(List<Deal> deals, Dictionary<int, int> soRangesDictionary)
+    {
+      if (deals.Count > 0)
+      {
+        foreach (Deal deal in deals)
+        {
+          DealUpdateData update = new DealUpdateData(deal.Id);
+          update.MaxSafetyOrdersCount = soRangesDictionary[deal.CompletedSafetyOrdersCount];
           var response = await client.UpdateDealAsync(deal.Id, update);
         }
       }

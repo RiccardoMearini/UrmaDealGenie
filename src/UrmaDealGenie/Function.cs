@@ -69,6 +69,14 @@ namespace UrmaDealGenie
 
           client = new Urma3cClient(apiKey, secret);
           Console.WriteLine($"======================");
+          Console.WriteLine($"ActiveSafetyOrdersCountRangesDealRules.Count = {dealRuleSet.ActiveSafetyOrdersCountRangesDealRules.Count}");
+          foreach (ActiveSafetyOrdersCountRangesDealRule dealRule in dealRuleSet.ActiveSafetyOrdersCountRangesDealRules)
+          {
+            var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
+            response.Add(updatedDeal);
+          }
+
+          Console.WriteLine($"======================");
           Console.WriteLine($"SafetyOrderRangesDealRules.Count = {dealRuleSet.SafetyOrderRangesDealRules.Count}");
           foreach (SafetyOrderRangesDealRule dealRule in dealRuleSet.SafetyOrderRangesDealRules)
           {
@@ -158,6 +166,59 @@ namespace UrmaDealGenie
       return response;
     }
 
+    /// Process the Active Safety Order Count ranges deal rule
+    /// <param name="dealRule">Deal rule to be processed</param>
+    /// <param name="updateDeal">If true, update this deal</param>
+    /// <returns>Result summary of the updated deal</returns>
+    public async Task<DealResponse> ProcessDealRule(ActiveSafetyOrdersCountRangesDealRule dealRule, bool updateDeal)
+    {
+      var rule = dealRule.Rule;
+      var includeTerms = dealRule.BotNameIncludeTerms;
+      var excludeTerms = dealRule.BotNameExcludeTerms;
+      var ignoreTtpDeals = dealRule.IgnoreTtpDeals;
+      var mastcRanges = dealRule.ActiveSafetyOrdersCountRanges;
+
+      Console.WriteLine($"----------------------");
+      Console.WriteLine($"RULE = {rule}");
+      Console.WriteLine($" includeTerms = {includeTerms}");
+      Console.WriteLine($" excludeTerms = {excludeTerms}");
+      Console.WriteLine($" ignoreTtpDeals = {ignoreTtpDeals}");
+
+      Dictionary<int, int> soRangesDictionary = GetActiveSafetyOrdersCountRangesDictionary(dealRule);
+      // Get list of deals needing updating
+      List<Deal> deals = await client.GetMatchingDealsActiveSafetyOrdersCountRanges(
+        includeTerms.Split(','),
+        excludeTerms.Split(','),
+        ignoreTtpDeals,
+        soRangesDictionary);
+
+      DealResponse response = new DealResponse() { Rule = rule, NeedUpdatingCount = deals.Count };
+      Console.WriteLine($"Found {response.NeedUpdatingCount} deals needing updating");
+
+      // #### Refactor this bit out to a separate method
+      if (updateDeal)
+      {
+        if (deals.Count > 0)
+        {
+          // Get a nice output of the deals to log
+          string outputDealSummaries = client.GetDealSummariesText(deals);
+          Console.WriteLine(outputDealSummaries);
+
+          if (updateDeal)
+          {
+            Console.WriteLine("Updating TP% for each deal...");
+
+            // Automatically update the take profit of each deal using the specified TP scale modifier
+            int updatedCount = await client.UpdateDealsActiveSafetyOrderCountRanges(deals, soRangesDictionary);
+            response.UpdatedCount = updatedCount;
+            Console.WriteLine($"Updated {response.UpdatedCount} deals");
+          }
+        }
+      }
+      Console.WriteLine($"");
+      return response;
+    }
+
     /// Process the Safety Order Ranges deal rule
     /// <param name="dealRule">Deal rule to be processed</param>
     /// <param name="updateDeal">If true, update this deal</param>
@@ -240,6 +301,35 @@ namespace UrmaDealGenie
       // Add the last SO level (which will include all higher SO counts)
       soRangesDictionary.Add(end, takeProfit);
       Console.WriteLine($" soRangesDictionary: {end}+ = {takeProfit}% TP");
+      return soRangesDictionary;
+    }
+
+    /// <summary>
+    /// Return a complete dictionary of safety order ranges and their Active Safety Orders Count (aka MASTC),
+    /// according to specified deal rule.  This will include each safety order level from 1 upwards.
+    /// </summary>
+    /// <param name="dealRule">The Active Safety Orders Count ranges deal rule</param>
+    /// <returns>Dictionary of safety order ranges and their take Active Safety Orders Count (aka MASTC)</returns>
+    private Dictionary<int, int> GetActiveSafetyOrdersCountRangesDictionary(ActiveSafetyOrdersCountRangesDealRule dealRule)
+    {
+      var soRangesDictionary = new Dictionary<int, int>();
+      int start = int.Parse(dealRule.ActiveSafetyOrdersCountRanges.First().Key);
+      int end = start;
+      int mastc = 0;
+      foreach (var soRange in dealRule.ActiveSafetyOrdersCountRanges.Keys)
+      {
+        end = int.Parse(soRange);
+        for (int safetyOrder = start; safetyOrder < end; safetyOrder++)
+        {
+          soRangesDictionary.Add(safetyOrder, mastc);
+          Console.WriteLine($" soRangesDictionary: {safetyOrder} = {mastc} MASTC");
+        }
+        mastc = dealRule.ActiveSafetyOrdersCountRanges[soRange];
+        start = end;
+      }
+      // Add the last SO level (which will include all higher SO counts)
+      soRangesDictionary.Add(end, mastc);
+      Console.WriteLine($" soRangesDictionary: {end}+ = {mastc} MASTC");
       return soRangesDictionary;
     }
   }
