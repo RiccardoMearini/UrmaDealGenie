@@ -42,8 +42,10 @@ An AWS CloudFormation stack is a bit like install kits for AWS. You create a "st
 1. Enter Parameters:
     - `ApiKey` (that you [created in 3Commas](/README.md#create-a-3commas-api-key-and-secret))
     - `ApiSecret` (ditto)
+    - `LambdaFunctionName` (name of function, you can change it if you want, otherwise leave it as default)
     - `S3Bucket` (name of the bucket you created)
-    - `S3PackageFilename` (name of the UrmaDealGenie zip file you uploaded to the bucket)
+    - `S3PackageFilename` (name of the UrmaDealGenie zip file you uploaded to the bucket)</br>Make sure you copy this exactly right, case sensitive and .zip extension)
+    - Optional `StatusEmailAddress` (an email address that you'd like error statuses to be sent, not required as you can use the dashboard instead to monitor)
 1. Click "Next" twice, review the stack settings
 1. Tick "I acknowledge that AWS CloudFormation..." and click "Create stack"
 1. It takes a few minutes, so wait until it says "CREATE_COMPLETE".
