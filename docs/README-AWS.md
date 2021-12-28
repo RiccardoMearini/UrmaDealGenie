@@ -65,6 +65,15 @@ This is how you can see if Urma Deal Genie is running and is successful or has e
 
 ![image](https://user-images.githubusercontent.com/13062477/147366597-484f3835-7448-4041-802a-be563b1edff2.png)
 
+## Modifying Deal Rules Configuration
+The deal rules configuration is kept in the S3 bucket file `dealrules.json`. It's not possible to edit the file in place, so you need to delete it and upload your modified rules:
+1. In a text editor on your local machine, edit the dealrules.json file that you downloaded before installation
+1. Go to [S3 Management Console](https://s3.console.aws.amazon.com/s3) and click the S3 bucket you created for your deployment files
+1. Select and delete the `dealrules.json` file (confirm as AWS ask you to)
+1. Upload the modified `dealrules.json` file from your local machine
+
+The next time UrmaDealGenie runs, it will pick up your new configuration automatically.
+
 ## Testing Rules
 It's useful to test rules without updating your deals. Here's how:
 1. Go to [Lambda services](https://console.aws.amazon.com/lambda)
@@ -80,6 +89,10 @@ It's useful to test rules without updating your deals. Here's how:
       - It is strongly recommended to modify the rules’ include/exclude terms fields so that the number of deals that need updating is just a few to start with.
 
 ![image](https://user-images.githubusercontent.com/13062477/147366727-0626c45f-b4d8-4614-b5cc-5c47bcd3a18b.png)
+
+## Troubleshooting
+- Stack fails to create due to LogGroup already existing</br>![image](https://user-images.githubusercontent.com/13062477/147569385-d5b9b506-abde-41a1-99e0-eb0ec1ee7289.png)</br>This happens when you already have a CloudWatch LogGroup. This is a known issue when upgrading from 2.3 to 2.4+ of DealGenie.</br>**Resolution** - Delete the failed stack (see below), then go to [CloudWatch LogGroups](https://console.aws.amazon.com/cloudwatch/home#logsV2:log-groups), then select and delete the existing LogGroup.
+
 
 ## Uninstall / Delete 
 To remove UrmaDealGenie (permanently, or before installing a newer version), you simply delete the CloudFormation stack:
