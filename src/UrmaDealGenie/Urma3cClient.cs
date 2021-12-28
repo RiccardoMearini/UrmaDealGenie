@@ -131,7 +131,7 @@ namespace UrmaDealGenie
             {
               // Lookup the closest TP to use from the completed safety count
               var lookupResult = soRangesDictionary.Where(x => x.Key <= deal.CompletedSafetyOrdersCount)
-                                            .OrderByDescending(x => x.Key);
+                                                   .OrderByDescending(x => x.Key);
             Console.WriteLine($"  ## '{deal.BotName}':'{deal.Pair}', SO {deal.CompletedSafetyOrdersCount}, lookupResult.Count {lookupResult.Count()}");
 
               if (lookupResult != null && lookupResult.Count() >= 1)
@@ -168,7 +168,9 @@ namespace UrmaDealGenie
         foreach (Deal deal in deals)
         {
           DealUpdateData update = new DealUpdateData(deal.Id);
-          update.TakeProfit = soRangesDictionary[deal.CompletedSafetyOrdersCount];
+          var lookupResult = soRangesDictionary.Where(x => x.Key <= deal.CompletedSafetyOrdersCount)
+                                               .OrderByDescending(x => x.Key);
+          update.TakeProfit = soRangesDictionary[lookupResult.First().Key];
           var response = await client.UpdateDealAsync(deal.Id, update);
         }
       }
