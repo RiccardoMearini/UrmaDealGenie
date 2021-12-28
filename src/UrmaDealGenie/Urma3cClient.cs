@@ -259,7 +259,7 @@ namespace UrmaDealGenie
       foreach (Deal deal in deals)
       {
         var trailingTp = deal.IsTrailingEnabled ? $"TTP({deal.TrailingDeviation})" : "TP";
-        dealSummaries.Add($"{deal.BotName}.{deal.Pair} = SO {deal.CompletedSafetyOrdersCount}, {trailingTp} {deal.TakeProfit}%");
+        dealSummaries.Add($"{deal.BotName}.{deal.Pair} = SO {deal.CompletedSafetyOrdersCount}, {trailingTp} {deal.TakeProfit}%, {deal.ActiveSafetyOrdersCount} MASTC");
       }
       return string.Join("\r\n", dealSummaries);
     }
