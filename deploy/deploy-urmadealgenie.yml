@@ -29,7 +29,7 @@ Resources:
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub "/aws/lambda/${AWS::LambdaFunctionName}"
+      LogGroupName: !Sub "/aws/lambda/${LambdaFunctionName}"
       RetentionInDays: 7 # days
 
   LambdaFunction:
