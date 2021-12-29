@@ -1,5 +1,17 @@
 {
-  "UpdateDeals": true,
+  "UpdateDeals": false,
+  "ActiveSafetyOrdersCountRangesDealRules": [
+    {
+      "Rule": "Urma MASTC 2 to 1",
+      "BotNameIncludeTerms": "urma",
+      "BotNameExcludeTerms": "",
+      "IgnoreTtpDeals": true,
+      "AllowTpReduction": true,
+      "ActiveSafetyOrdersCountRanges": {
+        "2": 1
+      }
+    }
+  ],
   "SafetyOrderRangesDealRules": [
     {
       "Rule": "Urma Low TP Exit",
@@ -9,12 +21,8 @@
       "AllowTpReduction": true,
       "SafetyOrderRanges": {
         "1": 0.1,
-        "2": 0.2,
         "3": 0.3,
-        "4": 0.4,
-        "5": 0.5,
-        "6": 0.6,
-        "7": 0.7
+        "5": 0.5
       }
     }
   ],
