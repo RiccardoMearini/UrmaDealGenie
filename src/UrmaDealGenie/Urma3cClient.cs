@@ -132,13 +132,13 @@ namespace UrmaDealGenie
               // Lookup the closest TP to use from the completed safety count
               var lookupResult = soRangesDictionary.Where(x => x.Key <= deal.CompletedSafetyOrdersCount)
                                                    .OrderByDescending(x => x.Key);
-            Console.WriteLine($"  ## '{deal.BotName}':'{deal.Pair}', SO {deal.CompletedSafetyOrdersCount}, lookupResult.Count {lookupResult.Count()}");
+              // Console.WriteLine($"  ## '{deal.BotName}':'{deal.Pair}', SO {deal.CompletedSafetyOrdersCount}, lookupResult.Count {lookupResult.Count()}");
 
               if (lookupResult != null && lookupResult.Count() >= 1)
               {
                 int closestSo = lookupResult.First().Key;
                 decimal newTp = soRangesDictionary[closestSo];
-            Console.WriteLine($"  ## '{deal.BotName}':'{deal.Pair}', SO {deal.CompletedSafetyOrdersCount}, closest SO lookup {closestSo}");
+                Console.WriteLine($"  ## '{deal.BotName}':'{deal.Pair}', SO {deal.CompletedSafetyOrdersCount}, closest SO lookup {closestSo}");
 
                 // This deal needs updating, but only if the TP needs increasing
                 // OR TP needs decreasing and we're allowed to reduce TP
@@ -215,6 +215,7 @@ namespace UrmaDealGenie
               {
                 int closestSo = lookupResult.First().Key;
                 int newMastc = soRangesDictionary[closestSo];
+                Console.WriteLine($"  ## '{deal.BotName}':'{deal.Pair}', SO {deal.CompletedSafetyOrdersCount}, closest SO lookup {closestSo}");
 
                 // This deal needs updating
                 if (deal.ActiveSafetyOrdersCount != newMastc)
@@ -243,7 +244,9 @@ namespace UrmaDealGenie
         foreach (Deal deal in deals)
         {
           DealUpdateData update = new DealUpdateData(deal.Id);
-          update.MaxSafetyOrdersCount = soRangesDictionary[deal.CompletedSafetyOrdersCount];
+          var lookupResult = soRangesDictionary.Where(x => x.Key <= deal.CompletedSafetyOrdersCount)
+                                               .OrderByDescending(x => x.Key);
+          update.MaxSafetyOrdersCount = soRangesDictionary[lookupResult.First().Key];
           var response = await client.UpdateDealAsync(deal.Id, update);
         }
       }
@@ -261,7 +264,7 @@ namespace UrmaDealGenie
       foreach (Deal deal in deals)
       {
         var trailingTp = deal.IsTrailingEnabled ? $"TTP({deal.TrailingDeviation})" : "TP";
-        dealSummaries.Add($"{deal.BotName}.{deal.Pair} = SO {deal.CompletedSafetyOrdersCount}, {trailingTp} {deal.TakeProfit}%, {deal.ActiveSafetyOrdersCount} MASTC");
+        dealSummaries.Add($"{deal.BotName}.{deal.Pair} = SO {deal.CompletedSafetyOrdersCount}, {trailingTp} {deal.TakeProfit}%, MASTC {deal.ActiveSafetyOrdersCount} ");
       }
       return string.Join("\r\n", dealSummaries);
     }
