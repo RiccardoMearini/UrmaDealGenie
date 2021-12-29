@@ -3,10 +3,9 @@
   "ActiveSafetyOrdersCountRangesDealRules": [
     {
       "Rule": "Urma MASTC 2 to 1",
-      "BotNameIncludeTerms": "urma",
+      "BotNameIncludeTerms": "ftx",
       "BotNameExcludeTerms": "",
       "IgnoreTtpDeals": true,
-      "AllowTpReduction": true,
       "ActiveSafetyOrdersCountRanges": {
         "2": 1
       }

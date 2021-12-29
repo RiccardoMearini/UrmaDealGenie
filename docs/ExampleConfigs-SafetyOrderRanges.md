@@ -46,4 +46,4 @@ If you have a bot that increases volume to cover a big drop, but when you hit th
   - make sure there are no duplicate SO entries
   - make sure the entries are numeric
   - make sure SO entries are whole numbers in quotes
-  - if a deal has a higher SO count than in the lookup (e.g. 6 or more SOs in this example), the Deal Genie will highest SO it finds (e.g. 5 in this example) 
+  - if a deal has a higher SO count than in the lookup (e.g. 6 or more SOs in this example), the Deal Genie will lookup the highest SO it finds (e.g. 5 in this example) 

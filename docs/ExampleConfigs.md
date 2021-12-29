@@ -18,6 +18,7 @@ The JSON snippet below shows the overall structure of a configuration.
 ```
 {
   "UpdateDeals": false,
+  "ActiveSafetyOrdersCountRangesDealRules": [ ... ],  
   "ScalingTakeProfitDealRules": [ ... ],
   "SafetyOrderRangesDealRules": [ ... ]
 }
@@ -28,6 +29,7 @@ There is a set of {} braces around the entire config, with at least 3 sections:
   - false means the deals that would be updated are shown but not updated. This is useful for testing your rules first.
 - [ScalingTakeProfitDealRules](ExampleConfigs-ScalingTakeProfits.md) is a rule type section that contains 1 or more rules of the same type
 - [SafetyOrderRangesDealRules](ExampleConfigs-SafetyOrderRanges.md) is a rule type section that contains 1 or more rules of the same type
+- [ActiveSafetyOrdersCountRangesDealRules](ExampleConfigs-ActiveSafetyOrdersCount.md) is a rule type section that contains 1 or more rultes of the same type
 - You must have at least 1 rule of any type
 
 ## Defining Multiple Rules
@@ -59,10 +61,20 @@ Each rule type section has rules within it.
       "Rule": "Some rule for TP lookups",
       ...
     }
+  ],
+  "ActiveSafetyOrdersCountRangesDealRules": [
+    {
+      "Rule": "MASTC reduction rule 1",
+      ...
+    },
+    {
+      "Rule": "MASTC reduction rule 2",
+      ...
+    }
   ]
 }
 ```
 ## Examples by Rule Type
 - [Scaling Take Profit Deal Rules](ExampleConfigs-ScalingTakeProfits.md)
 - [Safety Order Ranges Deal Rules](ExampleConfigs-SafetyOrderRanges.md)
-
+- [ActiveSafetyOrdersCountRangesDealRules](ExampleConfigs-ActiveSafetyOrdersCount.md) 
