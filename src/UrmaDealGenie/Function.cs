@@ -18,6 +18,7 @@ namespace UrmaDealGenie
   public class Function
   {
     private Urma3cClient client = null;
+    private BinanceDcaBot binanceClient = null;
 
     /// <summary>
     /// Modify the TP % of all deals that have botnames that match the specified include/exclude terms.
@@ -35,60 +36,62 @@ namespace UrmaDealGenie
     public async Task<List<DealResponse>> FunctionHandler(DealRuleSet dealRuleSet, ILambdaContext context)
     {
       List<DealResponse> response = new List<DealResponse>();
-      var apiKey = Environment.GetEnvironmentVariable("APIKEY");
-      var secret = Environment.GetEnvironmentVariable("SECRET");
-      var bucket = Environment.GetEnvironmentVariable("BUCKET");
+      binanceClient = new BinanceDcaBot();
+      await binanceClient.Go();
+      // var apiKey = Environment.GetEnvironmentVariable("APIKEY");
+      // var secret = Environment.GetEnvironmentVariable("SECRET");
+      // var bucket = Environment.GetEnvironmentVariable("BUCKET");
 
-      if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(secret))
-      {
-        Console.WriteLine($"ERROR: Missing APIKEY and/or SECRET environment variables");
-      }
-      else
-      {
-        Console.WriteLine($"LoadFromS3 = {dealRuleSet.LoadFromS3}");
-        if (dealRuleSet.LoadFromS3)
-        {
-          // Load deal rules configuration from S3 bucket
-          RegionEndpoint region = RegionEndpoint.GetBySystemName(Environment.GetEnvironmentVariable("AWS_REGION"));
-          string dealRulesString = await BucketFileReader.ReadObjectDataAsync(region, bucket, "dealrules.json");
-          if (!string.IsNullOrEmpty(dealRulesString))
-          {
-            dealRuleSet = JsonSerializer.Deserialize<DealRuleSet>(dealRulesString);
-          }
-          else
-          {
-            dealRuleSet = null;
-          }
-        }
+      // if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(secret))
+      // {
+      //   Console.WriteLine($"ERROR: Missing APIKEY and/or SECRET environment variables");
+      // }
+      // else
+      // {
+      //   Console.WriteLine($"LoadFromS3 = {dealRuleSet.LoadFromS3}");
+      //   if (dealRuleSet.LoadFromS3)
+      //   {
+      //     // Load deal rules configuration from S3 bucket
+      //     RegionEndpoint region = RegionEndpoint.GetBySystemName(Environment.GetEnvironmentVariable("AWS_REGION"));
+      //     string dealRulesString = await BucketFileReader.ReadObjectDataAsync(region, bucket, "dealrules.json");
+      //     if (!string.IsNullOrEmpty(dealRulesString))
+      //     {
+      //       dealRuleSet = JsonSerializer.Deserialize<DealRuleSet>(dealRulesString);
+      //     }
+      //     else
+      //     {
+      //       dealRuleSet = null;
+      //     }
+      //   }
 
-        // By now we should have a deal rule set from S3 bucket or input parameter
-        if (dealRuleSet != null)
-        {
-          var updateDeals = dealRuleSet.UpdateDeals;
-          Console.WriteLine($"updateDeals = {updateDeals}");
+      //   // By now we should have a deal rule set from S3 bucket or input parameter
+      //   if (dealRuleSet != null)
+      //   {
+      //     var updateDeals = dealRuleSet.UpdateDeals;
+      //     Console.WriteLine($"updateDeals = {updateDeals}");
 
-          client = new Urma3cClient(apiKey, secret);
-          Console.WriteLine($"======================");
-          Console.WriteLine($"SafetyOrderRangesDealRules.Count = {dealRuleSet.SafetyOrderRangesDealRules.Count}");
-          foreach (SafetyOrderRangesDealRule dealRule in dealRuleSet.SafetyOrderRangesDealRules)
-          {
-            var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
-            response.Add(updatedDeal);
-          }
+      //     client = new Urma3cClient(apiKey, secret);
+      //     Console.WriteLine($"======================");
+      //     Console.WriteLine($"SafetyOrderRangesDealRules.Count = {dealRuleSet.SafetyOrderRangesDealRules.Count}");
+      //     foreach (SafetyOrderRangesDealRule dealRule in dealRuleSet.SafetyOrderRangesDealRules)
+      //     {
+      //       var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
+      //       response.Add(updatedDeal);
+      //     }
 
-          Console.WriteLine($"======================");
-          Console.WriteLine($"ScalingTakeProfitDealRules.Count = {dealRuleSet.ScalingTakeProfitDealRules.Count}");
-          foreach (ScalingTakeProfitDealRule dealRule in dealRuleSet.ScalingTakeProfitDealRules)
-          {
-            var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
-            response.Add(updatedDeal);
-          }
-        }
-        else
-        {
-          Console.WriteLine($"Error: cannot find deal rules from input parameter or S3 bucket");
-        }
-      }
+      //     Console.WriteLine($"======================");
+      //     Console.WriteLine($"ScalingTakeProfitDealRules.Count = {dealRuleSet.ScalingTakeProfitDealRules.Count}");
+      //     foreach (ScalingTakeProfitDealRule dealRule in dealRuleSet.ScalingTakeProfitDealRules)
+      //     {
+      //       var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
+      //       response.Add(updatedDeal);
+      //     }
+      //   }
+      //   else
+      //   {
+      //     Console.WriteLine($"Error: cannot find deal rules from input parameter or S3 bucket");
+      //   }
+      // }
       return response;
     }
 
