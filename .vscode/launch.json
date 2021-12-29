@@ -15,8 +15,8 @@
       "console": "internalConsole",
       "stopAtEntry": false,
       "env": {
-        "APIKEY": "YOUR_API_KEY_HERE",
-        "SECRET":"YOUR_3COMMAS_SECRET_HERE"
+        "APIKEY": "a46f04bf046a47aeb06b057512f67f5a91c3d196d4af4ab7a3d21d3c0d38961a",
+        "SECRET":"ab61cb15e6746f518aea737f2f1d865af56ce9a0eca08be286501e803a8a833deda4b54253a07cd5d0303ab3b0bbb5caefca57ad9c4b385ca953bec99dbeded1894a4cf78418111af0d38805156ca99d9e968147c83de4e831d0e86f4d0bc9073041c8db"
       }
     },
     {

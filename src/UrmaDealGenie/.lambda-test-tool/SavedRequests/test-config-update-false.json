@@ -1,5 +1,17 @@
 {
   "UpdateDeals": false,
+  "ActiveSafetyOrdersCountRangesDealRules": [
+    {
+      "Rule": "Urma MASTC 2 to 1",
+      "BotNameIncludeTerms": "urma",
+      "BotNameExcludeTerms": "",
+      "IgnoreTtpDeals": true,
+      "ActiveSafetyOrdersCountRanges": {
+        "1": 2,
+        "3": 1
+      }
+    }
+  ],
   "SafetyOrderRangesDealRules": [
     {
       "Rule": "Ftx Urma 7",
