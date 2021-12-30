@@ -39,7 +39,8 @@ namespace UrmaDealGenie
       bool ignoreTtpDeals, bool allowTpReduction,
       decimal scaleTp, int maxSoCount)
     {
-      var response = await client.GetDealsAsync(limit: 100, dealScope: DealScope.Active, dealOrder: DealOrder.CreatedAt);
+      Console.WriteLine($"GetMatchingDealsScalingTakeProfit()");
+      var response = await GetDealsAsyncWithRetry();
       List<Deal> deals = new List<Deal>();
       if (response.IsSuccess)
       {
@@ -123,7 +124,8 @@ namespace UrmaDealGenie
       bool ignoreTtpDeals, bool allowTpReduction,
       Dictionary<int, decimal> soRangesDictionary)
     {
-      var response = await client.GetDealsAsync(limit: 100, dealScope: DealScope.Active, dealOrder: DealOrder.CreatedAt);
+      Console.WriteLine($"GetMatchingDealsSafetyOrderRanges()");
+      var response = await GetDealsAsyncWithRetry();
       List<Deal> deals = new List<Deal>();
       if (response.IsSuccess)
       {
@@ -211,7 +213,8 @@ namespace UrmaDealGenie
       bool ignoreTtpDeals,
       Dictionary<int, int> soRangesDictionary)
     {
-      var response = await client.GetDealsAsync(limit: 100, dealScope: DealScope.Active, dealOrder: DealOrder.CreatedAt);
+      Console.WriteLine($"GetMatchingDealsActiveSafetyOrdersCountRanges()");
+      var response = await GetDealsAsyncWithRetry();
       List<Deal> deals = new List<Deal>();
       if (response.IsSuccess)
       {
@@ -297,6 +300,25 @@ namespace UrmaDealGenie
         dealSummaries.Add($"{deal.BotName}.{deal.Pair} = SO {deal.CompletedSafetyOrdersCount}, {trailingTp} {deal.TakeProfit}%, MASTC {deal.ActiveSafetyOrdersCount} ");
       }
       return string.Join("\r\n", dealSummaries);
+    }
+
+    /// <summary>
+    /// Get deals within a retry loop. This is needed because sometimes 3Commas returns "Retry later" randomly
+    /// </summary>
+    /// <returns>List of deals</returns>
+    private async Task<XCommasResponse<Deal[]>> GetDealsAsyncWithRetry()
+    {
+      var response = await Retry.Do(async () => 
+      {
+        var result = await client.GetDealsAsync(limit: 100, dealScope: DealScope.Active, dealOrder: DealOrder.CreatedAt);
+        if (!result.IsSuccess)
+        {
+          Console.WriteLine($"Error: client.GetDealsAsync() - '{result.Error}''\r\n       Retry up to 3 times");
+          throw new Exception("");
+        }
+        return result;
+      }, TimeSpan.FromSeconds(1), 3);
+      return response;
     }
   }
 }
