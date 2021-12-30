@@ -9,6 +9,7 @@ _First off, **SORRY** this is so complicated!! I'm working on making this one-cl
 
 To install and configure the Urma Deal Genie console application:
 1. Download [UrmaDealGenieApp release files](https://github.com/UrmaGurd/UrmaDealGenie/releases/tag/app-2.3 ) depending on your operating system file to a local folder, e.g. `c:\UrmaDealGenieApp`
+   - `appsettings.json`
    - `dealrules.json`
    - `UrmaDealGenieApp-win10-x64.exe`, or `UrmaDealGenieApp-osx-x64` or `UrmaDealGenieApp-linux-x64`
 4. Edit `dealrules.json` file on your machine to match your bots. See [docs/ExampleConfigs.md](./docs/ExampleConfigs.md) for example configs with detailed explanations of rule settings
@@ -35,3 +36,10 @@ To install and configure the Urma Deal Genie console application:
      UrmaDealGenieApp-linux-x64
      ```
 That's it. It will run in until you stop it by pressing Ctrl+C
+
+You can put these 3 commands in a .bat file or .sh script to make it easier. Here is the Windows .bat file example below, the Mac and Linux .sh example you can work out I'm sure:
+     ```
+     set APIKEY=YOUR_API_KEY_HERE
+     set SECRET=YOUR_3COMMAS_SECRET_HERE
+     UrmaDealGenieApp-win10-x64.exe
+     ```
