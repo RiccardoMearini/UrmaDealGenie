@@ -76,6 +76,7 @@ jobs:
             ./src/UrmaDealGenieApp/UrmaDealGenieApp-osx-x64/UrmaDealGenieApp-osx-x64
             ./src/UrmaDealGenieApp/UrmaDealGenieApp-linux-x64/UrmaDealGenieApp-linux-x64
             ./src/UrmaDealGenieApp/dealrules.json
+            ./src/UrmaDealGenieApp/appsettings.json
 
       # Build and push Docker image containing Console Application
       - name: Setup Docker Buildx
