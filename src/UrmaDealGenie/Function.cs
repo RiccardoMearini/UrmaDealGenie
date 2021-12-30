@@ -64,10 +64,10 @@ namespace UrmaDealGenie
         // By now we should have a deal rule set from S3 bucket or input parameter
         if (dealRuleSet != null)
         {
+          client = new Urma3cClient(apiKey, secret);
+          await client.RetrieveAllDeals();
           var updateDeals = dealRuleSet.UpdateDeals;
           Console.WriteLine($"updateDeals = {updateDeals}");
-
-          client = new Urma3cClient(apiKey, secret);
           Console.WriteLine($"======================");
           Console.WriteLine($"ActiveSafetyOrdersCountRangesDealRules.Count = {dealRuleSet.ActiveSafetyOrdersCountRangesDealRules.Count}");
           foreach (ActiveSafetyOrdersCountRangesDealRule dealRule in dealRuleSet.ActiveSafetyOrdersCountRangesDealRules)
@@ -132,7 +132,7 @@ namespace UrmaDealGenie
       if (scaleTp > 0)
       {
         // Get list of deals needing updating
-        List<Deal> deals = await client.GetMatchingDealsScalingTakeProfit(includeTerms.Split(','), excludeTerms.Split(','), ignoreTtpDeals, allowTpReduction, scaleTp, maxSoCount);
+        List<Deal> deals = client.GetMatchingDealsScalingTakeProfit(includeTerms.Split(','), excludeTerms.Split(','), ignoreTtpDeals, allowTpReduction, scaleTp, maxSoCount);
         response.NeedUpdatingCount = deals.Count;
         Console.WriteLine($"Found {response.NeedUpdatingCount} deals needing updating");
 
@@ -186,7 +186,7 @@ namespace UrmaDealGenie
 
       Dictionary<int, int> soRangesDictionary = GetActiveSafetyOrdersCountRangesDictionary(dealRule);
       // Get list of deals needing updating
-      List<Deal> deals = await client.GetMatchingDealsActiveSafetyOrdersCountRanges(
+      List<Deal> deals = client.GetMatchingDealsActiveSafetyOrdersCountRanges(
         includeTerms.Split(','),
         excludeTerms.Split(','),
         ignoreTtpDeals,
@@ -241,7 +241,7 @@ namespace UrmaDealGenie
 
       Dictionary<int, decimal> soRangesDictionary = GetSafetyOrderRangesDictionary(dealRule);
       // Get list of deals needing updating
-      List<Deal> deals = await client.GetMatchingDealsSafetyOrderRanges(
+      List<Deal> deals = client.GetMatchingDealsSafetyOrderRanges(
         includeTerms.Split(','),
         excludeTerms.Split(','),
         ignoreTtpDeals,
