@@ -13,6 +13,9 @@ HOWEVER, the flip side is if you have MASTC set to 2 or more, and you are runnin
 
 This deal rule gives the best of both worlds, but only if your Step Scaling is > 1.
 
+## Known Issue
+tl;dr - It works, but not exactly as you expect.</br>
+Although 3Commas supports modifying a deal's MASTC, the settings doesn't take effect immediately. It only takes effect on _future_ safety orders. So if you start deals with MASTC set to 2, and then when SO 3 is reached you set it to 1, 3Commas will leave SO 4 intact, and then when SO4 is hit, only 1 active safety order will be opened. The effect is the same, but don't be surprised if you see your deal summary view still reporting they have 2 MASTC when in fact it's set to 1 on the deal.
 ### Configuration
 ```
 {
