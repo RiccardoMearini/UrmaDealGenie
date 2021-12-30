@@ -11,6 +11,7 @@ namespace UrmaDealGenie
   public class Urma3cClient
   {
     private XCommasApi client = null;
+    private List<Deal> cachedDeals = new List<Deal>();
 
     /// <summary>
     /// Constructor
@@ -34,66 +35,58 @@ namespace UrmaDealGenie
     /// <param name="scaleTp">Scale modifier to use on the completed SO count when checking the TP %</param>    
     /// <param name="maxSoCount">If more than 0, set TP based on a max SO count</param>
     /// <returns>List of deals needing to be updated</returns>
-    public async Task<List<Deal>> GetMatchingDealsScalingTakeProfit(
+    public List<Deal> GetMatchingDealsScalingTakeProfit(
       string[] includeTerms, string[] excludeTerms,
       bool ignoreTtpDeals, bool allowTpReduction,
       decimal scaleTp, int maxSoCount)
     {
       Console.WriteLine($"GetMatchingDealsScalingTakeProfit()");
-      var response = await GetDealsAsyncWithRetry();
-      List<Deal> deals = new List<Deal>();
-      if (response.IsSuccess)
+      List<Deal> dealsToUpdate = new List<Deal>();
+      foreach (var deal in cachedDeals)
       {
-        foreach (var deal in response.Data)
+        // Ignore TTP deals if configured to
+        if (!deal.IsTrailingEnabled || (deal.IsTrailingEnabled && !ignoreTtpDeals))
         {
-          // Ignore TTP deals if configured to
-          if (!deal.IsTrailingEnabled || (deal.IsTrailingEnabled && !ignoreTtpDeals))
+          // Include deals with botnames containing any of these terms 
+          if (includeTerms[0].Length == 0 ||
+            includeTerms.Any(s => deal.BotName.Contains(s, StringComparison.CurrentCultureIgnoreCase)))
           {
-            // Include deals with botnames containing any of these terms 
-            if (includeTerms[0].Length == 0 ||
-              includeTerms.Any(s => deal.BotName.Contains(s, StringComparison.CurrentCultureIgnoreCase)))
+            // Exclude deals with botnames containing any of these terms 
+            if (excludeTerms[0].Length == 0 ||
+              !excludeTerms.Any(s => deal.BotName.Contains(s, StringComparison.CurrentCultureIgnoreCase)))
             {
-              // Exclude deals with botnames containing any of these terms 
-              if (excludeTerms[0].Length == 0 ||
-                !excludeTerms.Any(s => deal.BotName.Contains(s, StringComparison.CurrentCultureIgnoreCase)))
+              if (deal.CompletedSafetyOrdersCount > 0)
               {
-                if (deal.CompletedSafetyOrdersCount > 0)
-                {
-                  // Determine the SO count to compare against - if a max SO count is specified, don't go higher than it
-                  var soCount = maxSoCount > 0 ? Math.Min(maxSoCount, deal.CompletedSafetyOrdersCount) : deal.CompletedSafetyOrdersCount;
+                // Determine the SO count to compare against - if a max SO count is specified, don't go higher than it
+                var soCount = maxSoCount > 0 ? Math.Min(maxSoCount, deal.CompletedSafetyOrdersCount) : deal.CompletedSafetyOrdersCount;
 
-                  // This deal needs updating, but only if the TP needs increasing
-                  // OR TP needs decreasing and we're allowed to reduce TP
-                  if (deal.TakeProfit < soCount * scaleTp || (soCount * scaleTp < deal.TakeProfit && allowTpReduction))
-                  {
-                    Console.WriteLine($"'{deal.BotName}':'{deal.Pair}' TP {deal.TakeProfit}% needs updating - SO {deal.CompletedSafetyOrdersCount} => Set TP {soCount * scaleTp} %");
-                    deals.Add(deal);
-                  }
+                // This deal needs updating, but only if the TP needs increasing
+                // OR TP needs decreasing and we're allowed to reduce TP
+                if (deal.TakeProfit < soCount * scaleTp || (soCount * scaleTp < deal.TakeProfit && allowTpReduction))
+                {
+                  Console.WriteLine($"'{deal.BotName}':'{deal.Pair}' TP {deal.TakeProfit}% needs updating - SO {deal.CompletedSafetyOrdersCount} => Set TP {soCount * scaleTp} %");
+                  dealsToUpdate.Add(deal);
                 }
               }
             }
           }
         }
       }
-      else
-      {
-
-      }
-      return deals;
+      return dealsToUpdate;
     }
 
     /// <summary>
     /// Updates the take profit of the given deals according to the deals list, scaling and max SO count
     /// </summary>
-    /// <param name="deals">List of deals to modify</param>
+    /// <param name="dealsToUpdate">List of deals to modify</param>
     /// <param name="scaleTp">Scale modifier to use on the completed SO count when setting the TP %</param>
     /// <param name="maxSoCount">If more than 0, set TP based on a max SO count</param>
     /// <returns>Count of updated deals</returns>
-    public async Task<int> UpdateDealsScalingTakeProfit(List<Deal> deals, decimal scaleTp, int maxSoCount)
+    public async Task<int> UpdateDealsScalingTakeProfit(List<Deal> dealsToUpdate, decimal scaleTp, int maxSoCount)
     {
-      if (deals.Count > 0)
+      if (dealsToUpdate.Count > 0)
       {
-        foreach (Deal deal in deals)
+        foreach (Deal deal in dealsToUpdate)
         {
           DealUpdateData update = new DealUpdateData(deal.Id);
           // Determine the SO count to compare against - if a max SO count is specified, don't go higher than it
@@ -106,7 +99,7 @@ namespace UrmaDealGenie
           }
         }
       }
-      return deals.Count;
+      return dealsToUpdate.Count;
     }
 
     /// <summary>
@@ -119,71 +112,63 @@ namespace UrmaDealGenie
     /// <param name="allowTpReduction">Allow new TP to be less than the current TP</param>
     /// <param name="soRangesDictionary">Lookup of Take Profits from dictionary of Safety Order ranges</param>
     /// <returns>List of deals needing to be updated</returns>
-    public async Task<List<Deal>> GetMatchingDealsSafetyOrderRanges(
+    public List<Deal> GetMatchingDealsSafetyOrderRanges(
       string[] includeTerms, string[] excludeTerms,
       bool ignoreTtpDeals, bool allowTpReduction,
       Dictionary<int, decimal> soRangesDictionary)
     {
       Console.WriteLine($"GetMatchingDealsSafetyOrderRanges()");
-      var response = await GetDealsAsyncWithRetry();
-      List<Deal> deals = new List<Deal>();
-      if (response.IsSuccess)
+      List<Deal> dealsToUpdate = new List<Deal>();
+      foreach (var deal in cachedDeals)
       {
-        foreach (var deal in response.Data)
+        // Ignore TTP deals if configured to
+        if (!deal.IsTrailingEnabled || (deal.IsTrailingEnabled && !ignoreTtpDeals))
         {
-          // Ignore TTP deals if configured to
-          if (!deal.IsTrailingEnabled || (deal.IsTrailingEnabled && !ignoreTtpDeals))
+          // Include deals with botnames containing any of these terms 
+          if (includeTerms[0].Length == 0 ||
+            includeTerms.Any(s => deal.BotName.Contains(s, StringComparison.CurrentCultureIgnoreCase)))
           {
-            // Include deals with botnames containing any of these terms 
-            if (includeTerms[0].Length == 0 ||
-              includeTerms.Any(s => deal.BotName.Contains(s, StringComparison.CurrentCultureIgnoreCase)))
+            // Exclude deals with botnames containing any of these terms 
+            if (excludeTerms[0].Length == 0 ||
+              !excludeTerms.Any(s => deal.BotName.Contains(s, StringComparison.CurrentCultureIgnoreCase)))
             {
-              // Exclude deals with botnames containing any of these terms 
-              if (excludeTerms[0].Length == 0 ||
-                !excludeTerms.Any(s => deal.BotName.Contains(s, StringComparison.CurrentCultureIgnoreCase)))
+              // Lookup the closest TP to use from the completed safety count
+              var lookupResult = soRangesDictionary.Where(x => x.Key <= deal.CompletedSafetyOrdersCount)
+                                                  .OrderByDescending(x => x.Key);
+              // Console.WriteLine($"  ## '{deal.BotName}':'{deal.Pair}', SO {deal.CompletedSafetyOrdersCount}, lookupResult.Count {lookupResult.Count()}");
+
+              if (lookupResult != null && lookupResult.Count() >= 1)
               {
-                // Lookup the closest TP to use from the completed safety count
-                var lookupResult = soRangesDictionary.Where(x => x.Key <= deal.CompletedSafetyOrdersCount)
-                                                    .OrderByDescending(x => x.Key);
-                // Console.WriteLine($"  ## '{deal.BotName}':'{deal.Pair}', SO {deal.CompletedSafetyOrdersCount}, lookupResult.Count {lookupResult.Count()}");
+                int closestSo = lookupResult.First().Key;
+                decimal newTp = soRangesDictionary[closestSo];
+                Console.WriteLine($"  ## '{deal.BotName}':'{deal.Pair}', SO {deal.CompletedSafetyOrdersCount}, closest SO lookup {closestSo}");
 
-                if (lookupResult != null && lookupResult.Count() >= 1)
+                // This deal needs updating, but only if the TP needs increasing
+                // OR TP needs decreasing and we're allowed to reduce TP
+                if (deal.TakeProfit < newTp || (newTp < deal.TakeProfit && allowTpReduction))
                 {
-                  int closestSo = lookupResult.First().Key;
-                  decimal newTp = soRangesDictionary[closestSo];
-                  Console.WriteLine($"  ## '{deal.BotName}':'{deal.Pair}', SO {deal.CompletedSafetyOrdersCount}, closest SO lookup {closestSo}");
-
-                  // This deal needs updating, but only if the TP needs increasing
-                  // OR TP needs decreasing and we're allowed to reduce TP
-                  if (deal.TakeProfit < newTp || (newTp < deal.TakeProfit && allowTpReduction))
-                  {
-                    Console.WriteLine($"Deal '{deal.BotName}':'{deal.Pair}', TP {deal.TakeProfit}% needs updating - SO {deal.CompletedSafetyOrdersCount} => new TP {newTp}%");
-                    deals.Add(deal);
-                  }
+                  Console.WriteLine($"Deal '{deal.BotName}':'{deal.Pair}', TP {deal.TakeProfit}% needs updating - SO {deal.CompletedSafetyOrdersCount} => new TP {newTp}%");
+                  dealsToUpdate.Add(deal);
                 }
               }
             }
           }
         }
       }
-      else
-      {
-        Console.WriteLine($"Error: GetMatchingDealsSafetyOrderRanges: client.GetDealsAsync() - {response.Error}");
-      }
-      return deals;
+      return dealsToUpdate;
     }
 
     /// <summary>
     /// Updates the take profit of the given deals according to the deals list and lookup
     /// </summary>
-    /// <param name="deals">List of deals to modify</param>
+    /// <param name="dealsToUpdate">List of deals to modify</param>
     /// <param name="soRangesDictionary">Lookup of Take Profits from dictionary of Safety Order ranges</param>
     /// <returns>Count of updated deals</returns>
-    public async Task<int> UpdateDealsSafetyOrderRanges(List<Deal> deals, Dictionary<int, decimal> soRangesDictionary)
+    public async Task<int> UpdateDealsSafetyOrderRanges(List<Deal> dealsToUpdate, Dictionary<int, decimal> soRangesDictionary)
     {
-      if (deals.Count > 0)
+      if (dealsToUpdate.Count > 0)
       {
-        foreach (Deal deal in deals)
+        foreach (Deal deal in dealsToUpdate)
         {
           DealUpdateData update = new DealUpdateData(deal.Id);
           var lookupResult = soRangesDictionary.Where(x => x.Key <= deal.CompletedSafetyOrdersCount)
@@ -196,7 +181,7 @@ namespace UrmaDealGenie
           }
         }
       }
-      return deals.Count;
+      return dealsToUpdate.Count;
     }
 
     /// <summary>
@@ -208,69 +193,61 @@ namespace UrmaDealGenie
     /// <param name="ignoreTtpDeals">Ignore TTP deals if True</param>
     /// <param name="soRangesDictionary">Lookup of Active Safety Orders Count from dictionary of Safety Order ranges</param>
     /// <returns>List of deals needing to be updated</returns>
-    public async Task<List<Deal>> GetMatchingDealsActiveSafetyOrdersCountRanges(
+    public List<Deal> GetMatchingDealsActiveSafetyOrdersCountRanges(
       string[] includeTerms, string[] excludeTerms,
       bool ignoreTtpDeals,
       Dictionary<int, int> soRangesDictionary)
     {
       Console.WriteLine($"GetMatchingDealsActiveSafetyOrdersCountRanges()");
-      var response = await GetDealsAsyncWithRetry();
-      List<Deal> deals = new List<Deal>();
-      if (response.IsSuccess)
+      List<Deal> dealsToUpdate = new List<Deal>();
+      foreach (var deal in cachedDeals)
       {
-        foreach (var deal in response.Data)
+        // Ignore TTP deals if configured to
+        if (!deal.IsTrailingEnabled || (deal.IsTrailingEnabled && !ignoreTtpDeals))
         {
-          // Ignore TTP deals if configured to
-          if (!deal.IsTrailingEnabled || (deal.IsTrailingEnabled && !ignoreTtpDeals))
+          // Include deals with botnames containing any of these terms 
+          if (includeTerms[0].Length == 0 ||
+            includeTerms.Any(s => deal.BotName.Contains(s, StringComparison.CurrentCultureIgnoreCase)))
           {
-            // Include deals with botnames containing any of these terms 
-            if (includeTerms[0].Length == 0 ||
-              includeTerms.Any(s => deal.BotName.Contains(s, StringComparison.CurrentCultureIgnoreCase)))
+            // Exclude deals with botnames containing any of these terms 
+            if (excludeTerms[0].Length == 0 ||
+              !excludeTerms.Any(s => deal.BotName.Contains(s, StringComparison.CurrentCultureIgnoreCase)))
             {
-              // Exclude deals with botnames containing any of these terms 
-              if (excludeTerms[0].Length == 0 ||
-                !excludeTerms.Any(s => deal.BotName.Contains(s, StringComparison.CurrentCultureIgnoreCase)))
+              // Lookup the closest MASTC to use from the completed safety count
+              var lookupResult = soRangesDictionary.Where(x => x.Key <= deal.CompletedSafetyOrdersCount)
+                                                   .OrderByDescending(x => x.Key);
+
+              if (lookupResult != null && lookupResult.Count() >= 1)
               {
-                // Lookup the closest MASTC to use from the completed safety count
-                var lookupResult = soRangesDictionary.Where(x => x.Key <= deal.CompletedSafetyOrdersCount)
-                                                     .OrderByDescending(x => x.Key);
+                int closestSo = lookupResult.First().Key;
+                int newMastc = soRangesDictionary[closestSo];
+                Console.WriteLine($"  ## '{deal.BotName}':'{deal.Pair}', SO {deal.CompletedSafetyOrdersCount}, closest SO lookup {closestSo}");
 
-                if (lookupResult != null && lookupResult.Count() >= 1)
+                // This deal needs updating
+                if (deal.ActiveSafetyOrdersCount != newMastc)
                 {
-                  int closestSo = lookupResult.First().Key;
-                  int newMastc = soRangesDictionary[closestSo];
-                  Console.WriteLine($"  ## '{deal.BotName}':'{deal.Pair}', SO {deal.CompletedSafetyOrdersCount}, closest SO lookup {closestSo}");
-
-                  // This deal needs updating
-                  if (deal.ActiveSafetyOrdersCount != newMastc)
-                  {
-                    Console.WriteLine($"Deal '{deal.BotName}':'{deal.Pair}', current SO {deal.CompletedSafetyOrdersCount}, Active Safety Order Count {deal.ActiveSafetyOrdersCount} needs updating => new value {newMastc}");
-                    deals.Add(deal);
-                  }
+                  Console.WriteLine($"Deal '{deal.BotName}':'{deal.Pair}', current SO {deal.CompletedSafetyOrdersCount}, Active Safety Order Count {deal.ActiveSafetyOrdersCount} needs updating => new value {newMastc}");
+                  dealsToUpdate.Add(deal);
                 }
               }
             }
           }
         }
       }
-      else
-      {
-        Console.WriteLine($"Error: GetMatchingDealsActiveSafetyOrdersCountRanges: client.GetDealsAsync() - {response.Error}");
-      }
-      return deals;
+      return dealsToUpdate;
     }
 
     /// <summary>
     /// Updates the Active Safety Order Count of the given deals according to the deals list and lookup
     /// </summary>
-    /// <param name="deals">List of deals to modify</param>
+    /// <param name="dealsToUpdate">List of deals to modify</param>
     /// <param name="soRangesDictionary">Lookup of Active Safety Order Count from dictionary of Safety Order ranges</param>
     /// <returns>Count of updated deals</returns>
-    public async Task<int> UpdateDealsActiveSafetyOrderCountRanges(List<Deal> deals, Dictionary<int, int> soRangesDictionary)
+    public async Task<int> UpdateDealsActiveSafetyOrderCountRanges(List<Deal> dealsToUpdate, Dictionary<int, int> soRangesDictionary)
     {
-      if (deals.Count > 0)
+      if (dealsToUpdate.Count > 0)
       {
-        foreach (Deal deal in deals)
+        foreach (Deal deal in dealsToUpdate)
         {
           DealUpdateData update = new DealUpdateData(deal.Id);
           var lookupResult = soRangesDictionary.Where(x => x.Key <= deal.CompletedSafetyOrdersCount)
@@ -283,18 +260,18 @@ namespace UrmaDealGenie
           }
         }
       }
-      return deals.Count;
+      return dealsToUpdate.Count;
     }
 
     /// <summary>
     /// Returns a string containing a summary of the given deals 
     /// </summary>
-    /// <param name="deals">List of deals to return a summary of</param>
+    /// <param name="dealsToSummarise">List of deals to return a summary of</param>
     /// <returns>Summary of deals as a string</returns>
-    public string GetDealSummariesText(List<Deal> deals)
+    public string GetDealSummariesText(List<Deal> dealsToSummarise)
     {
       var dealSummaries = new List<string>();
-      foreach (Deal deal in deals)
+      foreach (Deal deal in dealsToSummarise)
       {
         var trailingTp = deal.IsTrailingEnabled ? $"TTP({deal.TrailingDeviation})" : "TP";
         dealSummaries.Add($"{deal.BotName}.{deal.Pair} = SO {deal.CompletedSafetyOrdersCount}, {trailingTp} {deal.TakeProfit}%, MASTC {deal.ActiveSafetyOrdersCount} ");
@@ -303,22 +280,29 @@ namespace UrmaDealGenie
     }
 
     /// <summary>
-    /// Get deals within a retry loop. This is needed because sometimes 3Commas returns "Retry later" randomly
+    /// Get deals if they haven't been retrieved already and cache them
     /// </summary>
-    /// <returns>List of deals</returns>
-    private async Task<XCommasResponse<Deal[]>> GetDealsAsyncWithRetry()
+    public async Task RetrieveAllDeals()
     {
-      var response = await Retry.Do(async () => 
+      if (this.cachedDeals == null || this.cachedDeals.Count == 0)
       {
-        var result = await client.GetDealsAsync(limit: 100, dealScope: DealScope.Active, dealOrder: DealOrder.CreatedAt);
-        if (!result.IsSuccess)
+        var response = await client.GetDealsAsync(limit: 100, dealScope: DealScope.Active, dealOrder: DealOrder.CreatedAt);
+        if (response.IsSuccess)
         {
-          Console.WriteLine($"Error: client.GetDealsAsync() - '{result.Error}''\r\n       Retry up to 3 times");
-          throw new Exception("");
+          Console.WriteLine($"Retrieved {response.Data.Length} deals from 3Commas");
+          foreach (var deal in response.Data)
+          {
+            var trailingTp = deal.IsTrailingEnabled ? $"TTP({deal.TrailingDeviation})" : "TP";
+            Console.WriteLine($"{deal.BotName}.{deal.Pair} = SO {deal.CompletedSafetyOrdersCount}, {trailingTp} {deal.TakeProfit}%, MASTC {deal.ActiveSafetyOrdersCount}");
+            this.cachedDeals.Add(deal);
+          }
+          Console.WriteLine($"Cached {cachedDeals.Count} deals");
         }
-        return result;
-      }, TimeSpan.FromSeconds(1), 3);
-      return response;
+        else
+        {
+          Console.WriteLine($"Error: GetDeals(): client.GetDealsAsync() - {response.Error}");
+        }
+      }
     }
   }
 }
