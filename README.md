@@ -32,7 +32,7 @@ You will need the following (full details further below):
    - `UrmaDealGenieApp-win10-64.exe`, `UrmaDealGenieApp-osx-64` or `UrmaDealGenieApp-linux-x64` console application, or
    - `urmagurd/deal-genie:{ver}` Docker image
 
-See [UrmaDealGenie Releases](https://github.com/UrmaGurd/UrmaDealGenie/releases) for the zips, or [urmagurd/deal-genie Docker registry](https://hub.docker.com/repository/docker/urmagurd/deal-genie) for the Docker image.
+See [UrmaDealGenie Releases](https://github.com/UrmaGurd/UrmaDealGenie/releases) for the release artifacts, or [urmagurd/deal-genie Docker registry](https://hub.docker.com/repository/docker/urmagurd/deal-genie) for the Docker image.
 
 # 3Commas DCA Bots
 If you haven't already, go checkout [TradeAlt's Trading Bots](https://youtu.be/ziy-9yYTrbc) tutorial YouTube playlist. It will get you setup with DCA trading bots with a safe and effective passive income trading bot setup. I cannot stress enough how important this guy's video series is! 
