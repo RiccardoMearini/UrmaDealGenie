@@ -38,8 +38,8 @@ To install and configure the Urma Deal Genie console application:
 That's it. It will run in until you stop it by pressing Ctrl+C
 
 You can put these 3 commands in a .bat file or .sh script to make it easier. Here is the Windows .bat file example below, the Mac and Linux .sh example you can work out I'm sure:
-     ```
-     set APIKEY=YOUR_API_KEY_HERE
-     set SECRET=YOUR_3COMMAS_SECRET_HERE
-     UrmaDealGenieApp-win10-x64.exe
-     ```
+ ```
+ set APIKEY=YOUR_API_KEY_HERE
+ set SECRET=YOUR_3COMMAS_SECRET_HERE
+ UrmaDealGenieApp-win10-x64.exe
+ ```
