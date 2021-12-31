@@ -46,6 +46,7 @@ These are the rules which UrmaDealGenie currently supports:
 - [Scaling Take Profits](docs/ExampleConfigs-ScalingTakeProfits.md) (set Take Profit % based on a scaling factor applied to the current Safety Order)
 - [Safety Order Ranges](docs/ExampleConfigs-SafetyOrderRanges.md) (set Take Profit % based on a Safety Order ranges)
 - [Active Safety Orders Count Ranges](docs/ExampleConfigs-ActiveSafetyOrdersCount.md) (aka set Max Active Safety Trade Count MASTC based on Safety Order ranges)
+
 See the [example deal rules](docs/ExampleConfigs.md) for more details of how to define rules.
 
 # Create a 3Commas API key and secret
