@@ -1,8 +1,8 @@
 # Build lambda package
-dotnet lambda package UrmaDealGenieAWSLambdaPackage.zip -pl ../src/UrmaDealGenie
+dotnet lambda package UrmaDealGenieAWS-localbuild.zip -pl ../src/UrmaDealGenie
 
 # Upload lambda package to S3
-aws s3 cp UrmaDealGenieAWSLambdaPackage.zip s3://urmagurd/
+aws s3 cp UrmaDealGenieAWS-localbuild.zip s3://urmagurd/
 aws s3 cp deploy-urmadealgenie.yml s3://urmagurd/
 aws s3 cp ../src/UrmaDealGenieApp/dealrules.json s3://urmagurd/
 
