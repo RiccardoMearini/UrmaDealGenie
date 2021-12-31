@@ -3,6 +3,8 @@
       "ApiKey": "YOUR_API_KEY_HERE",
       "ApiSecret": "YOUR_3COMMAS_SECRET_HERE",
       "S3Bucket": "urmagurd",
-      "S3PackageFilename": "UrmaDealGenieAWSLambdaPackage.zip"
+      "S3PackageFilename": "UrmaDealGenieAWSLambdaPackage.zip",
+      "StatusEmailAddress": "",
+      "LambdaFunctionName": "UrmaDealGEnie"
   }
 }
