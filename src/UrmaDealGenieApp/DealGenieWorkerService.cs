@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 public class DealGenieWorkerService : IntervalWorkerService
 {
-  private DealRuleSet? input;
+  private DealRuleSet? dealRuleSet;
   private string dealRulesFilename = "";
   private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions { WriteIndented = true };
 
@@ -26,11 +26,11 @@ public class DealGenieWorkerService : IntervalWorkerService
     if (this.dealRulesFilename != null)
     {
       // Deal settings can be changed and used without restarting worker
-      this.input = JsonSerializer.Deserialize<DealRuleSet>(File.ReadAllText(this.dealRulesFilename));
-      if (this.input != null)
+      this.dealRuleSet = JsonSerializer.Deserialize<DealRuleSet>(File.ReadAllText(this.dealRulesFilename));
+      if (this.dealRuleSet != null)
       {
-        Function dealGenie = new Function();
-        List<DealResponse> response = await dealGenie.FunctionHandler(this.input, null);
+        Urma3cClient client = new Urma3cClient();
+        List<DealResponse> response = await client.ProcessRules(dealRuleSet);
         Logger.LogInformation(JsonSerializer.Serialize<List<DealResponse>>(response, this.jsonOptions));
       }
     }

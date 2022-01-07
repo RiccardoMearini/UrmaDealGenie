@@ -1,17 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Text.Json;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-
 using Xunit;
-using Amazon.Lambda.Core;
-using Amazon.Lambda.TestUtilities;
 
 using UrmaDealGenie;
-using System.IO;
 
 namespace UrmaDealGenie.Tests
 {
@@ -22,8 +16,7 @@ namespace UrmaDealGenie.Tests
     {
       Console.WriteLine($"TEST: Test_Function_ProcessDeals ...");
       // Invoke the lambda function and confirm it loads and processes the deal rules.
-      var function = new Function();
-      var context = new TestLambdaContext();
+      Urma3cClient client = new Urma3cClient();
       var text = File.ReadAllText("dealrules.json");
       Console.WriteLine($"{text}");
 
@@ -31,9 +24,9 @@ namespace UrmaDealGenie.Tests
       Console.WriteLine($"apiKey = {apiKey.Substring(0, 10)}... ");
 
       Console.WriteLine($"Calling function handler...");
-      var input = JsonSerializer.Deserialize<DealRuleSet>(text);
-      var dealResponses = await function.FunctionHandler(input, context);
-      Assert.Equal(5, dealResponses.Count);
+      var dealRuleSet = JsonSerializer.Deserialize<DealRuleSet>(text);
+      List<DealResponse> response = await client.ProcessRules(dealRuleSet);
+      Assert.Equal(5, response.Count);
     }
 
     [Fact]
@@ -42,8 +35,7 @@ namespace UrmaDealGenie.Tests
       Console.WriteLine($"TEST: Test_Function_CallNoEnvVarsSet ...");
 
       // Invoke the lambda function without environment variables set for the apikey and secret.
-      var function = new Function();
-      var context = new TestLambdaContext();
+      Urma3cClient client = new Urma3cClient();
       var text = File.ReadAllText("dealrules.json");
 
       var apiKey = Environment.GetEnvironmentVariable("APIKEY");
@@ -53,9 +45,9 @@ namespace UrmaDealGenie.Tests
       Environment.SetEnvironmentVariable("SECRET", null);
 
       Console.WriteLine($"Calling function handler...");
-      var input = JsonSerializer.Deserialize<DealRuleSet>(text);
-      var dealResponses = await function.FunctionHandler(input, context);
-      Assert.Equal(0, dealResponses.Count);
+      var dealRuleSet = JsonSerializer.Deserialize<DealRuleSet>(text);
+      List<DealResponse> response = await client.ProcessRules(dealRuleSet);
+      Assert.Equal(0, response.Count);
 
       // Reset environment variables back to what they were before this test
       Environment.SetEnvironmentVariable("APIKEY", apiKey);
