@@ -15,19 +15,11 @@ namespace UrmaDealGenie
     /// <summary>
     /// Constructor
     /// </summary>
-    public Urma3cClient()
+    /// <param name="apiKey">The 3Commas API key</param>
+    /// <param name="secret">The 3Commas secret</param>
+    public Urma3cClient(string apiKey, string secret)
     {
-      var secret = Environment.GetEnvironmentVariable("SECRET");
-      var apiKey = Environment.GetEnvironmentVariable("APIKEY");
-
-      if (string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(secret))
-      {
-        Console.WriteLine($"ERROR: Missing APIKEY and/or SECRET environment variables");
-      }
-      else
-      {
-        client = new XCommasApi(apiKey, secret);
-      }
+      client = new XCommasApi(apiKey, secret);
     }
 
     /// <summary>

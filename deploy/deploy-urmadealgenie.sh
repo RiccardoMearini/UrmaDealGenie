@@ -1,4 +1,5 @@
 # Run from deploy folder
+#  source ./deploy-urmadealgenie.sh
 
 # Restore all project dependencies
 dotnet restore ..

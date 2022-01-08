@@ -29,7 +29,9 @@ public class DealGenieWorkerService : IntervalWorkerService
       this.dealRuleSet = JsonSerializer.Deserialize<DealRuleSet>(File.ReadAllText(this.dealRulesFilename));
       if (this.dealRuleSet != null)
       {
-        Urma3cClient client = new Urma3cClient();
+        var apiKey = Environment.GetEnvironmentVariable("APIKEY");
+        var secret = Environment.GetEnvironmentVariable("SECRET");
+        Urma3cClient client = new Urma3cClient(apiKey, secret);
         List<DealResponse> response = await client.ProcessRules(dealRuleSet);
         Logger.LogInformation(JsonSerializer.Serialize<List<DealResponse>>(response, this.jsonOptions));
       }
