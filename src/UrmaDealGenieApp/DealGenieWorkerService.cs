@@ -32,8 +32,8 @@ public class DealGenieWorkerService : IntervalWorkerService
         var apiKey = Environment.GetEnvironmentVariable("APIKEY");
         var secret = Environment.GetEnvironmentVariable("SECRET");
         Urma3cClient client = new Urma3cClient(apiKey, secret);
-        LunarcrushAltrank crush = new LunarcrushAltrank(client.XCommasClient);
-        LunarcrushAltrankPairRule rule = new LunarcrushAltrankPairRule() 
+        LunarCrushAltRank crush = new LunarCrushAltRank(client.XCommasClient);
+        LunarCrushAltRankPairRule rule = new LunarCrushAltRankPairRule() 
         {
           BotId = 7665821,
           MaxPairCount = 10,

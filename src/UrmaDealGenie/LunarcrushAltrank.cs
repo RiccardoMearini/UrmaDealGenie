@@ -3,43 +3,45 @@ using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using XCommas.Net;
-using XCommas.Net.Objects;
 
 namespace UrmaDealGenie
 {
-  public class LunarcrushAltrankPairRule
+  public class LunarCrushAltRankPairRule
   {
     public int BotId {get; set;}
     public int MaxPairCount {get; set;}
   }
  
-  public class LunarcrushAltrank
+  public class LunarCrushAltRank
   {
     private XCommasApi client = null;
     private HttpClient httpClient = null;
 
-    public LunarcrushAltrank(XCommasApi client)
+    public LunarCrushAltRank(XCommasApi client)
     {
       this.client = client;
       this.httpClient = new HttpClient();
       this.httpClient.BaseAddress = new Uri("https://api.lunarcrush.com");      
     }
 
-    public async Task ProcessRule(LunarcrushAltrankPairRule pairRule)
+    public async Task ProcessRule(LunarCrushAltRankPairRule pairRule)
     {
       var data = await GetLunarCrushData();
-      Console.WriteLine($"Data: {data}");
     }
 
-    public async Task<string> GetLunarCrushData() // #### move to a separate helper class? Maybe there's gitlab wrapper project?
+    public async Task<Root> GetLunarCrushData() // #### move to a separate helper class? Maybe there's gitlab wrapper project?
     {
       var request = GetHttpRequest();
       Console.WriteLine($"{this.GetType().Name} - RequestUri: {request.RequestUri}");
 
       var result = httpClient.SendAsync(request);
-      return await result.Result.Content.ReadAsStringAsync();
+      var data = await result.Result.Content.ReadAsStringAsync();
+      Console.WriteLine($"Data: {data}");
+      Root myDeserializedClass = JsonSerializer.Deserialize<Root>(data);
+      return myDeserializedClass;
     }
     
     private static HttpRequestMessage GetHttpRequest()
@@ -58,6 +60,5 @@ namespace UrmaDealGenie
       Console.WriteLine($"GetHttpRequest: {request.RequestUri}");
       return request;
     }
-
   }
 }
