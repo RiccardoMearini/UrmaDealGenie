@@ -37,7 +37,7 @@ Resources:
     Properties:
       FunctionName: !Sub '${LambdaFunctionName}'
       Description: Urma Deal Genie lambda function
-      Handler: "UrmaDealGenie::UrmaDealGenieLambda.Function::FunctionHandler"
+      Handler: "UrmaDealGenie::UrmaDealGenie.Function::FunctionHandler"
       Runtime: dotnetcore3.1
       Role: !GetAtt 'LambdaExecutionRole.Arn'
       Timeout: 120

@@ -1,15 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
 using Xunit;
 
-using UrmaDealGenie;
-
 namespace UrmaDealGenie.Tests
 {
-  public class FunctionTest
+  public class UrmaDealGenieTest
   {
     [Fact]
     public async void Test_Function_ProcessDeals()

@@ -1,11 +1,9 @@
-# Set 'ver' env variable, and run this command with from solution root:
-#   source ./build/build.sh
-
 # Restore all project dependencies
 dotnet restore
 
 # Build AWS Package
-dotnet lambda package UrmaDealGenieAWS-${ver}.zip -pl ./src/UrmaDealGenie
+dotnet lambda package UrmaDealGenieAWS-localbuild.zip -pl ./src/UrmaDealGenie
+# see ./deploy/deploy-urmadealgenie.sh for how to deploy with AWS CLI
 
 # Build .NET Core Application Packages (Win & Mac & Linux)
 dotnet publish ./src/UrmaDealGenieApp -c Release \
