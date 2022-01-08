@@ -32,8 +32,15 @@ public class DealGenieWorkerService : IntervalWorkerService
         var apiKey = Environment.GetEnvironmentVariable("APIKEY");
         var secret = Environment.GetEnvironmentVariable("SECRET");
         Urma3cClient client = new Urma3cClient(apiKey, secret);
-        List<DealResponse> response = await client.ProcessRules(dealRuleSet);
-        Logger.LogInformation(JsonSerializer.Serialize<List<DealResponse>>(response, this.jsonOptions));
+        LunarcrushAltrank crush = new LunarcrushAltrank(client.XCommasClient);
+        LunarcrushAltrankPairRule rule = new LunarcrushAltrankPairRule() 
+        {
+          BotId = 7665821,
+          MaxPairCount = 10,
+        };
+        await crush.ProcessRule(rule);
+        // List<DealResponse> response = await client.ProcessRules(dealRuleSet);
+        // Logger.LogInformation(JsonSerializer.Serialize<List<DealResponse>>(response, this.jsonOptions));
       }
     }
     Logger.LogInformation("Deal Genie completed");

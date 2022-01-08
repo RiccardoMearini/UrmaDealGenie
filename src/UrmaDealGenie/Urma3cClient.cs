@@ -9,7 +9,7 @@ namespace UrmaDealGenie
 {
   public class Urma3cClient
   {
-    private XCommasApi client = null;
+    public XCommasApi XCommasClient = null;
     private List<Deal> cachedDeals = new List<Deal>();
 
     /// <summary>
@@ -19,7 +19,7 @@ namespace UrmaDealGenie
     /// <param name="secret">The 3Commas secret</param>
     public Urma3cClient(string apiKey, string secret)
     {
-      client = new XCommasApi(apiKey, secret);
+      XCommasClient = new XCommasApi(apiKey, secret);
     }
 
     /// <summary>
@@ -361,7 +361,7 @@ namespace UrmaDealGenie
           // Determine the SO count to compare against - if a max SO count is specified, don't go higher than it
           var soCount = maxSoCount > 0 ? Math.Min(maxSoCount, deal.CompletedSafetyOrdersCount) : deal.CompletedSafetyOrdersCount;
           update.TakeProfit = soCount * scaleTp;
-          var response = await client.UpdateDealAsync(deal.Id, update);
+          var response = await XCommasClient.UpdateDealAsync(deal.Id, update);
           if (!response.IsSuccess)
           {
             Console.WriteLine($"Error: UpdateDealsScalingTakeProfit: UpdateDealAsync() - {response.Error}");
@@ -443,7 +443,7 @@ namespace UrmaDealGenie
           var lookupResult = soRangesDictionary.Where(x => x.Key <= deal.CompletedSafetyOrdersCount)
                                                .OrderByDescending(x => x.Key);
           update.TakeProfit = soRangesDictionary[lookupResult.First().Key];
-          var response = await client.UpdateDealAsync(deal.Id, update);
+          var response = await XCommasClient.UpdateDealAsync(deal.Id, update);
           if (!response.IsSuccess)
           {
             Console.WriteLine($"Error: UpdateDealsSafetyOrderRanges: UpdateDealAsync() - {response.Error}");
@@ -522,7 +522,7 @@ namespace UrmaDealGenie
           var lookupResult = soRangesDictionary.Where(x => x.Key <= deal.CompletedSafetyOrdersCount)
                                                .OrderByDescending(x => x.Key);
           update.MaxSafetyOrdersCount = soRangesDictionary[lookupResult.First().Key];
-          var response = await client.UpdateDealAsync(deal.Id, update);
+          var response = await XCommasClient.UpdateDealAsync(deal.Id, update);
           if (!response.IsSuccess)
           {
             Console.WriteLine($"Error: UpdateDealsActiveSafetyOrderCountRanges: UpdateDealAsync() - {response.Error}");
@@ -555,7 +555,7 @@ namespace UrmaDealGenie
     {
       if (this.cachedDeals == null || this.cachedDeals.Count == 0)
       {
-        var response = await client.GetDealsAsync(limit: 100, dealScope: DealScope.Active, dealOrder: DealOrder.CreatedAt);
+        var response = await XCommasClient.GetDealsAsync(limit: 100, dealScope: DealScope.Active, dealOrder: DealOrder.CreatedAt);
         if (response.IsSuccess)
         {
           Console.WriteLine($"Retrieved {response.Data.Length} deals from 3Commas");
