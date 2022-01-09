@@ -4,98 +4,240 @@ using System.Text.Json.Serialization;
 
 namespace UrmaDealGenie
 {
-  // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
+  public class Root
+  {
+    [JsonPropertyName("config")]
+    public Config Config { get; set; }
+
+    [JsonPropertyName("data")]
+    public List<Datum> Data { get; set; }
+  }
+
   public class Btc
   {
-    public int id { get; set; }
-    public string s { get; set; }
-    public string n { get; set; }
-    public double p { get; set; }
-    public int p_btc { get; set; }
-    public double v { get; set; }
-    public double vt { get; set; }
-    public double pc { get; set; }
-    public double pch { get; set; }
-    public long mc { get; set; }
-    public double gs { get; set; }
-    public int ss { get; set; }
-    public double @as { get; set; }
-    public int bl { get; set; }
-    public int br { get; set; }
-    public int sp { get; set; }
-    public int na { get; set; }
-    public int md { get; set; }
-    public int t { get; set; }
-    public int r { get; set; }
-    public int yt { get; set; }
-    public int sv { get; set; }
-    public int u { get; set; }
-    public int c { get; set; }
-    public double sd { get; set; }
-    public double d { get; set; }
-    public double cr { get; set; }
-    public int acr { get; set; }
-    public int tc { get; set; }
-    public string categories { get; set; }
+    [JsonPropertyName("id")]
+    public double Id { get; set; }
+
+    [JsonPropertyName("s")]
+    public string S { get; set; }
+
+    [JsonPropertyName("n")]
+    public string N { get; set; }
+
+    [JsonPropertyName("p")]
+    public double P { get; set; }
+
+    [JsonPropertyName("p_btc")]
+    public double PBtc { get; set; }
+
+    [JsonPropertyName("v")]
+    public double V { get; set; }
+
+    [JsonPropertyName("vt")]
+    public double Vt { get; set; }
+
+    [JsonPropertyName("pc")]
+    public double Pc { get; set; }
+
+    [JsonPropertyName("pch")]
+    public double Pch { get; set; }
+
+    [JsonPropertyName("mc")]
+    public long Mc { get; set; }
+
+    [JsonPropertyName("gs")]
+    public double Gs { get; set; }
+
+    [JsonPropertyName("ss")]
+    public double Ss { get; set; }
+
+    [JsonPropertyName("as")]
+    public double As { get; set; }
+
+    [JsonPropertyName("bl")]
+    public double Bl { get; set; }
+
+    [JsonPropertyName("br")]
+    public double Br { get; set; }
+
+    [JsonPropertyName("sp")]
+    public double Sp { get; set; }
+
+    [JsonPropertyName("na")]
+    public double Na { get; set; }
+
+    [JsonPropertyName("md")]
+    public double Md { get; set; }
+
+    [JsonPropertyName("t")]
+    public double T { get; set; }
+
+    [JsonPropertyName("r")]
+    public double R { get; set; }
+
+    [JsonPropertyName("yt")]
+    public double Yt { get; set; }
+
+    [JsonPropertyName("sv")]
+    public double Sv { get; set; }
+
+    [JsonPropertyName("u")]
+    public double U { get; set; }
+
+    [JsonPropertyName("c")]
+    public double C { get; set; }
+
+    [JsonPropertyName("sd")]
+    public double Sd { get; set; }
+
+    [JsonPropertyName("d")]
+    public double D { get; set; }
+
+    [JsonPropertyName("cr")]
+    public double Cr { get; set; }
+
+    [JsonPropertyName("acr")]
+    public double Acr { get; set; }
+
+    [JsonPropertyName("tc")]
+    public double Tc { get; set; }
+
+    [JsonPropertyName("categories")]
+    public string Categories { get; set; }
   }
 
   public class Config
   {
-    public string data { get; set; }
-    public string desc { get; set; }
-    public int limit { get; set; }
-    public string sort { get; set; }
-    public string type { get; set; }
-    public int page { get; set; }
-    public int total_rows { get; set; }
-    public Btc btc { get; set; }
+    [JsonPropertyName("data")]
+    public string Data { get; set; }
+
+    [JsonPropertyName("desc")]
+    public string Desc { get; set; }
+
+    [JsonPropertyName("limit")]
+    public double Limit { get; set; }
+
+    [JsonPropertyName("sort")]
+    public string Sort { get; set; }
+
+    [JsonPropertyName("type")]
+    public string Type { get; set; }
+
+    [JsonPropertyName("page")]
+    public double Page { get; set; }
+
+    [JsonPropertyName("total_rows")]
+    public double TotalRows { get; set; }
+
+    [JsonPropertyName("btc")]
+    public Btc Btc { get; set; }
   }
 
   public class Datum
   {
-    public int id { get; set; }
-    public string s { get; set; }
-    public string n { get; set; }
-    public double p { get; set; }
-    public double? p_btc { get; set; }
-    public double v { get; set; }
-    public double vt { get; set; }
-    public double pc { get; set; }
-    public double pch { get; set; }
-    public int mc { get; set; }
-    public double gs { get; set; }
-    public int ss { get; set; }
-    public double @as { get; set; }
-    public int bl { get; set; }
-    public int br { get; set; }
-    public int sp { get; set; }
-    public int na { get; set; }
-    public int md { get; set; }
-    public int t { get; set; }
-    public int r { get; set; }
-    public int yt { get; set; }
-    public int sv { get; set; }
-    public int u { get; set; }
-    public int? c { get; set; }
-    public int sd { get; set; }
-    public double d { get; set; }
-    public double cr { get; set; }
-    public int acr { get; set; }
-    public int tc { get; set; }
-    public string categories { get; set; }
-    public int? e2 { get; set; }
-    public int? df { get; set; }
-    public int? nft { get; set; }
-    public int? bsc { get; set; }
-    public int? sc { get; set; }
-    public int? dot { get; set; }
+    [JsonPropertyName("id")]
+    public double Id { get; set; }
+
+    [JsonPropertyName("s")]
+    public string S { get; set; }
+
+    [JsonPropertyName("n")]
+    public string N { get; set; }
+
+    [JsonPropertyName("p")]
+    public double P { get; set; }
+
+    [JsonPropertyName("p_btc")]
+    public double? PBtc { get; set; }
+
+    [JsonPropertyName("v")]
+    public double V { get; set; }
+
+    [JsonPropertyName("vt")]
+    public double Vt { get; set; }
+
+    [JsonPropertyName("pc")]
+    public double Pc { get; set; }
+
+    [JsonPropertyName("pch")]
+    public double Pch { get; set; }
+
+    [JsonPropertyName("mc")]
+    public double Mc { get; set; }
+
+    [JsonPropertyName("gs")]
+    public double Gs { get; set; }
+
+    [JsonPropertyName("ss")]
+    public double Ss { get; set; }
+
+    [JsonPropertyName("as")]
+    public double As { get; set; }
+
+    [JsonPropertyName("bl")]
+    public double Bl { get; set; }
+
+    [JsonPropertyName("br")]
+    public double Br { get; set; }
+
+    [JsonPropertyName("sp")]
+    public double Sp { get; set; }
+
+    [JsonPropertyName("na")]
+    public double Na { get; set; }
+
+    [JsonPropertyName("md")]
+    public double Md { get; set; }
+
+    [JsonPropertyName("t")]
+    public double T { get; set; }
+
+    [JsonPropertyName("r")]
+    public double R { get; set; }
+
+    [JsonPropertyName("yt")]
+    public double Yt { get; set; }
+
+    [JsonPropertyName("sv")]
+    public double Sv { get; set; }
+
+    [JsonPropertyName("u")]
+    public double U { get; set; }
+
+    [JsonPropertyName("c")]
+    public double? C { get; set; }
+
+    [JsonPropertyName("sd")]
+    public double Sd { get; set; }
+
+    [JsonPropertyName("d")]
+    public double D { get; set; }
+
+    [JsonPropertyName("acr")]
+    public double Acr { get; set; }
+
+    [JsonPropertyName("tc")]
+    public double Tc { get; set; }
+
+    [JsonPropertyName("categories")]
+    public string Categories { get; set; }
+
+    [JsonPropertyName("bsc")]
+    public double Bsc { get; set; }
+
+    [JsonPropertyName("df")]
+    public double? Df { get; set; }
+
+    [JsonPropertyName("nft")]
+    public double? Nft { get; set; }
+
+    [JsonPropertyName("cr")]
+    public double? Cr { get; set; }
+
+    [JsonPropertyName("e2")]
+    public double? E2 { get; set; }
+
+    [JsonPropertyName("zil")]
+    public double? Zil { get; set; }
   }
-
-  public class Root
-  {
-    public Config config { get; set; }
-    public List<Datum> data { get; set; }
-  }
-
-
 }

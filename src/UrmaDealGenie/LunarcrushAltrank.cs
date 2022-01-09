@@ -17,18 +17,21 @@ namespace UrmaDealGenie
  
   public class LunarCrushAltRank
   {
-    private XCommasApi client = null;
+    private XCommasApi xcommasClient = null;
     private HttpClient httpClient = null;
 
     public LunarCrushAltRank(XCommasApi client)
     {
-      this.client = client;
+      this.xcommasClient = client;
       this.httpClient = new HttpClient();
       this.httpClient.BaseAddress = new Uri("https://api.lunarcrush.com");      
     }
 
     public async Task ProcessRule(LunarCrushAltRankPairRule pairRule)
     {
+      var bot = this.xcommasClient.ShowBot(pairRule.BotId);
+      var pairs = bot.Data.Pairs;
+      Console.WriteLine($"Pairs: {pairs}");
       var data = await GetLunarCrushData();
     }
 
