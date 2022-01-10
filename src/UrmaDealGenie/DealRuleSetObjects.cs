@@ -5,10 +5,11 @@ using System.Collections.Generic;
 /// </summary>
 namespace UrmaDealGenie
 {
-  public class DealRuleSet
+  public class DealRuleSet // #### consider renaming as this is not just dealrules not, it's bots too
   {
     public bool LoadFromS3 { get; set; }
     public bool UpdateDeals { get; set; }
+    public List<LunarCrushAltRankPairRule> LunarCrushAltRankPairRules { get; set; }
     public List<ScalingTakeProfitDealRule> ScalingTakeProfitDealRules { get; set; }
     public List<SafetyOrderRangesDealRule> SafetyOrderRangesDealRules { get; set; }
     public List<ActiveSafetyOrdersCountRangesDealRule> ActiveSafetyOrdersCountRangesDealRules { get; set; }

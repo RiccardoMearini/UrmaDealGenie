@@ -1,5 +1,15 @@
 {
   "UpdateDeals": false,
+  "LunarCrushAltRankPairRules": [
+    {
+      "BotId": 7703182,
+      "MaxPairCount": 10
+    },
+    {
+      "BotId": 7709633,
+      "MaxPairCount": 7
+    }   
+  ],
   "ActiveSafetyOrdersCountRangesDealRules": [
     {
       "Rule": "Urma MASTC 2 to 1",

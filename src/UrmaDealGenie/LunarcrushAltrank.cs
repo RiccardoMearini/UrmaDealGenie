@@ -28,17 +28,21 @@ namespace UrmaDealGenie
       this.httpClient.BaseAddress = new Uri("https://api.lunarcrush.com");
     }
 
-    public async Task ProcessRule(LunarCrushAltRankPairRule pairRule)
+    public async Task ProcessRules(List<LunarCrushAltRankPairRule> dealRuleSet)
     {
       // Get blacklist pairs
       var blacklistPairs = GetBlacklist().Result;
 
       // Get lunarcrush data
       var lunarCrushData = await GetLunarCrushData(); // #### enum param for altrank/gs etc?
-      Console.WriteLine($"Retrieved '{lunarCrushData.Config.Sort}' LunarCrush data, top {lunarCrushData.Data.Count} pairs");
 
+      dealRuleSet.ForEach(async rule => await UpdateBotWithBestPairs(rule, lunarCrushData, blacklistPairs));
+    }
+
+    public async Task UpdateBotWithBestPairs(LunarCrushAltRankPairRule dealRule, Root lunarCrushData, string[] blacklistPairs)
+    {
       // Get the bot and current pairs
-      var bot = this.xCommasClient.ShowBot(pairRule.BotId).Data;
+      var bot = this.xCommasClient.ShowBot(dealRule.BotId).Data;
       var pairs = bot.Pairs;
       var pairBase = bot.Pairs[0].Split('_')[0];
       var minVolBtc24h = bot.MinVolumeBtc24h;
@@ -76,7 +80,7 @@ namespace UrmaDealGenie
           if (String.IsNullOrEmpty(Array.Find(blacklistPairs, blacklistPair => blacklistPair == pair)))
           {
             newPairs.Add(pair);
-            if (newPairs.Count == pairRule.MaxPairCount) break;
+            if (newPairs.Count == dealRule.MaxPairCount) break;
           }
         }
       }
@@ -139,6 +143,7 @@ namespace UrmaDealGenie
       var response = await result.Result.Content.ReadAsStringAsync();
       //Console.WriteLine($"DEBUG: Data: {response}");
       Root lunarCrushData = JsonSerializer.Deserialize<Root>(response);
+      Console.WriteLine($"Retrieved '{lunarCrushData.Config.Sort}' LunarCrush data, top {lunarCrushData.Data.Count} pairs");
       return lunarCrushData;
     }
 
