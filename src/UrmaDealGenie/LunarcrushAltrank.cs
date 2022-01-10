@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using XCommas.Net;
+using XCommas.Net.Objects;
 
 namespace UrmaDealGenie
 {
@@ -17,27 +18,57 @@ namespace UrmaDealGenie
  
   public class LunarCrushAltRank
   {
-    private XCommasApi xcommasClient = null;
+    private XCommasApi xCommasClient = null;
     private HttpClient httpClient = null;
 
     public LunarCrushAltRank(XCommasApi client)
     {
-      this.xcommasClient = client;
+      this.xCommasClient = client;
       this.httpClient = new HttpClient();
       this.httpClient.BaseAddress = new Uri("https://api.lunarcrush.com");      
     }
 
     public async Task ProcessRule(LunarCrushAltRankPairRule pairRule)
     {
-      var bot = this.xcommasClient.ShowBot(pairRule.BotId);
-      var pairs = bot.Data.Pairs;
+      // Get the bot and current pairs
+      var bot = this.xCommasClient.ShowBot(pairRule.BotId).Data;
+      var pairs = bot.Pairs;
       Console.WriteLine($"Pairs: {pairs}");
-      var data = await GetLunarCrushData();
+      
+      // Get the bot's exchange from account
+      var exchange = await GetExchange(bot.AccountId);
+
+      // Get pairs on this exchange
+      var exchangePairs = await this.xCommasClient.GetMarketPairsAsync(exchange.MarketCode);
+
+      // tickerlist = get_threecommas_market(logger, api, marketcode)
+      // logger.info("Bot exchange: %s (%s)" % (exchange, marketcode))
+
+      // Get lunarcrush data
+      var data = await GetLunarCrushData(); // #### enum param for altrank/gs etc?
+
+
     }
 
-    public async Task<Root> GetLunarCrushData() // #### move to a separate helper class? Maybe there's gitlab wrapper project?
+    private async Task<Account> GetExchange(int accountId)
     {
-      var request = GetHttpRequest();
+      this.xCommasClient.UserMode = UserMode.Real;
+      var accounts = await this.xCommasClient.GetAccountsAsync();
+      var exchange = Array.Find(accounts.Data, account => account.Id == accountId);
+      if (exchange == null)
+      {
+        this.xCommasClient.UserMode = UserMode.Paper;
+        accounts = await this.xCommasClient.GetAccountsAsync();
+        exchange = Array.Find(accounts.Data, account => account.Id == accountId);
+      }
+      Console.WriteLine($"GetExchange - found {this.xCommasClient.UserMode} exchange '{exchange.Name}'");
+
+      return exchange;
+    }  
+
+    private async Task<Root> GetLunarCrushData() // #### move to a separate helper class? Maybe there's gitlab wrapper project?
+    {
+      var request = BuildLunarCrushHttpRequest();
       Console.WriteLine($"{this.GetType().Name} - RequestUri: {request.RequestUri}");
 
       var result = httpClient.SendAsync(request);
@@ -47,7 +78,7 @@ namespace UrmaDealGenie
       return myDeserializedClass;
     }
     
-    private static HttpRequestMessage GetHttpRequest()
+    private static HttpRequestMessage BuildLunarCrushHttpRequest()
     {
       var queryString = new Dictionary<string, string>()
       { // Altrank
