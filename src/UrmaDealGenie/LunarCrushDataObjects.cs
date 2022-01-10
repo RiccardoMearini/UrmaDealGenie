@@ -4,19 +4,31 @@ using System.Text.Json.Serialization;
 
 namespace UrmaDealGenie
 {
-  public class Root
+  // Root myDeserializedClass = JsonSerializer.Deserialize<Root>(myJsonResponse);
+  public class Config
   {
-    [JsonPropertyName("config")]
-    public Config Config { get; set; }
-
     [JsonPropertyName("data")]
-    public List<Datum> Data { get; set; }
+    public string Data { get; set; }
+
+    [JsonPropertyName("limit")]
+    public string Limit { get; set; }
+
+    [JsonPropertyName("sort")]
+    public string Sort { get; set; }
+
+    [JsonPropertyName("type")]
+    public string Type { get; set; }
   }
 
-  public class Btc
+  public class Datum
   {
+    // Augmented properties
+    public int Rank { get; set; }
+    public double VolBTC { get; set; }
+
+    // De-serializable properties
     [JsonPropertyName("id")]
-    public double Id { get; set; }
+    public int Id { get; set; }
 
     [JsonPropertyName("s")]
     public string S { get; set; }
@@ -43,49 +55,49 @@ namespace UrmaDealGenie
     public double Pch { get; set; }
 
     [JsonPropertyName("mc")]
-    public long Mc { get; set; }
+    public object Mc { get; set; }
 
     [JsonPropertyName("gs")]
     public double Gs { get; set; }
 
     [JsonPropertyName("ss")]
-    public double Ss { get; set; }
+    public int Ss { get; set; }
 
     [JsonPropertyName("as")]
     public double As { get; set; }
 
     [JsonPropertyName("bl")]
-    public double Bl { get; set; }
+    public int Bl { get; set; }
 
     [JsonPropertyName("br")]
-    public double Br { get; set; }
+    public int Br { get; set; }
 
     [JsonPropertyName("sp")]
-    public double Sp { get; set; }
+    public int Sp { get; set; }
 
     [JsonPropertyName("na")]
-    public double Na { get; set; }
+    public int Na { get; set; }
 
     [JsonPropertyName("md")]
-    public double Md { get; set; }
+    public int Md { get; set; }
 
     [JsonPropertyName("t")]
-    public double T { get; set; }
+    public int T { get; set; }
 
     [JsonPropertyName("r")]
-    public double R { get; set; }
+    public int R { get; set; }
 
     [JsonPropertyName("yt")]
-    public double Yt { get; set; }
+    public int Yt { get; set; }
 
     [JsonPropertyName("sv")]
-    public double Sv { get; set; }
+    public int Sv { get; set; }
 
     [JsonPropertyName("u")]
-    public double U { get; set; }
+    public int U { get; set; }
 
     [JsonPropertyName("c")]
-    public double C { get; set; }
+    public int C { get; set; }
 
     [JsonPropertyName("sd")]
     public double Sd { get; set; }
@@ -97,152 +109,39 @@ namespace UrmaDealGenie
     public double Cr { get; set; }
 
     [JsonPropertyName("acr")]
-    public double Acr { get; set; }
+    public int Acr { get; set; }
 
     [JsonPropertyName("tc")]
-    public double Tc { get; set; }
+    public int Tc { get; set; }
 
     [JsonPropertyName("categories")]
     public string Categories { get; set; }
-  }
-
-  public class Config
-  {
-    [JsonPropertyName("data")]
-    public string Data { get; set; }
-
-    [JsonPropertyName("desc")]
-    public string Desc { get; set; }
-
-    [JsonPropertyName("limit")]
-    public double Limit { get; set; }
-
-    [JsonPropertyName("sort")]
-    public string Sort { get; set; }
-
-    [JsonPropertyName("type")]
-    public string Type { get; set; }
-
-    [JsonPropertyName("page")]
-    public double Page { get; set; }
-
-    [JsonPropertyName("total_rows")]
-    public double TotalRows { get; set; }
-
-    [JsonPropertyName("btc")]
-    public Btc Btc { get; set; }
-  }
-
-  public class Datum
-  {
-    // Augmented properties
-    public int Rank { get; set; }
-    public double VolBTC { get; set; }
-
-    // De-serializable properties
-    [JsonPropertyName("id")]
-    public double Id { get; set; }
-
-    [JsonPropertyName("s")]
-    public string S { get; set; }
-
-    [JsonPropertyName("n")]
-    public string N { get; set; }
-
-    [JsonPropertyName("p")]
-    public double P { get; set; }
-
-    [JsonPropertyName("p_btc")]
-    public double? PBtc { get; set; }
-
-    [JsonPropertyName("v")]
-    public double V { get; set; }
-
-    [JsonPropertyName("vt")]
-    public double Vt { get; set; }
-
-    [JsonPropertyName("pc")]
-    public double Pc { get; set; }
-
-    [JsonPropertyName("pch")]
-    public double Pch { get; set; }
-
-    [JsonPropertyName("mc")]
-    public double Mc { get; set; }
-
-    [JsonPropertyName("gs")]
-    public double Gs { get; set; }
-
-    [JsonPropertyName("ss")]
-    public double Ss { get; set; }
-
-    [JsonPropertyName("as")]
-    public double As { get; set; }
-
-    [JsonPropertyName("bl")]
-    public double Bl { get; set; }
-
-    [JsonPropertyName("br")]
-    public double Br { get; set; }
-
-    [JsonPropertyName("sp")]
-    public double Sp { get; set; }
-
-    [JsonPropertyName("na")]
-    public double Na { get; set; }
-
-    [JsonPropertyName("md")]
-    public double Md { get; set; }
-
-    [JsonPropertyName("t")]
-    public double T { get; set; }
-
-    [JsonPropertyName("r")]
-    public double R { get; set; }
-
-    [JsonPropertyName("yt")]
-    public double Yt { get; set; }
-
-    [JsonPropertyName("sv")]
-    public double Sv { get; set; }
-
-    [JsonPropertyName("u")]
-    public double U { get; set; }
-
-    [JsonPropertyName("c")]
-    public double? C { get; set; }
-
-    [JsonPropertyName("sd")]
-    public double Sd { get; set; }
-
-    [JsonPropertyName("d")]
-    public double D { get; set; }
-
-    [JsonPropertyName("acr")]
-    public double Acr { get; set; }
-
-    [JsonPropertyName("tc")]
-    public double Tc { get; set; }
-
-    [JsonPropertyName("categories")]
-    public string Categories { get; set; }
-
-    [JsonPropertyName("bsc")]
-    public double Bsc { get; set; }
 
     [JsonPropertyName("df")]
-    public double? Df { get; set; }
-
-    [JsonPropertyName("nft")]
-    public double? Nft { get; set; }
-
-    [JsonPropertyName("cr")]
-    public double? Cr { get; set; }
+    public int Df { get; set; }
 
     [JsonPropertyName("e2")]
-    public double? E2 { get; set; }
+    public int E2 { get; set; }
 
-    [JsonPropertyName("zil")]
-    public double? Zil { get; set; }
+    [JsonPropertyName("bsc")]
+    public int? Bsc { get; set; }
+
+    [JsonPropertyName("nft")]
+    public int? Nft { get; set; }
+
+    [JsonPropertyName("sc")]
+    public int? Sc { get; set; }
+
+    [JsonPropertyName("dot")]
+    public int? Dot { get; set; }
+  }
+
+  public class Root
+  {
+    [JsonPropertyName("config")]
+    public Config Config { get; set; }
+
+    [JsonPropertyName("data")]
+    public List<Datum> Data { get; set; }
   }
 }

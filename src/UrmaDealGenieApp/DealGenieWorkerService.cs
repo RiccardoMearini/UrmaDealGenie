@@ -35,7 +35,7 @@ public class DealGenieWorkerService : IntervalWorkerService
         LunarCrushAltRank crush = new LunarCrushAltRank(client.XCommasClient);
         LunarCrushAltRankPairRule rule = new LunarCrushAltRankPairRule() 
         {
-          BotId = 7665821,
+          BotId = 7703182,
           MaxPairCount = 10,
         };
         await crush.ProcessRule(rule);

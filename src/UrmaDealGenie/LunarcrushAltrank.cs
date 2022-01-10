@@ -12,10 +12,10 @@ namespace UrmaDealGenie
 {
   public class LunarCrushAltRankPairRule
   {
-    public int BotId {get; set;}
-    public int MaxPairCount {get; set;}
+    public int BotId { get; set; }
+    public int MaxPairCount { get; set; }
   }
- 
+
   public class LunarCrushAltRank
   {
     private XCommasApi xCommasClient = null;
@@ -25,18 +25,29 @@ namespace UrmaDealGenie
     {
       this.xCommasClient = client;
       this.httpClient = new HttpClient();
-      this.httpClient.BaseAddress = new Uri("https://api.lunarcrush.com");      
+      this.httpClient.BaseAddress = new Uri("https://api.lunarcrush.com");
     }
 
     public async Task ProcessRule(LunarCrushAltRankPairRule pairRule)
     {
+      // Get blacklist pairs
+      var blacklistPairs = GetBlacklist().Result;
+
+      // Get lunarcrush data
+      var lunarCrushData = await GetLunarCrushData(); // #### enum param for altrank/gs etc?
+      Console.WriteLine($"Retrieved '{lunarCrushData.Config.Sort}' LunarCrush data, top {lunarCrushData.Data.Count} pairs");
+
       // Get the bot and current pairs
       var bot = this.xCommasClient.ShowBot(pairRule.BotId).Data;
       var pairs = bot.Pairs;
       var pairBase = bot.Pairs[0].Split('_')[0];
+      var minVolBtc24h = bot.MinVolumeBtc24h;
 
-      Console.WriteLine($"Bot {bot.Id} ({bot.Name}) current pairs: {String.Join(", ", pairs)}");
-      
+      Console.WriteLine($"Bot {bot.Id} ({bot.Name}) current pairs:");
+      Console.WriteLine($"  {String.Join(", ", pairs)}");
+      Console.WriteLine($"Pair base currency: {pairBase}");
+      Console.WriteLine($"Minimum 24h Volume in BTC: {minVolBtc24h}");
+
       // Get supported pairs on the bot's exchange
       var exchange = await GetExchange(bot.AccountId);
       var exchangePairs = (await this.xCommasClient.GetMarketPairsAsync(exchange.MarketCode)).Data;
@@ -46,12 +57,9 @@ namespace UrmaDealGenie
       var btcUsdtPrice3C = (await this.xCommasClient.GetCurrencyRateAsync("USDT_BTC", exchange.MarketCode)).Data.Last;
       Console.WriteLine($"BTC price on {exchange.MarketCode} exchange ${btcUsdtPrice3C}");
 
-      // Get lunarcrush data
-      var lunarCrushData = await GetLunarCrushData(); // #### enum param for altrank/gs etc?
-      
       var newPairs = new List<string>();
       int rank = 1;
-      foreach(Datum crushData in lunarCrushData.Data)
+      foreach (Datum crushData in lunarCrushData.Data)
       {
         crushData.Rank = rank++;
         crushData.VolBTC = crushData.V / (double)btcUsdtPrice3C;
@@ -60,17 +68,41 @@ namespace UrmaDealGenie
         var pair = FormatPair(coin, pairBase, exchange.MarketCode);
         var acrScore = crushData.Acr;
         var volBtc = crushData.VolBTC;
-        if (volBtc != 0)
+
+        // #### make 1500 a maxAcrScore config variable
+        if (volBtc != 0 && acrScore <= 1500 &&
+          !String.IsNullOrEmpty(Array.Find(exchangePairs, exchangePair => exchangePair == pair)))
         {
-          if (acrScore <= 1500) // #### make 1500 a maxAcrScore config variable
+          if (String.IsNullOrEmpty(Array.Find(blacklistPairs, blacklistPair => blacklistPair == pair)))
           {
-            if (Array.Find(exchangePairs, exchangePair => exchangePair == pair).Length > 0)
-            {
-              newPairs.Add(pair);
-            }
+            newPairs.Add(pair);
+            if (newPairs.Count == pairRule.MaxPairCount) break;
           }
         }
       }
+      await UpdateBot(bot, newPairs.ToArray());
+    }
+
+    private async Task<XCommasResponse<Bot>> UpdateBot(Bot bot, string[] newPairs)
+    {
+      XCommasResponse<Bot> response = null;
+      var containSamePairs = new HashSet<string>(newPairs).SetEquals(bot.Pairs);
+      if (containSamePairs)
+      {
+        Console.WriteLine($"Bot already has best pair selection, no action");
+      }
+      else
+      {
+        Console.WriteLine($"New pairs:");
+        Console.WriteLine($"  {String.Join(", ", newPairs)}");
+        var updateData = new BotUpdateData(bot)
+        {
+          MaxActiveDeals = newPairs.Length,
+          Pairs = newPairs,
+        };
+        response = await this.xCommasClient.UpdateBotAsync(bot.Id, updateData);
+      }
+      return response;
     }
 
     private async Task<Account> GetExchange(int accountId)
@@ -87,18 +119,26 @@ namespace UrmaDealGenie
       Console.WriteLine($"Found {this.xCommasClient.UserMode} account '{exchange.Name}' ({exchange.MarketCode})");
 
       return exchange;
-    }  
+    }
+
+    private async Task<string[]> GetBlacklist()
+    {
+      // #### get blacklist from the dealrule, and combine with the 3C blacklist (or override as an option?)
+      var response = (await this.xCommasClient.GetBotPairsBlackListAsync()).Data;
+      Console.WriteLine($"Blacklist pairs: {String.Join(", ", response.Pairs)}");
+
+      return response.Pairs;
+    }
 
     private async Task<Root> GetLunarCrushData()
     {
       var request = BuildLunarCrushHttpRequest();
-      Console.WriteLine($"{this.GetType().Name} - RequestUri: {httpClient.BaseAddress}{request.RequestUri}");
+      // Console.WriteLine($"DEBUG: {this.GetType().Name} - RequestUri: {httpClient.BaseAddress}{request.RequestUri}");
 
       var result = httpClient.SendAsync(request);
       var response = await result.Result.Content.ReadAsStringAsync();
-      Console.WriteLine($"DEBUG: Data: {response}");
+      //Console.WriteLine($"DEBUG: Data: {response}");
       Root lunarCrushData = JsonSerializer.Deserialize<Root>(response);
-      Console.WriteLine($"Retrieved '{lunarCrushData.Config.Sort}' LunarCrush data, top {lunarCrushData.Data.Count} pairs, BTC price ${lunarCrushData.Config.Btc.P:F2}");
       return lunarCrushData;
     }
 
@@ -111,10 +151,10 @@ namespace UrmaDealGenie
         pair = $"{pairBase}_{coin}-PERP";
       else
         pair = $"{pairBase}_{coin}";
-      Console.WriteLine($"Formatted pair: {pair}");
+      //Console.WriteLine($"DEBUG: Formatted pair: {pair}");
       return pair;
     }
-    
+
     private static HttpRequestMessage BuildLunarCrushHttpRequest()
     {
       var queryString = new Dictionary<string, string>()
@@ -125,7 +165,7 @@ namespace UrmaDealGenie
         { "limit", "100" },
         { "key", "" },
         // { "desc", True}, #### Param only applicable for galaxyscore
-      };      
+      };
       var request = new HttpRequestMessage(HttpMethod.Post, QueryHelpers.AddQueryString("v2", queryString));
       request.Headers.Add("Accept", "application/json");
       //Console.WriteLine($"DEBUG: GetHttpRequest: {request.RequestUri}");
