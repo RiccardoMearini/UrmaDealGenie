@@ -135,6 +135,11 @@ namespace UrmaDealGenie
 
   public class Datum
   {
+    // Augmented properties
+    public int Rank { get; set; }
+    public double VolBTC { get; set; }
+
+    // De-serializable properties
     [JsonPropertyName("id")]
     public double Id { get; set; }
 

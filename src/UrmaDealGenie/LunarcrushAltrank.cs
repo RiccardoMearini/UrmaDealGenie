@@ -33,21 +33,44 @@ namespace UrmaDealGenie
       // Get the bot and current pairs
       var bot = this.xCommasClient.ShowBot(pairRule.BotId).Data;
       var pairs = bot.Pairs;
-      Console.WriteLine($"Pairs: {pairs}");
+      var pairBase = bot.Pairs[0].Split('_')[0];
+
+      Console.WriteLine($"Bot {bot.Id} ({bot.Name}) current pairs: {String.Join(", ", pairs)}");
       
-      // Get the bot's exchange from account
+      // Get supported pairs on the bot's exchange
       var exchange = await GetExchange(bot.AccountId);
+      var exchangePairs = (await this.xCommasClient.GetMarketPairsAsync(exchange.MarketCode)).Data;
+      Console.WriteLine($"Found {exchangePairs.Length} pairs on {exchange.MarketCode} exchange");
 
-      // Get pairs on this exchange
-      var exchangePairs = await this.xCommasClient.GetMarketPairsAsync(exchange.MarketCode);
-
-      // tickerlist = get_threecommas_market(logger, api, marketcode)
-      // logger.info("Bot exchange: %s (%s)" % (exchange, marketcode))
+      // BTC price in USDT
+      var btcUsdtPrice3C = (await this.xCommasClient.GetCurrencyRateAsync("USDT_BTC", exchange.MarketCode)).Data.Last;
+      Console.WriteLine($"BTC price on {exchange.MarketCode} exchange ${btcUsdtPrice3C}");
 
       // Get lunarcrush data
-      var data = await GetLunarCrushData(); // #### enum param for altrank/gs etc?
+      var lunarCrushData = await GetLunarCrushData(); // #### enum param for altrank/gs etc?
+      
+      var newPairs = new List<string>();
+      int rank = 1;
+      foreach(Datum crushData in lunarCrushData.Data)
+      {
+        crushData.Rank = rank++;
+        crushData.VolBTC = crushData.V / (double)btcUsdtPrice3C;
 
-
+        var coin = crushData.S;
+        var pair = FormatPair(coin, pairBase, exchange.MarketCode);
+        var acrScore = crushData.Acr;
+        var volBtc = crushData.VolBTC;
+        if (volBtc != 0)
+        {
+          if (acrScore <= 1500) // #### make 1500 a maxAcrScore config variable
+          {
+            if (Array.Find(exchangePairs, exchangePair => exchangePair == pair).Length > 0)
+            {
+              newPairs.Add(pair);
+            }
+          }
+        }
+      }
     }
 
     private async Task<Account> GetExchange(int accountId)
@@ -61,21 +84,35 @@ namespace UrmaDealGenie
         accounts = await this.xCommasClient.GetAccountsAsync();
         exchange = Array.Find(accounts.Data, account => account.Id == accountId);
       }
-      Console.WriteLine($"GetExchange - found {this.xCommasClient.UserMode} exchange '{exchange.Name}'");
+      Console.WriteLine($"Found {this.xCommasClient.UserMode} account '{exchange.Name}' ({exchange.MarketCode})");
 
       return exchange;
     }  
 
-    private async Task<Root> GetLunarCrushData() // #### move to a separate helper class? Maybe there's gitlab wrapper project?
+    private async Task<Root> GetLunarCrushData()
     {
       var request = BuildLunarCrushHttpRequest();
-      Console.WriteLine($"{this.GetType().Name} - RequestUri: {request.RequestUri}");
+      Console.WriteLine($"{this.GetType().Name} - RequestUri: {httpClient.BaseAddress}{request.RequestUri}");
 
       var result = httpClient.SendAsync(request);
-      var data = await result.Result.Content.ReadAsStringAsync();
-      Console.WriteLine($"Data: {data}");
-      Root myDeserializedClass = JsonSerializer.Deserialize<Root>(data);
-      return myDeserializedClass;
+      var response = await result.Result.Content.ReadAsStringAsync();
+      Console.WriteLine($"DEBUG: Data: {response}");
+      Root lunarCrushData = JsonSerializer.Deserialize<Root>(response);
+      Console.WriteLine($"Retrieved '{lunarCrushData.Config.Sort}' LunarCrush data, top {lunarCrushData.Data.Count} pairs, BTC price ${lunarCrushData.Config.Btc.P:F2}");
+      return lunarCrushData;
+    }
+
+    private static string FormatPair(string coin, string pairBase, string marketcode)
+    {
+      string pair;
+      if (marketcode == "binance_futures")
+        pair = $"{pairBase}_{coin}{pairBase}";
+      else if (marketcode == "ftx_futures")
+        pair = $"{pairBase}_{coin}-PERP";
+      else
+        pair = $"{pairBase}_{coin}";
+      Console.WriteLine($"Formatted pair: {pair}");
+      return pair;
     }
     
     private static HttpRequestMessage BuildLunarCrushHttpRequest()
@@ -87,11 +124,11 @@ namespace UrmaDealGenie
         { "sort", "acr" }, // acr = altrank, gs = galaxyscore
         { "limit", "100" },
         { "key", "" },
-        { "desc", "False"}, // false for altrank, true for galaxyscore
+        // { "desc", True}, #### Param only applicable for galaxyscore
       };      
       var request = new HttpRequestMessage(HttpMethod.Post, QueryHelpers.AddQueryString("v2", queryString));
       request.Headers.Add("Accept", "application/json");
-      Console.WriteLine($"GetHttpRequest: {request.RequestUri}");
+      //Console.WriteLine($"DEBUG: GetHttpRequest: {request.RequestUri}");
       return request;
     }
   }
