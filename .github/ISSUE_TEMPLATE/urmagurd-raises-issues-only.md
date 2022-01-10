@@ -1,16 +1,8 @@
 ---
-name: UrmaGurd raises issues only
-about: Ask public not to create issues
+name: ONLY URMAGURD SUBMITS NEW ISSUES
+about: Please do not submit new issues to this repository. I don't have time to manage support cases in Github. I am one person creating a tool for myself, that others can benefit from.  DM me on Discord if you run into problems with the tool or want to requests a new feature.
 title: ''
 labels: ''
 assignees: ''
 
 ---
-
-# PLEASE DO NOT SUBMIT ISSUES TO THIS REPOSITORY
-
-I AM THE ONLY PERSON MODIFYING URMA DEAL GENIE, AND I DON'T HAVE TIME TO MANAGE SUPPORT CASES IN GITHUB.
-
-DM ME ON DISCORD IF YOU HAVE PROJECT IDEAS OR PROBLEMS WITH THE TOOL.
-
-GITHUB DOESN'T STUPIDLY DOESN'T STOP THE PUBLIC CREATING ISSUES. PLEASE DON'T, OTHERWISE I WILL HAVE TO MAKE THE ENTIRE REPO PRIVATE FOR MY OWN USE
