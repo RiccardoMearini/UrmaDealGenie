@@ -2,18 +2,20 @@
   "UpdateDeals": false,
   "LunarCrushAltRankPairRules": [
     {
+      "Rule": "Urma Paper",
       "BotId": 7703182,
       "MaxPairCount": 10,
       "BlacklistPairs": "USDT_BTC, USDT_ETH, USDT_ADA, USDT_XRP, USDT_BNB",
-      "MaxAcrScore": 1500,
       "MaxCmcRank": 250
     },
     {
+      "Rule": "Safira Paper",
       "BotId": 7665821,
       "MaxPairCount": 10,
-      "MaxCmcRank": 100
+      "MaxCmcRank": 250
     },
     {
+      "Rule": " Paper",
       "BotId": 7709633,
       "MaxPairCount": 10,
       "MaxAcrScore": 1000

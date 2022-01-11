@@ -23,6 +23,7 @@ To install and configure the Urma Deal Genie console application:
      ```
      set APIKEY=YOUR_API_KEY_HERE
      set SECRET=YOUR_3COMMAS_SECRET_HERE
+     set CMCAPIKEY=OPTIONAL_CMC_API_KEY_HERE
      ```
    - **Mac/Linux**
      ```

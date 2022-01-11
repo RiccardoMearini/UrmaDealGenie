@@ -27,7 +27,7 @@ namespace UrmaDealGenie
     public async Task<Root> GetCoinMarketCapData(int maxRank)
     {
       Root cmcData = null;
-      this.cmcApiKey = "1c590354-6428-4ca3-9232-460b07f6135d"; // #### config.get("settings", "cmc-apikey")
+      this.cmcApiKey = Environment.GetEnvironmentVariable("CMCAPIKEY");
 
       var request = BuildCoinMarketCapHttpRequest(1, maxRank);
       request.Headers.Add("X-CMC_PRO_API_KEY", cmcApiKey);
