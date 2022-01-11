@@ -22,11 +22,6 @@ namespace UrmaDealGenie
 
   public class Datum
   {
-    // Augmented properties
-    public int Rank { get; set; }
-    public double VolBTC { get; set; }
-
-    // De-serializable properties
     [JsonPropertyName("id")]
     public int Id { get; set; }
 
@@ -61,7 +56,7 @@ namespace UrmaDealGenie
     public double Gs { get; set; }
 
     [JsonPropertyName("ss")]
-    public int Ss { get; set; }
+    public long Ss { get; set; }
 
     [JsonPropertyName("as")]
     public double As { get; set; }
@@ -117,11 +112,11 @@ namespace UrmaDealGenie
     [JsonPropertyName("categories")]
     public string Categories { get; set; }
 
-    [JsonPropertyName("df")]
-    public int Df { get; set; }
-
     [JsonPropertyName("e2")]
-    public int E2 { get; set; }
+    public int? E2 { get; set; }
+
+    [JsonPropertyName("df")]
+    public int? Df { get; set; }
 
     [JsonPropertyName("bsc")]
     public int? Bsc { get; set; }
@@ -129,11 +124,14 @@ namespace UrmaDealGenie
     [JsonPropertyName("nft")]
     public int? Nft { get; set; }
 
-    [JsonPropertyName("sc")]
-    public int? Sc { get; set; }
-
     [JsonPropertyName("dot")]
     public int? Dot { get; set; }
+
+    [JsonPropertyName("meme")]
+    public int? Meme { get; set; }
+
+    [JsonPropertyName("sc")]
+    public int? Sc { get; set; }
   }
 
   public class Root
@@ -144,4 +142,6 @@ namespace UrmaDealGenie
     [JsonPropertyName("data")]
     public List<Datum> Data { get; set; }
   }
+
+
 }

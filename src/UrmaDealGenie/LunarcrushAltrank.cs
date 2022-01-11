@@ -10,14 +10,9 @@ using XCommas.Net.Objects;
 
 namespace UrmaDealGenie
 {
-  public class LunarCrushAltRankPairRule
-  {
-    public int BotId { get; set; }
-    public int MaxPairCount { get; set; }
-  }
-
   public class LunarCrushAltRank
   {
+    private const int DEFAULT_MAXACRSCORE = 1500;
     private XCommasApi xCommasClient = null;
     private HttpClient httpClient = null;
 
@@ -62,28 +57,25 @@ namespace UrmaDealGenie
       Console.WriteLine($"BTC price on {exchange.MarketCode} exchange ${btcUsdtPrice3C}");
 
       var newPairs = new List<string>();
-      int rank = 1;
       foreach (Datum crushData in lunarCrushData.Data)
       {
-        crushData.Rank = rank++;
-        crushData.VolBTC = crushData.V / (double)btcUsdtPrice3C;
+        var volBTC = (decimal)crushData.V / btcUsdtPrice3C;
+        var pair = FormatPair(crushData.S, pairBase, exchange.MarketCode);
+        var stablecoin = crushData.Categories.Contains("stablecoin");
+        var maxAcrScore = dealRule.MaxAcrScore == 0 ? DEFAULT_MAXACRSCORE : dealRule.MaxAcrScore;
 
-        var coin = crushData.S;
-        var pair = FormatPair(coin, pairBase, exchange.MarketCode);
-        var acrScore = crushData.Acr;
-        var volBtc = crushData.VolBTC;
-
-        // #### make 1500 a maxAcrScore config variable
-        if (volBtc != 0 && acrScore <= 1500 &&
-          !String.IsNullOrEmpty(Array.Find(exchangePairs, exchangePair => exchangePair == pair)))
+        // Only add pair if it meets all the approved criteria
+        if (!stablecoin && crushData.Acr <= maxAcrScore
+          && volBTC != 0 && volBTC >= minVolBtc24h
+          && String.IsNullOrEmpty(Array.Find(blacklistPairs, blacklistPair => blacklistPair == pair))
+          && !String.IsNullOrEmpty(Array.Find(exchangePairs, exchangePair => exchangePair == pair)))
         {
-          if (String.IsNullOrEmpty(Array.Find(blacklistPairs, blacklistPair => blacklistPair == pair)))
-          {
-            newPairs.Add(pair);
-            if (newPairs.Count == dealRule.MaxPairCount) break;
-          }
+          newPairs.Add(pair);
+          if (newPairs.Count == dealRule.MaxPairCount) break;
         }
       }
+      // #### update only if config allows update
+      // otherwise just return what would get changed, just like dealrules
       await UpdateBot(bot, newPairs.ToArray());
     }
 
@@ -141,7 +133,7 @@ namespace UrmaDealGenie
 
       var result = httpClient.SendAsync(request);
       var response = await result.Result.Content.ReadAsStringAsync();
-      //Console.WriteLine($"DEBUG: Data: {response}");
+      Console.WriteLine($"DEBUG: Data: {response}");
       Root lunarCrushData = JsonSerializer.Deserialize<Root>(response);
       Console.WriteLine($"Retrieved '{lunarCrushData.Config.Sort}' LunarCrush data, top {lunarCrushData.Data.Count} pairs");
       return lunarCrushData;
