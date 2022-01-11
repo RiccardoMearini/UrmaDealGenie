@@ -121,14 +121,14 @@ namespace UrmaDealGenie
     [JsonPropertyName("bsc")]
     public int? Bsc { get; set; }
 
-    [JsonPropertyName("nft")]
-    public int? Nft { get; set; }
+    [JsonPropertyName("meme")]
+    public int? Meme { get; set; }
 
     [JsonPropertyName("dot")]
     public int? Dot { get; set; }
 
-    [JsonPropertyName("meme")]
-    public int? Meme { get; set; }
+    [JsonPropertyName("nft")]
+    public int? Nft { get; set; }
 
     [JsonPropertyName("sc")]
     public int? Sc { get; set; }
@@ -142,6 +142,5 @@ namespace UrmaDealGenie
     [JsonPropertyName("data")]
     public List<Datum> Data { get; set; }
   }
-
 
 }

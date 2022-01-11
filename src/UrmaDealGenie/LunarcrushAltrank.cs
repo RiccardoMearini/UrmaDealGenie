@@ -30,8 +30,10 @@ namespace UrmaDealGenie
 
       // Get lunarcrush data
       var lunarCrushData = await GetLunarCrushData(); // #### enum param for altrank/gs etc?
-
-      dealRuleSet.ForEach(async rule => await UpdateBotWithBestPairs(rule, lunarCrushData, blacklistPairs));
+      if (lunarCrushData != null)
+      {
+        dealRuleSet.ForEach(async rule => await UpdateBotWithBestPairs(rule, lunarCrushData, blacklistPairs));
+      }
     }
 
     public async Task UpdateBotWithBestPairs(LunarCrushAltRankPairRule dealRule, Root lunarCrushData, string[] blacklistPairs)
@@ -44,7 +46,7 @@ namespace UrmaDealGenie
 
       // Max Altcoin Rank Score for all pairs for this bot
       var maxAcrScore = dealRule.MaxAcrScore == 0 ? DEFAULT_MAX_ACR_SCORE : dealRule.MaxAcrScore;
-      
+
       Console.WriteLine($"Bot {bot.Id} ({bot.Name}) current pairs:");
       Console.WriteLine($"  {String.Join(", ", pairs)}");
       Console.WriteLine($"Pair base currency: {pairBase}");
@@ -132,14 +134,22 @@ namespace UrmaDealGenie
 
     private async Task<Root> GetLunarCrushData()
     {
+      Root lunarCrushData = null;
       var request = BuildLunarCrushHttpRequest();
       // Console.WriteLine($"DEBUG: {this.GetType().Name} - RequestUri: {httpClient.BaseAddress}{request.RequestUri}");
 
       var result = httpClient.SendAsync(request);
       var response = await result.Result.Content.ReadAsStringAsync();
-      // Console.WriteLine($"DEBUG: Data: {response}");
-      Root lunarCrushData = JsonSerializer.Deserialize<Root>(response);
-      Console.WriteLine($"Retrieved '{lunarCrushData.Config.Sort}' LunarCrush data, top {lunarCrushData.Data.Count} pairs");
+      try
+      {
+        lunarCrushData = JsonSerializer.Deserialize<Root>(response);
+        Console.WriteLine($"Retrieved '{lunarCrushData.Config.Sort}' LunarCrush data, top {lunarCrushData.Data.Count} pairs");
+      }
+      catch
+      {
+        Console.WriteLine($"FAILED TO DESERIALISE: Data:");
+        Console.WriteLine(response);
+      }
       return lunarCrushData;
     }
 
