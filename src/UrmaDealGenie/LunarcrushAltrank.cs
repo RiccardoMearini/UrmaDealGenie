@@ -12,7 +12,7 @@ namespace UrmaDealGenie
 {
   public class LunarCrushAltRank
   {
-    private const int DEFAULT_MAXACRSCORE = 1500;
+    private const int DEFAULT_MAX_ACR_SCORE = 1500;
     private XCommasApi xCommasClient = null;
     private HttpClient httpClient = null;
 
@@ -42,10 +42,14 @@ namespace UrmaDealGenie
       var pairBase = bot.Pairs[0].Split('_')[0];
       var minVolBtc24h = bot.MinVolumeBtc24h;
 
+      // Max Altcoin Rank Score for all pairs for this bot
+      var maxAcrScore = dealRule.MaxAcrScore == 0 ? DEFAULT_MAX_ACR_SCORE : dealRule.MaxAcrScore;
+      
       Console.WriteLine($"Bot {bot.Id} ({bot.Name}) current pairs:");
       Console.WriteLine($"  {String.Join(", ", pairs)}");
       Console.WriteLine($"Pair base currency: {pairBase}");
       Console.WriteLine($"Minimum 24h Volume in BTC: {minVolBtc24h}");
+      Console.WriteLine($"Max Altrank Score for this bot's pairs: {maxAcrScore}");
 
       // Get supported pairs on the bot's exchange
       var exchange = await GetExchange(bot.AccountId);
@@ -56,13 +60,13 @@ namespace UrmaDealGenie
       var btcUsdtPrice3C = (await this.xCommasClient.GetCurrencyRateAsync("USDT_BTC", exchange.MarketCode)).Data.Last;
       Console.WriteLine($"BTC price on {exchange.MarketCode} exchange ${btcUsdtPrice3C}");
 
+
       var newPairs = new List<string>();
       foreach (Datum crushData in lunarCrushData.Data)
       {
         var volBTC = (decimal)crushData.V / btcUsdtPrice3C;
         var pair = FormatPair(crushData.S, pairBase, exchange.MarketCode);
         var stablecoin = crushData.Categories.Contains("stablecoin");
-        var maxAcrScore = dealRule.MaxAcrScore == 0 ? DEFAULT_MAXACRSCORE : dealRule.MaxAcrScore;
 
         // Only add pair if it meets all the approved criteria
         if (!stablecoin && crushData.Acr <= maxAcrScore
@@ -85,11 +89,11 @@ namespace UrmaDealGenie
       var containSamePairs = new HashSet<string>(newPairs).SetEquals(bot.Pairs);
       if (containSamePairs)
       {
-        Console.WriteLine($"Bot already has best pair selection, no action");
+        Console.WriteLine($"Bot {bot.Id} ({bot.Name}) already has best pair selection, no action");
       }
       else
       {
-        Console.WriteLine($"New pairs:");
+        Console.WriteLine($"Bot {bot.Id} ({bot.Name}) update new pairs:");
         Console.WriteLine($"  {String.Join(", ", newPairs)}");
         var updateData = new BotUpdateData(bot)
         {
@@ -133,7 +137,7 @@ namespace UrmaDealGenie
 
       var result = httpClient.SendAsync(request);
       var response = await result.Result.Content.ReadAsStringAsync();
-      Console.WriteLine($"DEBUG: Data: {response}");
+      // Console.WriteLine($"DEBUG: Data: {response}");
       Root lunarCrushData = JsonSerializer.Deserialize<Root>(response);
       Console.WriteLine($"Retrieved '{lunarCrushData.Config.Sort}' LunarCrush data, top {lunarCrushData.Data.Count} pairs");
       return lunarCrushData;
