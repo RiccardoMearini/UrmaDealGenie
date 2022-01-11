@@ -31,7 +31,7 @@ namespace UrmaDealGenie
 
       var request = BuildCoinMarketCapHttpRequest(1, maxRank);
       request.Headers.Add("X-CMC_PRO_API_KEY", cmcApiKey);
-      Console.WriteLine($"DEBUG: {this.GetType().Name} - RequestUri: {httpClient.BaseAddress}{request.RequestUri}");
+      // Console.WriteLine($"DEBUG: {this.GetType().Name} - RequestUri: {httpClient.BaseAddress}{request.RequestUri}");
 
       var result = httpClient.SendAsync(request);
       var response = await result.Result.Content.ReadAsStringAsync();
@@ -60,7 +60,7 @@ namespace UrmaDealGenie
       var request = new HttpRequestMessage(HttpMethod.Get, QueryHelpers.AddQueryString("v1/cryptocurrency/listings/latest", queryString));
       request.Headers.Add("Accept", "application/json");
 
-      Console.WriteLine($"DEBUG: BuildCoinMarketCapHttpRequest: {request.RequestUri}");
+      // Console.WriteLine($"DEBUG: BuildCoinMarketCapHttpRequest: {request.RequestUri}");
       return request;
     }
 

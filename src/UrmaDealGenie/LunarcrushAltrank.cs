@@ -42,8 +42,8 @@ namespace UrmaDealGenie
         if (cmcData != null)
         {
           // Loop through each ruleset updating bots
-          dealRuleSet.ForEach(async rule => 
-            await UpdateBotWithBestPairs(rule, lunarCrushData, blacklistPairs, cmcData.Data
+          // #### how to make each of these run sequentially?
+          dealRuleSet.ForEach(async rule => await UpdateBotWithBestPairs(rule, lunarCrushData, blacklistPairs, cmcData.Data
                                          .Select(cmcPair => cmcPair)
                                          .Take(rule.MaxCmcRank == 0 ? DEFAULT_MAX_CMC_RANK : rule.MaxCmcRank)));
         }
@@ -61,21 +61,22 @@ namespace UrmaDealGenie
       // Max Altcoin Rank Score for all pairs for this bot
       var maxAcrScore = dealRule.MaxAcrScore == 0 ? DEFAULT_MAX_ACR_SCORE : dealRule.MaxAcrScore;        
 
-      Console.WriteLine($"Bot {bot.Id} ({bot.Name}) current pairs:");
-      Console.WriteLine($"  {String.Join(", ", pairs)}");
-      Console.WriteLine($"Pair base currency: {pairBase}");
-      Console.WriteLine($"Minimum 24h Volume in BTC: {minVolBtc24h}");
-      Console.WriteLine($"Max Altrank Score for found pairs: {maxAcrScore}");
-      Console.WriteLine($"Max CoinMarketCap Rank for found pairs : {cmcData.Count()}");
+      Console.WriteLine($"==================================================");
+      Console.WriteLine($"Bot {bot.Id} - '{bot.Name}' current pairs:");
+      Console.WriteLine($"Bot {bot.Id} - {String.Join(", ", pairs)}");
+      Console.WriteLine($"Bot {bot.Id} - Pair base currency: {pairBase}");
+      Console.WriteLine($"Bot {bot.Id} - Minimum 24h Volume in BTC: {minVolBtc24h}");
+      Console.WriteLine($"Bot {bot.Id} - Max Altrank Score for found pairs: {maxAcrScore}");
+      Console.WriteLine($"Bot {bot.Id} - Max CoinMarketCap Rank for found pairs : {cmcData.Count()}");
 
       // Get supported pairs on the bot's exchange
-      var exchange = await GetExchange(bot.AccountId);
-      var exchangePairs = (await this.xCommasClient.GetMarketPairsAsync(exchange.MarketCode)).Data;
-      Console.WriteLine($"Found {exchangePairs.Length} pairs on {exchange.MarketCode} exchange");
+      var exchange = GetExchange(bot.AccountId);
+      var exchangePairs = this.xCommasClient.GetMarketPairs(exchange.MarketCode); // #### do this once per exchange and cache result
+      Console.WriteLine($"Bot {bot.Id} - Found {exchangePairs.Data.Length} pairs on '{this.xCommasClient.UserMode}' mode account '{exchange.Name}' exchange {exchange.MarketCode}");
 
       // BTC price in USDT
-      var btcUsdtPrice3C = (await this.xCommasClient.GetCurrencyRateAsync("USDT_BTC", exchange.MarketCode)).Data.Last;
-      Console.WriteLine($"BTC price on {exchange.MarketCode} exchange ${btcUsdtPrice3C}");
+      var btcUsdtPrice3C = this.xCommasClient.GetCurrencyRate("USDT_BTC", exchange.MarketCode).Data.Last;
+      Console.WriteLine($"Bot {bot.Id} - BTC price on {exchange.MarketCode} exchange ${btcUsdtPrice3C}");
 
       var newPairs = new List<string>();
       foreach (LC.Datum crushData in lunarCrushData.Data)
@@ -88,7 +89,7 @@ namespace UrmaDealGenie
         if (!stablecoin && crushData.Acr <= maxAcrScore
           && volBTC != 0 && volBTC >= minVolBtc24h
           && String.IsNullOrEmpty(Array.Find(blacklistPairs, blacklistPair => blacklistPair == pair))
-          && !String.IsNullOrEmpty(Array.Find(exchangePairs, exchangePair => exchangePair == pair))
+          && !String.IsNullOrEmpty(Array.Find(exchangePairs.Data, exchangePair => exchangePair == pair))
           && cmcData.Any(cmcPair => cmcPair.Symbol == crushData.S)
         )
         {
@@ -98,43 +99,40 @@ namespace UrmaDealGenie
       }
       // #### update only if config allows update
       // otherwise just return what would get changed, just like dealrules
-      await UpdateBot(bot, newPairs.ToArray());
-    }
-
-    private async Task<XCommasResponse<Bot>> UpdateBot(Bot bot, string[] newPairs)
-    {
-      XCommasResponse<Bot> response = null;
       var containSamePairs = new HashSet<string>(newPairs).SetEquals(bot.Pairs);
       if (containSamePairs)
       {
-        Console.WriteLine($"Bot {bot.Id} ({bot.Name}) already has best pair selection, no action");
+        Console.WriteLine($"Bot {bot.Id} - already has best pairs, no update for bot '{bot.Name}'");
       }
       else
       {
-        Console.WriteLine($"Bot {bot.Id} ({bot.Name}) update new pairs:");
-        Console.WriteLine($"  {String.Join(", ", newPairs)}");
-        var updateData = new BotUpdateData(bot)
-        {
-          MaxActiveDeals = newPairs.Length,
-          Pairs = newPairs,
-        };
-        response = await this.xCommasClient.UpdateBotAsync(bot.Id, updateData);
+        UpdateBot(bot, newPairs.ToArray());
       }
-      return response;
     }
 
-    private async Task<Account> GetExchange(int accountId)
+    private XCommasResponse<Bot> UpdateBot(Bot bot, string[] newPairs)
+    {
+      Console.WriteLine($"Bot {bot.Id} - update new pairs for bot '{bot.Name}':");
+      Console.WriteLine($"Bot {bot.Id} - {String.Join(", ", newPairs)}");
+      var updateData = new BotUpdateData(bot)
+      {
+        MaxActiveDeals = newPairs.Length,
+        Pairs = newPairs,
+      };
+      return this.xCommasClient.UpdateBot(bot.Id, updateData);
+    }
+
+    private Account GetExchange(int accountId)
     {
       this.xCommasClient.UserMode = UserMode.Real;
-      var accounts = await this.xCommasClient.GetAccountsAsync();
+      var accounts = this.xCommasClient.GetAccounts;
       var exchange = Array.Find(accounts.Data, account => account.Id == accountId);
       if (exchange == null)
       {
         this.xCommasClient.UserMode = UserMode.Paper;
-        accounts = await this.xCommasClient.GetAccountsAsync();
+        accounts = this.xCommasClient.GetAccounts;
         exchange = Array.Find(accounts.Data, account => account.Id == accountId);
       }
-      Console.WriteLine($"Found {this.xCommasClient.UserMode} account '{exchange.Name}' ({exchange.MarketCode})");
 
       return exchange;
     }

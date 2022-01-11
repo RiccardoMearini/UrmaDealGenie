@@ -40,7 +40,7 @@ namespace UrmaDealGenie
         // response.Add(updatedDeal);
       }
 
-      await RetrieveAllDeals();
+      await RetrieveAllDeals(); // #### Lazy load
       var updateDeals = dealRuleSet.UpdateDeals;
       Console.WriteLine($"updateDeals = {updateDeals}");
 
