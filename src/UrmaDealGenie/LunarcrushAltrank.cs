@@ -1,4 +1,5 @@
 
+using LunarCrush.Objects;
 using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,9 @@ namespace UrmaDealGenie
       var lunarCrushData = await GetLunarCrushData(); // #### enum param for altrank/gs etc?
       if (lunarCrushData != null)
       {
+        var cmcClient = new CoinMarketCap(this.xCommasClient);
+        var cmcData = await cmcClient.GetCoinMarketCapData();
+
         dealRuleSet.ForEach(async rule => await UpdateBotWithBestPairs(rule, lunarCrushData, blacklistPairs));
       }
     }
@@ -169,7 +173,7 @@ namespace UrmaDealGenie
     private static HttpRequestMessage BuildLunarCrushHttpRequest()
     {
       var queryString = new Dictionary<string, string>()
-      { // Altrank
+      {
         { "data", "market" },
         { "type", "fast" },
         { "sort", "acr" }, // acr = altrank, gs = galaxyscore
@@ -177,10 +181,11 @@ namespace UrmaDealGenie
         { "key", "" },
         // { "desc", True}, #### Param only applicable for galaxyscore
       };
-      var request = new HttpRequestMessage(HttpMethod.Post, QueryHelpers.AddQueryString("v2", queryString));
+      var request = new HttpRequestMessage(HttpMethod.Get, QueryHelpers.AddQueryString("v2", queryString));
       request.Headers.Add("Accept", "application/json");
-      //Console.WriteLine($"DEBUG: GetHttpRequest: {request.RequestUri}");
+      //Console.WriteLine($"DEBUG: BuildLunarCrushHttpRequest: {request.RequestUri}");
       return request;
     }
+
   }
 }
