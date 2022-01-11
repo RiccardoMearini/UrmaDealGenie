@@ -30,6 +30,7 @@ namespace UrmaDealGenie
     public int MaxPairCount { get; set; }
     public string BlacklistPairs { get; set; }
     public int MaxAcrScore { get; set; }
+    public int MaxCmcRank { get; set; }
 
   }
 

@@ -15,6 +15,7 @@ namespace UrmaDealGenie
   {
     private XCommasApi xCommasClient = null;
     private HttpClient httpClient = null;
+    private string cmcApiKey = null;
 
     public CoinMarketCap(XCommasApi client)
     {
@@ -23,10 +24,13 @@ namespace UrmaDealGenie
       this.httpClient.BaseAddress = new Uri("https://pro-api.coinmarketcap.com");
     }
 
-    public async Task<Root> GetCoinMarketCapData()
+    public async Task<Root> GetCoinMarketCapData(int maxRank)
     {
       Root cmcData = null;
-      var request = BuildCoinMarketCapHttpRequest();
+      this.cmcApiKey = "1c590354-6428-4ca3-9232-460b07f6135d"; // #### config.get("settings", "cmc-apikey")
+
+      var request = BuildCoinMarketCapHttpRequest(1, maxRank);
+      request.Headers.Add("X-CMC_PRO_API_KEY", cmcApiKey);
       Console.WriteLine($"DEBUG: {this.GetType().Name} - RequestUri: {httpClient.BaseAddress}{request.RequestUri}");
 
       var result = httpClient.SendAsync(request);
@@ -44,14 +48,8 @@ namespace UrmaDealGenie
       return cmcData;
     }
 
-    private static HttpRequestMessage BuildCoinMarketCapHttpRequest()
+    private static HttpRequestMessage BuildCoinMarketCapHttpRequest(int start, int limit)
     {
-      var start = 1;
-      var limit = 10;
-      var cmcApiKey = "1c590354-6428-4ca3-9232-460b07f6135d"; // config.get("settings", "cmc-apikey")
-      // startnumber = int(config.get("settings", "start-number"))
-      // endnumber = 1 + (int(config.get("settings", "end-number")) - startnumber)
-
       var queryString = new Dictionary<string, string>()
       {
         { "start", $"{start}" },
@@ -61,7 +59,6 @@ namespace UrmaDealGenie
       };
       var request = new HttpRequestMessage(HttpMethod.Get, QueryHelpers.AddQueryString("v1/cryptocurrency/listings/latest", queryString));
       request.Headers.Add("Accept", "application/json");
-      request.Headers.Add("X-CMC_PRO_API_KEY", cmcApiKey);
 
       Console.WriteLine($"DEBUG: BuildCoinMarketCapHttpRequest: {request.RequestUri}");
       return request;
