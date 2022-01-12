@@ -14,14 +14,14 @@ namespace LunarCrush.Helpers
     private const string VersionId = "GtlZn1NfoVuhQ4p9mdveb26zFPBrwyTMXRCJUIAY7giqc3SLOWD80xHKE5sjka";
     private readonly static List<char> letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456790".ToCharArray().ToList();
 
-    private static string GenerateToken(string deviceID)
+    private static string GenerateToken(string versionId, string deviceID)
     {
       return deviceID
           .Split("-")
           .Skip(1)
           .Aggregate("", (acc, part) => acc + part)
           .ToCharArray()
-          .Aggregate("", (acc, character) => acc + letters[VersionId.IndexOf(character)]);
+          .Aggregate("", (acc, character) => acc + letters[versionId.IndexOf(character)]);
     }
 
     /// <summary>
@@ -38,7 +38,7 @@ namespace LunarCrush.Helpers
       string deviceId = null)
     {
       deviceId = deviceId ?? ("LDID-" + Guid.NewGuid().ToString());
-      var token = GenerateToken(deviceId);
+      var token = GenerateToken(versionId, deviceId);
 
       HttpClient httpClient = new HttpClient();
       httpClient.BaseAddress = new Uri("https://api.lunarcrush.com");
