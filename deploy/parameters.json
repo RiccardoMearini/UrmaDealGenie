@@ -1,11 +1,11 @@
 {
   "Parameters": {
-      "ApiKey": "YOUR_API_KEY_HERE",
-      "ApiSecret": "YOUR_3COMMAS_SECRET_HERE",
-      "CmcApiKey": "OPTIONAL_CMC_API_KEY_HERE",
-      "S3Bucket": "urmagurd",
-      "S3PackageFilename": "UrmaDealGenieAWSLambdaPackage.zip",
-      "StatusEmailAddress": "",
-      "LambdaFunctionName": "UrmaDealGenie"
+    "ApiKey": "YOUR_API_KEY_HERE",
+    "ApiSecret": "YOUR_3COMMAS_SECRET_HERE",
+    "CmcApiKey": "OPTIONAL_CMC_API_KEY_HERE",
+    "S3Bucket": "urmagurd",
+    "S3PackageFilename": "UrmaDealGenieAWSLambdaPackage.zip",
+    "StatusEmailAddress": "",
+    "LambdaFunctionName": "UrmaDealGenie"
   }
 }
