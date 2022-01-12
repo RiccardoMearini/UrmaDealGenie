@@ -12,8 +12,8 @@ aws s3 cp UrmaDealGenieAWS-localbuild.zip s3://urmagurd/
 aws s3 cp deploy-urmadealgenie.yml s3://urmagurd/
 aws s3 cp ../src/UrmaDealGenieApp/dealrules.json s3://urmagurd/
 
+# Delete old stack and wait for it to be deleted
 aws cloudformation delete-stack --stack-name urma-deal-genie --region eu-west-1
-
 aws cloudformation wait stack-delete-complete --stack-name urma-deal-genie --region eu-west-1
 
 # Deploy package changeset from S3 with CloudFormation
