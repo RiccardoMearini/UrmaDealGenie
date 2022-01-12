@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace LunarCrush.Helpers
 {
@@ -53,8 +54,19 @@ namespace LunarCrush.Helpers
       };
       var request = new HttpRequestMessage(HttpMethod.Get, QueryHelpers.AddQueryString("v2", queryString));
       request.Headers.Add("Accept", "application/json");
-      var result = httpClient.SendAsync(request);
-      return (string)JObject.Parse(await result.Result.Content.ReadAsStringAsync())["token"];
+      var response = httpClient.SendAsync(request);
+      string result = null;
+      if (response.Result.StatusCode == HttpStatusCode.OK)
+      { 
+        result = (string)JObject.Parse(await response.Result.Content.ReadAsStringAsync())["token"];
+        Console.WriteLine($"LunarCrushHelpers.GetApiKey() - Key: {result}");
+      }
+      else
+      {
+        Console.WriteLine($"LunarCrushHelpers.GetApiKey() - deviceId: {deviceId}, version: {version}, versionId: {versionId}, token: {token}");        
+        Console.WriteLine($"FAILED: response: {response.Result.StatusCode}, requestUrl:'{request.RequestUri}'");
+      }
+      return result;
     }
   }
 }

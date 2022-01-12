@@ -19,7 +19,7 @@ namespace LunarCrush.Objects
     public double P { get; set; }
 
     [JsonPropertyName("p_btc")]
-    public int PBtc { get; set; }
+    public double PBtc { get; set; }
 
     [JsonPropertyName("v")]
     public double V { get; set; }
@@ -233,6 +233,9 @@ namespace LunarCrush.Objects
 
     [JsonPropertyName("bsc")]
     public int? Bsc { get; set; }
+
+    [JsonPropertyName("zil")]
+    public int? Zil { get; set; }
 
     [JsonPropertyName("meme")]
     public int? Meme { get; set; }

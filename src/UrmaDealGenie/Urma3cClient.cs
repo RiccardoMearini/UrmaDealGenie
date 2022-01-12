@@ -589,7 +589,7 @@ namespace UrmaDealGenie
         }
         else
         {
-          Console.WriteLine($"Error: GetDeals(): GetDealsAsync() - {response.Error}");
+          Console.WriteLine($"Error: GetDealsAsync() - {response.Error}");
         }
       }
     }

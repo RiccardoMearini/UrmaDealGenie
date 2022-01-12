@@ -35,15 +35,22 @@ namespace UrmaDealGenie
 
       var result = httpClient.SendAsync(request);
       var response = await result.Result.Content.ReadAsStringAsync();
-      try
+      if (result.Result.StatusCode == System.Net.HttpStatusCode.OK)
       {
-        cmcData = JsonSerializer.Deserialize<Root>(response);
-        Console.WriteLine($"Retrieved CoinMarketCap data, top {cmcData.Data.Count} pairs");
+        try
+        {
+          cmcData = JsonSerializer.Deserialize<Root>(response);
+          Console.WriteLine($"Retrieved CoinMarketCap data, top {cmcData.Data.Count} pairs");
+        }
+        catch
+        {
+          Console.WriteLine($"GetCoinMarketCapData() - FAILED TO DESERIALISE: Data:");
+          Console.WriteLine(response);
+        }
       }
-      catch
+      else
       {
-        Console.WriteLine($"FAILED TO DESERIALISE: Data:");
-        Console.WriteLine(response);
+        Console.WriteLine($"GetCoinMarketCapData() - FAILED TO RETRIEVE: {result.Result.StatusCode} - {result.Result.ReasonPhrase}");          
       }
       return cmcData;
     }

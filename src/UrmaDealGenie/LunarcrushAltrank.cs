@@ -44,14 +44,14 @@ namespace UrmaDealGenie
         {
           // Loop through each ruleset updating bots
           // #### how to make each of these run sequentially?
-          dealRuleSet.ForEach(async rule => await UpdateBotWithBestPairs(rule, lunarCrushData, blacklistPairs, cmcData.Data
-                                         .Select(cmcPair => cmcPair)
-                                         .Take(rule.MaxCmcRank == 0 ? DEFAULT_MAX_CMC_RANK : rule.MaxCmcRank)));
+          dealRuleSet.ForEach(rule => UpdateBotWithBestPairs(rule, lunarCrushData, blacklistPairs, cmcData.Data
+                                      .Select(cmcPair => cmcPair)
+                                      .Take(rule.MaxCmcRank == 0 ? DEFAULT_MAX_CMC_RANK : rule.MaxCmcRank)));
         }
       }
     }
 
-    public async Task UpdateBotWithBestPairs(LunarCrushAltRankPairRule dealRule, LC.Root lunarCrushData, string[] blacklistPairs, IEnumerable<CMC.Datum> cmcData)
+    public void UpdateBotWithBestPairs(LunarCrushAltRankPairRule dealRule, LC.Root lunarCrushData, string[] blacklistPairs, IEnumerable<CMC.Datum> cmcData)
     {
       // Get the bot and current pairs
       var bot = this.xCommasClient.ShowBot(dealRule.BotId).Data;
@@ -125,6 +125,7 @@ namespace UrmaDealGenie
 
     private Account GetExchange(int accountId)
     {
+      // Console.WriteLine($"DEBUG: GetExchange() - accountId: {accountId}");
       this.xCommasClient.UserMode = UserMode.Real;
       var accounts = this.xCommasClient.GetAccounts;
       var exchange = Array.Find(accounts.Data, account => account.Id == accountId);
@@ -134,6 +135,7 @@ namespace UrmaDealGenie
         accounts = this.xCommasClient.GetAccounts;
         exchange = Array.Find(accounts.Data, account => account.Id == accountId);
       }
+      // Console.WriteLine($"DEBUG: GetExchange() - exchange: {exchange.ExchangeName}");
 
       return exchange;
     }
@@ -164,13 +166,13 @@ namespace UrmaDealGenie
         }
         catch
         {
-          Console.WriteLine($"LUNARCRUSH - FAILED TO DESERIALISE: Data:");
+          Console.WriteLine($"GetLunarCrushData() - FAILED TO DESERIALISE: Data:");
           Console.WriteLine(response);
         }
       }
       else
       {
-        Console.WriteLine($"LUNARCRUSH - FAILED TO RETRIEVE: {result.Result.StatusCode} - {result.Result.ReasonPhrase}");
+        Console.WriteLine($"GetLunarCrushData() - FAILED TO RETRIEVE: {result.Result.StatusCode} - {result.Result.ReasonPhrase}");
       }
       return lunarCrushData;
     }
