@@ -27,7 +27,7 @@ namespace UrmaDealGenie
       this.httpClient.BaseAddress = new Uri("https://api.lunarcrush.com");
     }
 
-    public async Task ProcessRules(List<LunarCrushAltRankPairRule> dealRuleSet)
+    public async Task ProcessRules(List<LunarCrushAltRankPairRule> dealRuleSet, bool update)
     {
       // Get blacklist pairs
       var blacklistPairs = GetBlacklist().Result;
@@ -43,18 +43,18 @@ namespace UrmaDealGenie
         if (cmcData != null)
         {
           // Loop through each ruleset updating bots
-          dealRuleSet.ForEach(rule => UpdateBotWithBestPairs(rule, lunarCrushData, blacklistPairs, cmcData.Data
+          dealRuleSet.ForEach(rule => UpdateBotWithBestPairs(rule, update, lunarCrushData, blacklistPairs, cmcData.Data
                                         .Select(cmcPair => cmcPair)
                                         .Take(rule.MaxCmcRank == 0 ? DEFAULT_MAX_CMC_RANK : rule.MaxCmcRank)));
         }
         else
         {
-          dealRuleSet.ForEach(rule => UpdateBotWithBestPairs(rule, lunarCrushData, blacklistPairs, null));            
+          dealRuleSet.ForEach(rule => UpdateBotWithBestPairs(rule, update, lunarCrushData, blacklistPairs, null));            
         }
       }
     }
 
-    public void UpdateBotWithBestPairs(LunarCrushAltRankPairRule dealRule, LC.Root lunarCrushData, string[] blacklistPairs, IEnumerable<CMC.Datum> cmcData)
+    public void UpdateBotWithBestPairs(LunarCrushAltRankPairRule dealRule, bool update, LC.Root lunarCrushData, string[] blacklistPairs, IEnumerable<CMC.Datum> cmcData)
     {
       // Get the bot and current pairs
       var bot = this.xCommasClient.ShowBot(dealRule.BotId).Data;
@@ -101,23 +101,28 @@ namespace UrmaDealGenie
           if (newPairs.Count == dealRule.MaxPairCount) break;
         }
       }
+
       // #### update only if config allows update
       // otherwise just return what would get changed, just like dealrules
       var containSamePairs = new HashSet<string>(newPairs).SetEquals(bot.Pairs);
       if (containSamePairs)
       {
-        Console.WriteLine($"Bot {bot.Id} - already has best pairs, no update for bot '{bot.Name}'");
+        Console.WriteLine($"Bot {bot.Id} - already has best pairs, no changes for bot '{bot.Name}'");
       }
       else
       {
-        UpdateBot(bot, newPairs.ToArray());
+        Console.WriteLine($"Bot {bot.Id} - NEW PAIRS for bot '{bot.Name}':");
+        Console.WriteLine($"Bot {bot.Id} -> {String.Join(", ", newPairs)}");
+        if (update)
+        {
+          UpdateBot(bot, newPairs.ToArray());
+        }
+        Console.WriteLine($"Bot {bot.Id} - {(update ? "Bot updated" : "Update mode disabled - no changes made")}");
       }
     }
 
     private XCommasResponse<Bot> UpdateBot(Bot bot, string[] newPairs)
     {
-      Console.WriteLine($"Bot {bot.Id} - update new pairs for bot '{bot.Name}':");
-      Console.WriteLine($"Bot {bot.Id} - {String.Join(", ", newPairs)}");
       var updateData = new BotUpdateData(bot)
       {
         MaxActiveDeals = newPairs.Length,

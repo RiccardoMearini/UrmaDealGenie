@@ -17,14 +17,14 @@
 The JSON snippet below shows the overall structure of a configuration. 
 ```
 {
-  "UpdateDeals": false,
+  "Update": false,
   "ActiveSafetyOrdersCountRangesDealRules": [ ... ],  
   "ScalingTakeProfitDealRules": [ ... ],
   "SafetyOrderRangesDealRules": [ ... ]
 }
 ```
 There is a set of {} braces around the entire config, with at least 3 sections:
-- UpdateDeals can be true or false.
+- `Update` can be true or false.
   - true means the deals are updated as per the rule criteria
   - false means the deals that would be updated are shown but not updated. This is useful for testing your rules first.
 - [ScalingTakeProfitDealRules](ExampleConfigs-ScalingTakeProfits.md) is a rule type section that contains 1 or more rules of the same type
@@ -41,7 +41,7 @@ Each rule type section has rules within it.
 - the `...` in the examples below indicate snipped out content, this is for illustration only
 ```
 {
-  "UpdateDeals": false,
+  "Update": false,
   "ScalingTakeProfitDealRules": [
     {
       "Rule": "My first scaling rule",

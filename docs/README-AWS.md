@@ -86,7 +86,7 @@ It's useful to test rules without updating your deals. Here's how:
     - See [docs/ExampleConfigs.md](./docs/ExampleConfigs.md) for example configs with detailed explanations of rule settings
     - Click Save changes
     - Click Test and expand the Details and hopefully it runs!!
-      - If it ran successfully, you can change UpdateDeals to “true” and see if your deals get updated. 
+      - If it ran successfully, you can change `Update` to “true” and see if your deals get updated. 
       - It is strongly recommended to modify the rules’ include/exclude terms fields so that the number of deals that need updating is just a few to start with.
 
 ![image](https://user-images.githubusercontent.com/13062477/147366727-0626c45f-b4d8-4614-b5cc-5c47bcd3a18b.png)

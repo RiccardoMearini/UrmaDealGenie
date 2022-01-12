@@ -8,7 +8,7 @@ namespace UrmaDealGenie
   public class DealRuleSet // #### consider renaming as this is not just dealrules not, it's bots too
   {
     public bool LoadFromS3 { get; set; }
-    public bool UpdateDeals { get; set; } // #### consider renaming to UpdateMode so that it affects bot pairs and deal settings
+    public bool Update { get; set; }
     public List<LunarCrushAltRankPairRule> LunarCrushAltRankPairRules { get; set; }
     public List<LunarCrushGalaxyScorePairRule> LunarCrushGalaxyScorePairRule { get; set; }
     public List<ScalingTakeProfitDealRule> ScalingTakeProfitDealRules { get; set; }
@@ -26,6 +26,7 @@ namespace UrmaDealGenie
 
   public class LunarCrushPairRule
   {
+    public string Rule { get; set; }
     public int BotId { get; set; }
     public int MaxPairCount { get; set; }
     public string BlacklistPairs { get; set; }

@@ -1,5 +1,32 @@
 {
-  "UpdateDeals": true,
+  "Update": true,
+  "LunarCrushAltRankPairRules": [
+    {
+      "Rule": "Urma Conditions - Paper",
+      "BotId": 7703182,
+      "MaxPairCount": 10,
+      "MaxAcrScore": 1000,
+      "MaxCmcRank": 1000
+    },
+    {
+      "Rule": "Safira - Paper",
+      "BotId": 7665821,
+      "MaxPairCount": 10,
+      "MaxCmcRank": 250
+    },
+    {
+      "Rule": "Test - Real",
+      "BotId": 7709633,
+      "MaxPairCount": 5,
+      "MaxAcrScore": 500
+    },
+    {
+      "Rule": "Urma ASAP - Paper",
+      "BotId": 7732635,
+      "MaxPairCount": 20,
+      "MaxCmcRank": 150
+    }
+  ],
   "ActiveSafetyOrdersCountRangesDealRules": [
     {
       "Rule": "Urma MASTC 2 to 1",

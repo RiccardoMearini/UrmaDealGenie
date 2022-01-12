@@ -1,5 +1,5 @@
 # Safety Order Ranges Deal Rules examples
-NOTE: It is strongly recommended to test settings with the `"UpdateDeals": false` value set before you set it to true and update your deals. Make sure the number of deals the function says it thinks needs updating matches what you expect.
+NOTE: It is strongly recommended to test settings with the `"Update": false` value set before you set it to true and update your deals. Make sure the number of deals the function says it thinks needs updating matches what you expect.
 
 ## Example 1 - Set a specific Take Profit for each Safety Order
 This is the simplest use of this rule type, a directy mapping between Safety Order and Take Profit.
@@ -11,7 +11,7 @@ If you have a bot that increases volume to cover a big drop, but when you hit th
 ### Configuration
 ```
 {
-  "UpdateDeals": true,
+  "Update": true,
   "SafetyOrderRangesDealRules": [
     {
       "Rule": "Bots with 5 safeties",
@@ -28,13 +28,12 @@ If you have a bot that increases volume to cover a big drop, but when you hit th
         "5": 0.5
       }
     }
-  ],
-  "ScalingTakeProfitDealRules": [ ]
+  ]
 }
 ```
 
 ### Explanation of settings
-- `UpdateDeals` - deals will be updated
+- `Update` - deals will be updated
 - there is only 1 rule under the `SafetyOrderRangesDealRules` section that is named `Bots with 5 safeties` (name it as you wish)
 - the rule type is `SafetyOrderRangesDealRules` which tells Urma Deal Genie to lookup the TP based on the deal's current SO count
 - it defines 2 **include** terms `RedFive` and `hodl` which means the rule will match any deal that has a bot name like "My redfive" or "BTC RedFive Bot"

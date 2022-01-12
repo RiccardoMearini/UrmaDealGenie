@@ -30,19 +30,19 @@ namespace UrmaDealGenie
     public async Task<List<DealResponse>> ProcessRules(DealRuleSet dealRuleSet)
     {
       List<DealResponse> response = new List<DealResponse>();
+      var update = dealRuleSet.Update;
+      Console.WriteLine($"update = {update}");
 
       // Process the LunarCrush rule sets
       LunarCrushAltRank crush = new LunarCrushAltRank(this.XCommasClient);
       if (dealRuleSet.LunarCrushAltRankPairRules?.Any() ?? false)
       {
-        await crush.ProcessRules(dealRuleSet.LunarCrushAltRankPairRules);
+        await crush.ProcessRules(dealRuleSet.LunarCrushAltRankPairRules, update);
         // #### capture response for output
         // response.Add(updatedDeal);
       }
 
       await RetrieveAllDeals(); // #### Lazy load
-      var updateDeals = dealRuleSet.UpdateDeals;
-      Console.WriteLine($"updateDeals = {updateDeals}");
 
       if (dealRuleSet.ActiveSafetyOrdersCountRangesDealRules?.Any() ?? false)
       {
@@ -50,7 +50,7 @@ namespace UrmaDealGenie
         Console.WriteLine($"ActiveSafetyOrdersCountRangesDealRules.Count = {dealRuleSet.ActiveSafetyOrdersCountRangesDealRules.Count}");
         foreach (ActiveSafetyOrdersCountRangesDealRule dealRule in dealRuleSet.ActiveSafetyOrdersCountRangesDealRules)
         {
-          var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
+          var updatedDeal = await ProcessDealRule(dealRule, update);
           response.Add(updatedDeal);
         }
       }
@@ -61,7 +61,7 @@ namespace UrmaDealGenie
         Console.WriteLine($"SafetyOrderRangesDealRules.Count = {dealRuleSet.SafetyOrderRangesDealRules.Count}");
         foreach (SafetyOrderRangesDealRule dealRule in dealRuleSet.SafetyOrderRangesDealRules)
         {
-          var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
+          var updatedDeal = await ProcessDealRule(dealRule, update);
           response.Add(updatedDeal);
         }
       }
@@ -72,7 +72,7 @@ namespace UrmaDealGenie
         Console.WriteLine($"ScalingTakeProfitDealRules.Count = {dealRuleSet.ScalingTakeProfitDealRules.Count}");
         foreach (ScalingTakeProfitDealRule dealRule in dealRuleSet.ScalingTakeProfitDealRules)
         {
-          var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
+          var updatedDeal = await ProcessDealRule(dealRule, update);
           response.Add(updatedDeal);
         }
       }
