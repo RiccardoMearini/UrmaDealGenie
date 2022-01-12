@@ -17,7 +17,7 @@
     {
       "Rule": "Test Real",
       "BotId": 7709633,
-      "MaxPairCount": 10,
+      "MaxPairCount": 5,
       "MaxAcrScore": 500
     }   
   ],
