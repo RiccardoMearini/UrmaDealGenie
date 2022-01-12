@@ -45,8 +45,8 @@ namespace UrmaDealGenie
           // Loop through each ruleset updating bots
           // #### how to make each of these run sequentially?
           dealRuleSet.ForEach(rule => UpdateBotWithBestPairs(rule, lunarCrushData, blacklistPairs, cmcData.Data
-                                      .Select(cmcPair => cmcPair)
-                                      .Take(rule.MaxCmcRank == 0 ? DEFAULT_MAX_CMC_RANK : rule.MaxCmcRank)));
+                                        .Select(cmcPair => cmcPair)
+                                        .Take(rule.MaxCmcRank == 0 ? DEFAULT_MAX_CMC_RANK : rule.MaxCmcRank)));
         }
       }
     }
