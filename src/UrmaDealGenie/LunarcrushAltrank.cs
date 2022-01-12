@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using XCommas.Net;
 using XCommas.Net.Objects;
+using LunarCrush.Helpers;
 
 namespace UrmaDealGenie
 {
@@ -59,7 +60,7 @@ namespace UrmaDealGenie
       var minVolBtc24h = bot.MinVolumeBtc24h;
 
       // Max Altcoin Rank Score for all pairs for this bot
-      var maxAcrScore = dealRule.MaxAcrScore == 0 ? DEFAULT_MAX_ACR_SCORE : dealRule.MaxAcrScore;        
+      var maxAcrScore = dealRule.MaxAcrScore == 0 ? DEFAULT_MAX_ACR_SCORE : dealRule.MaxAcrScore;
 
       Console.WriteLine($"==================================================");
       Console.WriteLine($"Bot {bot.Id} - '{bot.Name}' current pairs:");
@@ -149,20 +150,27 @@ namespace UrmaDealGenie
     private async Task<LC.Root> GetLunarCrushData()
     {
       LC.Root lunarCrushData = null;
-      var request = BuildLunarCrushHttpRequest();
+      var request = BuildLunarCrushHttpRequest(await LunarCrushHelper.GetApiKey());
       // Console.WriteLine($"DEBUG: {this.GetType().Name} - RequestUri: {httpClient.BaseAddress}{request.RequestUri}");
 
       var result = httpClient.SendAsync(request);
       var response = await result.Result.Content.ReadAsStringAsync();
-      try
+      if (result.Result.StatusCode == System.Net.HttpStatusCode.OK)
       {
-        lunarCrushData = JsonSerializer.Deserialize<LC.Root>(response);
-        Console.WriteLine($"Retrieved '{lunarCrushData.Config.Sort}' LunarCrush data, top {lunarCrushData.Data.Count} pairs");
+        try
+        {
+          lunarCrushData = JsonSerializer.Deserialize<LC.Root>(response);
+          Console.WriteLine($"Retrieved '{lunarCrushData.Config.Sort}' LunarCrush data, top {lunarCrushData.Data.Count} pairs");
+        }
+        catch
+        {
+          Console.WriteLine($"LUNARCRUSH - FAILED TO DESERIALISE: Data:");
+          Console.WriteLine(response);
+        }
       }
-      catch
+      else
       {
-        Console.WriteLine($"FAILED TO DESERIALISE: Data:");
-        Console.WriteLine(response);
+        Console.WriteLine($"LUNARCRUSH - FAILED TO RETRIEVE: {result.Result.StatusCode} - {result.Result.ReasonPhrase}");
       }
       return lunarCrushData;
     }
@@ -180,7 +188,7 @@ namespace UrmaDealGenie
       return pair;
     }
 
-    private static HttpRequestMessage BuildLunarCrushHttpRequest()
+    private static HttpRequestMessage BuildLunarCrushHttpRequest(string apiKey)
     {
       var queryString = new Dictionary<string, string>()
       {
@@ -188,7 +196,7 @@ namespace UrmaDealGenie
         { "type", "fast" },
         { "sort", "acr" }, // acr = altrank, gs = galaxyscore
         { "limit", "100" },
-        { "key", "" },
+        { "key", apiKey },
         // { "desc", True}, #### Param only applicable for galaxyscore
       };
       var request = new HttpRequestMessage(HttpMethod.Get, QueryHelpers.AddQueryString("v2", queryString));
@@ -196,6 +204,7 @@ namespace UrmaDealGenie
       //Console.WriteLine($"DEBUG: BuildLunarCrushHttpRequest: {request.RequestUri}");
       return request;
     }
+
 
   }
 }

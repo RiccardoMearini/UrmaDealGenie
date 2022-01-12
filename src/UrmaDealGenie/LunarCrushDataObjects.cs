@@ -37,10 +37,10 @@ namespace LunarCrush.Objects
     public long Mc { get; set; }
 
     [JsonPropertyName("gs")]
-    public int Gs { get; set; }
+    public double Gs { get; set; }
 
     [JsonPropertyName("ss")]
-    public long Ss { get; set; }
+    public int Ss { get; set; }
 
     [JsonPropertyName("as")]
     public double As { get; set; }
@@ -103,7 +103,7 @@ namespace LunarCrush.Objects
     public string Data { get; set; }
 
     [JsonPropertyName("limit")]
-    public string Limit { get; set; }
+    public int Limit { get; set; }
 
     [JsonPropertyName("sort")]
     public string Sort { get; set; }
@@ -119,6 +119,12 @@ namespace LunarCrush.Objects
 
     [JsonPropertyName("btc")]
     public Btc Btc { get; set; }
+  }
+
+  public class Usage
+  {
+    [JsonPropertyName("total")]
+    public int Total { get; set; }
   }
 
   public class Datum
@@ -157,7 +163,7 @@ namespace LunarCrush.Objects
     public double Gs { get; set; }
 
     [JsonPropertyName("ss")]
-    public long Ss { get; set; }
+    public int Ss { get; set; }
 
     [JsonPropertyName("as")]
     public double As { get; set; }
@@ -213,32 +219,32 @@ namespace LunarCrush.Objects
     [JsonPropertyName("categories")]
     public string Categories { get; set; }
 
-    [JsonPropertyName("e2")]
-    public int? E2 { get; set; }
-
     [JsonPropertyName("df")]
-    public int? Df { get; set; }
+    public int Df { get; set; }
+
+    [JsonPropertyName("e2")]
+    public int E2 { get; set; }
+
+    [JsonPropertyName("nft")]
+    public int? Nft { get; set; }
+
+    [JsonPropertyName("dot")]
+    public int? Dot { get; set; }
 
     [JsonPropertyName("bsc")]
     public int? Bsc { get; set; }
 
     [JsonPropertyName("meme")]
     public int? Meme { get; set; }
-
-    [JsonPropertyName("dot")]
-    public int? Dot { get; set; }
-
-    [JsonPropertyName("nft")]
-    public int? Nft { get; set; }
-
-    [JsonPropertyName("sc")]
-    public int? Sc { get; set; }
   }
 
   public class Root
   {
     [JsonPropertyName("config")]
     public Config Config { get; set; }
+
+    [JsonPropertyName("usage")]
+    public Usage Usage { get; set; }
 
     [JsonPropertyName("data")]
     public List<Datum> Data { get; set; }
