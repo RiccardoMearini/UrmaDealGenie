@@ -5,8 +5,8 @@
       "Rule": "Urma Paper",
       "BotId": 7703182,
       "MaxPairCount": 10,
-      "BlacklistPairs": "USDT_BTC, USDT_ETH, USDT_ADA, USDT_XRP, USDT_BNB",
-      "MaxCmcRank": 250
+      "MaxAcrScore": 1000,
+      "MaxCmcRank": 1000
     },
     {
       "Rule": "Safira Paper",
@@ -15,10 +15,10 @@
       "MaxCmcRank": 250
     },
     {
-      "Rule": " Paper",
+      "Rule": "Test Real",
       "BotId": 7709633,
       "MaxPairCount": 10,
-      "MaxAcrScore": 1000
+      "MaxAcrScore": 500
     }   
   ],
   "ActiveSafetyOrdersCountRangesDealRules": [
@@ -35,7 +35,7 @@
   "SafetyOrderRangesDealRules": [
     {
       "Rule": "Urma Low TP Exit",
-      "BotNameIncludeTerms": "lauren",
+      "BotNameIncludeTerms": "stopped",
       "BotNameExcludeTerms": "",
       "IgnoreTtpDeals": true,
       "AllowTpReduction": true,
@@ -50,7 +50,7 @@
     {
       "Rule": "Urma SO scaling",
       "BotNameIncludeTerms": "urma,ftx",
-      "BotNameExcludeTerms": "hodl,lauren",
+      "BotNameExcludeTerms": "hodl",
       "IgnoreTtpDeals": true,
       "AllowTpReduction": false,
       "MaxSafetyOrderCount": 0,
