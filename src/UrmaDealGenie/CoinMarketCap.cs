@@ -51,6 +51,7 @@ namespace UrmaDealGenie
       else
       {
         Console.WriteLine($"GetCoinMarketCapData() - FAILED TO RETRIEVE: {result.Result.StatusCode} - {result.Result.ReasonPhrase}");          
+        Console.WriteLine($"GetCoinMarketCapData() - cmcApiKey: {this.cmcApiKey}");
       }
       return cmcData;
     }

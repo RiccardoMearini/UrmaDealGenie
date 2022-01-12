@@ -16,7 +16,7 @@ namespace UrmaDealGenie
   public class LunarCrushAltRank
   {
     private const int DEFAULT_MAX_ACR_SCORE = 1500;
-    private const int DEFAULT_MAX_CMC_RANK = 250;
+    private const int DEFAULT_MAX_CMC_RANK = 1500;
     private XCommasApi xCommasClient = null;
     private HttpClient httpClient = null;
 
@@ -43,10 +43,13 @@ namespace UrmaDealGenie
         if (cmcData != null)
         {
           // Loop through each ruleset updating bots
-          // #### how to make each of these run sequentially?
           dealRuleSet.ForEach(rule => UpdateBotWithBestPairs(rule, lunarCrushData, blacklistPairs, cmcData.Data
                                         .Select(cmcPair => cmcPair)
                                         .Take(rule.MaxCmcRank == 0 ? DEFAULT_MAX_CMC_RANK : rule.MaxCmcRank)));
+        }
+        else
+        {
+          dealRuleSet.ForEach(rule => UpdateBotWithBestPairs(rule, lunarCrushData, blacklistPairs, null));            
         }
       }
     }
@@ -68,7 +71,7 @@ namespace UrmaDealGenie
       Console.WriteLine($"Bot {bot.Id} - Pair base currency: {pairBase}");
       Console.WriteLine($"Bot {bot.Id} - Minimum 24h Volume in BTC: {minVolBtc24h}");
       Console.WriteLine($"Bot {bot.Id} - Max Altrank Score for found pairs: {maxAcrScore}");
-      Console.WriteLine($"Bot {bot.Id} - Max CoinMarketCap Rank for found pairs : {cmcData.Count()}");
+      Console.WriteLine($"Bot {bot.Id} - Max CoinMarketCap Rank for found pairs : {(cmcData == null ? 0 : cmcData.Count())}");
 
       // Get supported pairs on the bot's exchange
       var exchange = GetExchange(bot.AccountId);
@@ -91,7 +94,7 @@ namespace UrmaDealGenie
           && volBTC != 0 && volBTC >= minVolBtc24h
           && String.IsNullOrEmpty(Array.Find(blacklistPairs, blacklistPair => blacklistPair == pair))
           && !String.IsNullOrEmpty(Array.Find(exchangePairs.Data, exchangePair => exchangePair == pair))
-          && cmcData.Any(cmcPair => cmcPair.Symbol == crushData.S)
+          && (cmcData == null || (cmcData.Any(cmcPair => cmcPair.Symbol == crushData.S)))
         )
         {
           newPairs.Add(pair);
