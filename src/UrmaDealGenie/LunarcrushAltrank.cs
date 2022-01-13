@@ -34,7 +34,7 @@ namespace UrmaDealGenie
       var blacklistPairs = GetBlacklist().Result;
 
       // Get lunarcrush data
-      var lunarCrushData = await GetLunarCrushData(LunarCrushMetric.GalaxyScore);
+      var lunarCrushData = await GetLunarCrushData(LunarCrushMetric.Altrank);
       if (lunarCrushData != null)
       {
         // Get CoinMarketCap data (call just once, so find out the highest rank specified across the rules)
