@@ -50,7 +50,7 @@ namespace UrmaDealGenie
         }
         else
         {
-          dealRuleSet.ForEach(rule => UpdateBotWithBestPairs(rule, update, lunarCrushData, blacklistPairs, null));            
+          dealRuleSet.ForEach(rule => UpdateBotWithBestPairs(rule, update, lunarCrushData, blacklistPairs, null));
         }
       }
     }
@@ -68,8 +68,8 @@ namespace UrmaDealGenie
 
       Console.WriteLine($"==================================================");
       Console.WriteLine($"Bot {bot.Id} - Processing LunarCrushAltRankPairRule '{rule.Rule}'");
-      Console.WriteLine($"Bot {bot.Id} - '{bot.Name}' current pairs:");
-      Console.WriteLine($"Bot {bot.Id} - {String.Join(", ", pairs)}");
+      Console.WriteLine($"Bot {bot.Id} - '{bot.Name}' currently has {bot.MaxActiveDeals} Max Active Deals, and these pairs:");
+      Console.WriteLine($"Bot {bot.Id} -> {String.Join(", ", pairs)}");
       Console.WriteLine($"Bot {bot.Id} - Pair base currency: {pairBase}");
       Console.WriteLine($"Bot {bot.Id} - Minimum 24h Volume in BTC: {minVolBtc24h}");
       Console.WriteLine($"Bot {bot.Id} - Max Altrank Score for found pairs: {maxAcrScore}");
@@ -83,6 +83,10 @@ namespace UrmaDealGenie
       // BTC price in USDT
       var btcUsdtPrice3C = this.xCommasClient.GetCurrencyRate("USDT_BTC", exchange.MarketCode).Data.Last;
       Console.WriteLine($"Bot {bot.Id} - BTC price on {exchange.MarketCode} exchange ${btcUsdtPrice3C}");
+
+      // Find pairs up the max of either the rule's MaxPairCount, or the bot's MaxActiveDeals
+      var maxPairCount = Math.Max(rule.MaxPairCount, bot.MaxActiveDeals);
+      Console.WriteLine($"Bot {bot.Id} - looking for {maxPairCount} pairs in LunarCrush data");
 
       var newPairs = new List<string>();
       foreach (LC.Datum crushData in lunarCrushData.Data)
@@ -100,37 +104,29 @@ namespace UrmaDealGenie
         )
         {
           newPairs.Add(pair);
-          if (newPairs.Count == rule.MaxPairCount) break;
+          if (newPairs.Count == maxPairCount) break;
         }
       }
 
-      // #### update only if config allows update
-      // otherwise just return what would get changed, just like dealrules
-      var containSamePairs = new HashSet<string>(newPairs).SetEquals(bot.Pairs);
-      if (containSamePairs)
+      if (update)
       {
-        Console.WriteLine($"Bot {bot.Id} - already has best pairs, no changes for bot '{bot.Name}'");
+        var containSamePairs = new HashSet<string>(newPairs).SetEquals(bot.Pairs);
+        if (containSamePairs)
+        {
+          Console.WriteLine($"Bot {bot.Id} - already has {newPairs.Count} best pairs, no change for bot '{bot.Name}'");
+        }
+        else
+        {
+          Console.WriteLine($"Bot {bot.Id} - replacing {newPairs.Count} best pairs for bot '{bot.Name}':");
+          Console.WriteLine($"Bot {bot.Id} -> {String.Join(", ", newPairs)}");
+          var updateData = new BotUpdateData(bot) { Pairs = newPairs.ToArray() };
+          this.xCommasClient.UpdateBot(bot.Id, updateData);
+        }
       }
       else
       {
-        Console.WriteLine($"Bot {bot.Id} - NEW PAIRS for bot '{bot.Name}':");
-        Console.WriteLine($"Bot {bot.Id} -> {String.Join(", ", newPairs)}");
-        if (update)
-        {
-          UpdateBot(bot, newPairs.ToArray());
-        }
-        Console.WriteLine($"Bot {bot.Id} - {(update ? "Bot updated" : "Update mode disabled - no changes made")}");
+        Console.WriteLine($"Bot {bot.Id} - Update mode disabled - no changes made");
       }
-    }
-
-    private XCommasResponse<Bot> UpdateBot(Bot bot, string[] newPairs)
-    {
-      var updateData = new BotUpdateData(bot)
-      {
-        MaxActiveDeals = newPairs.Length,
-        Pairs = newPairs,
-      };
-      return this.xCommasClient.UpdateBot(bot.Id, updateData);
     }
 
     private Account GetExchange(int accountId)
@@ -216,7 +212,7 @@ namespace UrmaDealGenie
         { "limit", "100" },
         { "key", apiKey },
       };
-      if (metric == LunarCrushMetric.GalaxyScore) 
+      if (metric == LunarCrushMetric.GalaxyScore)
       {
         queryString["desc"] = "true";
       }
@@ -226,7 +222,5 @@ namespace UrmaDealGenie
       //Console.WriteLine($"DEBUG: BuildLunarCrushHttpRequest: {request.RequestUri}");
       return request;
     }
-
-
   }
 }

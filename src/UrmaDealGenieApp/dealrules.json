@@ -4,20 +4,20 @@
     {
       "Rule": "Urma Conditions - Paper",
       "BotId": 7703182,
-      "MaxPairCount": 10,
+      "MaxPairCount": 15,
       "MaxAcrScore": 1000,
       "MaxCmcRank": 1000
     },
     {
       "Rule": "Safira - Paper",
       "BotId": 7665821,
-      "MaxPairCount": 10,
+      "MaxPairCount": 15,
       "MaxCmcRank": 250
     },
     {
       "Rule": "Test - Real",
       "BotId": 7709633,
-      "MaxPairCount": 5,
+      "MaxPairCount": 10,
       "MaxAcrScore": 500
     },
     {
