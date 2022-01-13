@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using XCommas.Net;
 using XCommas.Net.Objects;
 using LunarCrush.Helpers;
+using LunarCrush.Objects;
 
 namespace UrmaDealGenie
 {
@@ -33,7 +34,7 @@ namespace UrmaDealGenie
       var blacklistPairs = GetBlacklist().Result;
 
       // Get lunarcrush data
-      var lunarCrushData = await GetLunarCrushData(); // #### enum param for altrank/gs etc?
+      var lunarCrushData = await GetLunarCrushData(LunarCrushMetric.GalaxyScore);
       if (lunarCrushData != null)
       {
         // Get CoinMarketCap data (call just once, so find out the highest rank specified across the rules)
@@ -54,18 +55,19 @@ namespace UrmaDealGenie
       }
     }
 
-    public void UpdateBotWithBestPairs(LunarCrushAltRankPairRule dealRule, bool update, LC.Root lunarCrushData, string[] blacklistPairs, IEnumerable<CMC.Datum> cmcData)
+    public void UpdateBotWithBestPairs(LunarCrushAltRankPairRule rule, bool update, LC.Root lunarCrushData, string[] blacklistPairs, IEnumerable<CMC.Datum> cmcData)
     {
       // Get the bot and current pairs
-      var bot = this.xCommasClient.ShowBot(dealRule.BotId).Data;
+      var bot = this.xCommasClient.ShowBot(rule.BotId).Data;
       var pairs = bot.Pairs;
       var pairBase = bot.Pairs[0].Split('_')[0];
       var minVolBtc24h = bot.MinVolumeBtc24h;
 
       // Max Altcoin Rank Score for all pairs for this bot
-      var maxAcrScore = dealRule.MaxAcrScore == 0 ? DEFAULT_MAX_ACR_SCORE : dealRule.MaxAcrScore;
+      var maxAcrScore = rule.MaxAcrScore == 0 ? DEFAULT_MAX_ACR_SCORE : rule.MaxAcrScore;
 
       Console.WriteLine($"==================================================");
+      Console.WriteLine($"Bot {bot.Id} - Processing LunarCrushAltRankPairRule '{rule.Rule}'");
       Console.WriteLine($"Bot {bot.Id} - '{bot.Name}' current pairs:");
       Console.WriteLine($"Bot {bot.Id} - {String.Join(", ", pairs)}");
       Console.WriteLine($"Bot {bot.Id} - Pair base currency: {pairBase}");
@@ -98,7 +100,7 @@ namespace UrmaDealGenie
         )
         {
           newPairs.Add(pair);
-          if (newPairs.Count == dealRule.MaxPairCount) break;
+          if (newPairs.Count == rule.MaxPairCount) break;
         }
       }
 
@@ -157,10 +159,10 @@ namespace UrmaDealGenie
       return response.Pairs;
     }
 
-    private async Task<LC.Root> GetLunarCrushData()
+    private async Task<LC.Root> GetLunarCrushData(LunarCrushMetric metric)
     {
       LC.Root lunarCrushData = null;
-      var request = BuildLunarCrushHttpRequest(await LunarCrushHelper.GetApiKey());
+      var request = BuildLunarCrushHttpRequest(await LunarCrushHelper.GetApiKey(), metric);
       // Console.WriteLine($"DEBUG: {this.GetType().Name} - RequestUri: {httpClient.BaseAddress}{request.RequestUri}");
 
       var result = httpClient.SendAsync(request);
@@ -170,7 +172,7 @@ namespace UrmaDealGenie
         try
         {
           lunarCrushData = JsonSerializer.Deserialize<LC.Root>(response);
-          Console.WriteLine($"Retrieved '{lunarCrushData.Config.Sort}' LunarCrush data, top {lunarCrushData.Data.Count} pairs");
+          Console.WriteLine($"Retrieved '{metric}' LunarCrush data, top {lunarCrushData.Data.Count} pairs");
         }
         catch
         {
@@ -198,17 +200,27 @@ namespace UrmaDealGenie
       return pair;
     }
 
-    private static HttpRequestMessage BuildLunarCrushHttpRequest(string apiKey)
+    private static HttpRequestMessage BuildLunarCrushHttpRequest(string apiKey, LunarCrushMetric metric)
     {
+      string metricSort = "";
+      switch (metric)
+      {
+        case LunarCrushMetric.Altrank: metricSort = "acr"; break;
+        case LunarCrushMetric.GalaxyScore: metricSort = "gs"; break;
+      };
       var queryString = new Dictionary<string, string>()
       {
         { "data", "market" },
         { "type", "fast" },
-        { "sort", "acr" }, // acr = altrank, gs = galaxyscore
+        { "sort", metricSort },
         { "limit", "100" },
         { "key", apiKey },
-        // { "desc", True}, #### Param only applicable for galaxyscore
       };
+      if (metric == LunarCrushMetric.GalaxyScore) 
+      {
+        queryString["desc"] = "true";
+      }
+
       var request = new HttpRequestMessage(HttpMethod.Get, QueryHelpers.AddQueryString("v2", queryString));
       request.Headers.Add("Accept", "application/json");
       //Console.WriteLine($"DEBUG: BuildLunarCrushHttpRequest: {request.RequestUri}");
