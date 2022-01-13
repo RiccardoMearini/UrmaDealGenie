@@ -46,7 +46,7 @@ namespace UrmaDealGenie
 
       if (dealRuleSet.ActiveSafetyOrdersCountRangesDealRules?.Any() ?? false)
       {
-        Console.WriteLine($"======================");
+        Console.WriteLine($"==================================================");
         Console.WriteLine($"ActiveSafetyOrdersCountRangesDealRules.Count = {dealRuleSet.ActiveSafetyOrdersCountRangesDealRules.Count}");
         foreach (ActiveSafetyOrdersCountRangesDealRule dealRule in dealRuleSet.ActiveSafetyOrdersCountRangesDealRules)
         {
@@ -57,7 +57,7 @@ namespace UrmaDealGenie
 
       if (dealRuleSet.SafetyOrderRangesDealRules?.Any() ?? false)
       {
-        Console.WriteLine($"======================");
+        Console.WriteLine($"==================================================");
         Console.WriteLine($"SafetyOrderRangesDealRules.Count = {dealRuleSet.SafetyOrderRangesDealRules.Count}");
         foreach (SafetyOrderRangesDealRule dealRule in dealRuleSet.SafetyOrderRangesDealRules)
         {
@@ -68,7 +68,7 @@ namespace UrmaDealGenie
 
       if (dealRuleSet.ScalingTakeProfitDealRules?.Any() ?? false)
       {
-        Console.WriteLine($"======================");
+        Console.WriteLine($"==================================================");
         Console.WriteLine($"ScalingTakeProfitDealRules.Count = {dealRuleSet.ScalingTakeProfitDealRules.Count}");
         foreach (ScalingTakeProfitDealRule dealRule in dealRuleSet.ScalingTakeProfitDealRules)
         {
@@ -575,6 +575,7 @@ namespace UrmaDealGenie
     {
       if (this.cachedDeals == null || this.cachedDeals.Count == 0)
       {
+        Console.WriteLine($"==================================================");
         var response = await XCommasClient.GetDealsAsync(limit: 100, dealScope: DealScope.Active, dealOrder: DealOrder.CreatedAt);
         if (response.IsSuccess)
         {
