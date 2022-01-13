@@ -29,7 +29,7 @@ namespace UrmaDealGenie
     public string Rule { get; set; }
     public int BotId { get; set; }
     public int MaxPairCount { get; set; }
-    public string BlacklistPairs { get; set; }
+    public string BlacklistCoins { get; set; }
     public int MaxAcrScore { get; set; }
     public int MaxCmcRank { get; set; }
 

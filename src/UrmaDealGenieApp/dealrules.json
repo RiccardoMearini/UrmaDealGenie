@@ -17,6 +17,7 @@
     {
       "Rule": "Test - Real",
       "BotId": 7709633,
+      "BlacklistCoins": "BTC,SHIB,DOGE,ADA,NEAR",
       "MaxPairCount": 10,
       "MaxAcrScore": 500
     },

@@ -74,11 +74,19 @@ namespace UrmaDealGenie
       Console.WriteLine($"Bot {bot.Id} - Minimum 24h Volume in BTC: {minVolBtc24h}");
       Console.WriteLine($"Bot {bot.Id} - Max Altrank Score for found pairs: {maxAcrScore}");
       Console.WriteLine($"Bot {bot.Id} - Max CoinMarketCap Rank for found pairs : {(cmcData == null ? 0 : cmcData.Count())}");
-
       // Get supported pairs on the bot's exchange
       var exchange = GetExchange(bot.AccountId);
       var exchangePairs = this.xCommasClient.GetMarketPairs(exchange.MarketCode); // #### do this once per exchange and cache result
       Console.WriteLine($"Bot {bot.Id} - Found {exchangePairs.Data.Length} pairs on '{this.xCommasClient.UserMode}' mode account '{exchange.Name}' exchange {exchange.MarketCode}");
+      // Add any additional blacklist pairs from this rule
+      if (!string.IsNullOrEmpty(rule.BlacklistCoins))
+      {
+        var ruleBlacklist = rule.BlacklistCoins.Split(',').Select(coin => FormatPair(coin, pairBase, exchange.MarketCode));
+        Console.WriteLine($"Bot {bot.Id} - Additional blacklist pairs from this rule:");
+        Console.WriteLine($"Bot {bot.Id} -> {String.Join(", ", ruleBlacklist)}");
+        blacklistPairs = ruleBlacklist.Concat(blacklistPairs).Distinct().ToArray();
+      }
+
 
       // BTC price in USDT
       var btcUsdtPrice3C = this.xCommasClient.GetCurrencyRate("USDT_BTC", exchange.MarketCode).Data.Last;
