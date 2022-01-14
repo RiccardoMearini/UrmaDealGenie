@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Amazon;
 using Amazon.Lambda.APIGatewayEvents;
@@ -17,7 +18,11 @@ namespace UrmaDealGenie
   /// </summary>
   public class Function
   {
-    private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions { WriteIndented = false };
+    private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions { 
+      WriteIndented = true,
+      Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) } 
+    };
+
     private Urma3cClient client = null;
 
     /// <summary>

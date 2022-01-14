@@ -2,36 +2,37 @@
   "Update": false,
   "LunarCrushPairRules": [
     {
-      "Rule": "Urma Conditions - Paper",
-      "BotId": 7703182,
-      "Metric": "GalaxyScore",
-      "MaxMetricScore": 2000,
-      "MaxCmcRank": 200,
-      "BlacklistCoins": "BTC,ETH,BNB,ADA,XRP",
-      "MaxPairCount": 10
-    },
-    {
       "Rule": "Safira - Paper",
       "BotId": 7665821,
       "Metric": "Altrank",
+      "MaxMetricScore": 1000,
+      "MaxCmcRank": 200,
+      "MaxPairCount": 15
+    },
+    {
+      "Rule": "Gala - Paper",
+      "BotId": 7732635,
+      "Metric": "GalaxyScore",
+      "MaxMetricScore": 200,
+      "MaxCmcRank": 200,
+      "MaxPairCount": 1
+    },
+    {
+      "Rule": "Urma Conditions - Paper",
+      "BotId": 7703182,
+      "Metric": "GalaxyScore",
       "MaxMetricScore": 1500,
-      "MaxCmcRank": 150,
-      "MaxPairCount": 10
+      "MaxCmcRank": 200,
+      "BlacklistCoins": "BTC,ETH,BNB,ADA,XRP",
+      "MaxPairCount": 15
     },
     {
       "Rule": "Urma ASAP - Paper",
       "BotId": 7732635,
       "Metric": "GalaxyScore",
-      "MaxMetricScore": 750,
-      "MaxCmcRank": 100,
+      "MaxMetricScore": 1500,
+      "MaxCmcRank": 150,
       "MaxPairCount": 20
-    },
-    {
-      "Rule": "Test - Real",
-      "BotId": 7709633,
-      "Metric": "Altrank",
-      "MaxMetricScore": 500,
-      "MaxPairCount": 5
     }
   ],
   "ActiveSafetyOrdersCountRangesDealRules": [
