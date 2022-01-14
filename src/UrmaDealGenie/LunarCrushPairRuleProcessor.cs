@@ -43,8 +43,8 @@ namespace UrmaDealGenie
       if (dealRuleSet.Any(rule => rule.Metric == LunarCrushMetric.GalaxyScore))
       {
         // Process all LunarCrush GalaxyScore data and rules
-        var lunarCrushAltrankData = await GetLunarCrushData(LunarCrushMetric.GalaxyScore);
-        await ProcessLunarCrushData(lunarCrushAltrankData, dealRuleSet.Where(rule => rule.Metric == LunarCrushMetric.GalaxyScore).ToList(), blacklistPairs, update);
+        var lunarCrushGalaxyData = await GetLunarCrushData(LunarCrushMetric.GalaxyScore);
+        await ProcessLunarCrushData(lunarCrushGalaxyData, dealRuleSet.Where(rule => rule.Metric == LunarCrushMetric.GalaxyScore).ToList(), blacklistPairs, update);
       }
     }
 
@@ -83,7 +83,7 @@ namespace UrmaDealGenie
       var maxMetricScore = rule.MaxMetricScore == 0 ? DEFAULT_MAX_METRIC_SCORE : rule.MaxMetricScore;
 
       Console.WriteLine($"==================================================");
-      Console.WriteLine($"Bot {bot.Id} - Processing LunarCrushPairRule '{rule.Rule}'");
+      Console.WriteLine($"Bot {bot.Id} - Processing LunarCrushPairRule '{rule.Metric}' metric, for rule '{rule.Rule}'");
       Console.WriteLine($"Bot {bot.Id} - '{bot.Name}' currently has {bot.MaxActiveDeals} Max Active Deals, and these pairs:");
       Console.WriteLine($"Bot {bot.Id} -> {String.Join(", ", pairs)}");
       Console.WriteLine($"Bot {bot.Id} - Pair base currency: {pairBase}");
