@@ -3,12 +3,6 @@ using System.Text.Json.Serialization;
 
 namespace LunarCrush.Objects
 {
-  public enum LunarCrushMetric
-  {
-    Altrank,
-    GalaxyScore
-  }
-
   // Root myDeserializedClass = JsonSerializer.Deserialize<Root>(myJsonResponse);
   public class Btc
   {

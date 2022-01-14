@@ -34,10 +34,10 @@ namespace UrmaDealGenie
       Console.WriteLine($"update = {update}");
 
       // Process the LunarCrush rule sets
-      LunarCrushAltRank crush = new LunarCrushAltRank(this.XCommasClient);
-      if (dealRuleSet.LunarCrushAltRankPairRules?.Any() ?? false)
+      LunarCrushPairRuleProcessor crush = new LunarCrushPairRuleProcessor(this.XCommasClient);
+      if (dealRuleSet.LunarCrushPairRules?.Any() ?? false)
       {
-        await crush.ProcessRules(dealRuleSet.LunarCrushAltRankPairRules, update);
+        await crush.ProcessRules(dealRuleSet.LunarCrushPairRules, update);
         // #### capture response for output
         // response.Add(updatedDeal);
       }
