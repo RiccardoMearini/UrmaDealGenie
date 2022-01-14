@@ -102,6 +102,9 @@ namespace LunarCrush.Objects
     [JsonPropertyName("data")]
     public string Data { get; set; }
 
+    [JsonPropertyName("desc")]
+    public string Desc { get; set; }
+
     [JsonPropertyName("limit")]
     public int Limit { get; set; }
 
@@ -220,10 +223,10 @@ namespace LunarCrush.Objects
     public string Categories { get; set; }
 
     [JsonPropertyName("df")]
-    public int Df { get; set; }
+    public int? Df { get; set; }
 
     [JsonPropertyName("e2")]
-    public int E2 { get; set; }
+    public int? E2 { get; set; }
 
     [JsonPropertyName("nft")]
     public int? Nft { get; set; }
