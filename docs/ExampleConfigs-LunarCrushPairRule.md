@@ -1,19 +1,20 @@
 # LunarCrush Pair Rule
-This rule changes 1 bot's pairs according to the top ranked coins on LunarCrush, either the Altrank or GalaxyScore. 
+This rule changes a bot's pairs according to the top ranked coins on LunarCrush, either the Altrank or GalaxyScore. 
 
-Currently LunarCrush does not need an account or user specific API key to work. This may change in 2022 Q2 when LunarCrush changes their API.
+**NOTE:** Currently LunarCrush does not need an account or user specific API key to work. This may change in 2022 Q2 when LunarCrush changes their API.
 
 ## How to use this rule
 - Create a single or multipair bot in 3Commas (paper or real) and decide it's settings, start conditions etc.
-- Decide your max active deals (if multipair) and give the bot some random pairs to start with (the rule will overwrite them)
+- Set your Max Active Deals (if multipair) and give the bot some random pairs (of same base pair, e.g. BUSD, USDT etc) to start with (the rule will overwrite them)
 - Save but DO NO START the bot
-- Now get the BotId for the bot you want to change pairs - this is the 8 digit BotId from the address bar when you edit a bot in 3Commas.
-- Create a rule in dealrules.json as per examples below
-- Run UrmaDealGenie with this rule once so that it updates the pairs
-- Check the bot in 3commas to see the pairs are update
+- Now get the `BotId` for the bot you want to change pairs - this is the 8 digit BotId from the address bar when you edit a bot in 3Commas.
+- Create a `LunarCrushPairRules` rule in dealrules.json as per examples below
+- Run UrmaDealGenie with this rule at least once so that it updates the pairs
+- Check the bot in 3Commas to see the pairs are updated
 - Start the bot!
 
 ## What the rule does
+Each time the rule is run (default 5 minutes) the rule will:
 - find coins up to the MaxPairCount (or your bot's Max Active Deals, which ever is higher)
 - it will NOT update Max Active Deals on your bot, it will only update the pairs
 - it finds coins that are not stablecoins, not in the 3commas blacklist and not in the rule's blacklist
