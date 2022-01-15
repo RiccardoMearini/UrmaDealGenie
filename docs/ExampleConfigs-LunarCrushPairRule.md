@@ -21,7 +21,7 @@ Each time the rule is run (default 5 minutes) the rule will:
 - all pairs returned will match the base pair of your bot (e.g. if your bot is BUSD_SOL, BUSD_DOGE, BUSD_LUNA, then it knows your base is BUSD)
 - only pairs on your bot's exchange will be returned
 - it will not return pairs that are higher than the MaxMetricScore (default is 1500)
-- if you have a CoinMarketCap API key, you can specify that in the UrmaDealGenie installation or environment settings, and the UrmaDealGenie will not return pairs that are higher than the MaxCmcRank (default is 200, which is the free credit threshold in CoinMarketCap API)
+- if you have a [CoinMarketCap API key](README-CONSOLE-APPLICATION.md#setup-and-run), you can specify that in the UrmaDealGenie installation or environment settings, and the UrmaDealGenie will not return pairs that are higher than the MaxCmcRank (default is 200, which is the free credit threshold in CoinMarketCap API)
 
 # LunarCrush Bot Pair Rules examples
 
