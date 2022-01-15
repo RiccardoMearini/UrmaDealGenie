@@ -54,9 +54,9 @@ Selecting trending coins. Consider running a bot that has RSI and TradingView bu
 - `Update` - deals will be updated
 - there is only 1 rule under the `LunarCrushPairRules` section that is named `Urma with Start Conditions - Paper` (name it as you wish)
 - the rule type is `LunarCrushPairRules` which tells Urma Deal Genie to find LunarCrush data
-- it defines a BotId (one per rule) and you can specify Single or MultiPair (composite) bots
-- the Metric is the text "Altrank" which tells Urma Deal Genie to get Altrank data ordered by ascending rank (best first)
-- there is a MaxPairCount of 10 so only that many coin pairs will be returned
+- it defines a `BotId` (one per rule) and you can specify Single or MultiPair (composite) bots
+- the `Metric` is the text `"Altrank"` which tells Urma Deal Genie to get Altrank data ordered by ascending rank (best first)
+- there is a `MaxPairCount` of 10 so only that many coin pairs will be returned
 
 ## Example 2 - LunarCrush GalaxyScore restricted by blacklist and CoinMarketCap rank
 This example is using a bot that is in a paper trade account.
@@ -88,7 +88,7 @@ Selecting safer trending coins that you are more likely comfortable holding if t
 - `Update` - deals will be updated
 - there is only 1 rule under the `LunarCrushPairRules` section that is named `Urma GalaxyScore - Paper` (name it as you wish)
 - the rule type is `LunarCrushPairRules` which tells Urma Deal Genie to find LunarCrush data
-- it defines a BotId (one per rule) and you can specify Single or MultiPair (composite) bots
-- the Metric is the text "GalaxyScore" which tells Urma Deal Genie to get GalaxyScore data ordered by descending GalaxyScore rank (best first)
-- the blacklist of coins ensures the comma separated coin token names will not be returned by this rule, in addition to your 3Commas blacklist
-- there is a MaxPairCount of 5 so only that many coin pairs will be returned
+- it defines a `BotId` (one per rule) and you can specify Single or MultiPair (composite) bots
+- the `Metric` is the text `"GalaxyScore"` which tells Urma Deal Genie to get GalaxyScore data ordered by descending GalaxyScore rank (best first)
+- the `BlacklistCoins` ensures the comma separated coin token names will not be returned by this rule, in addition to your 3Commas blacklist
+- there is a `MaxPairCount` of 5 so only that many coin pairs will be returned
