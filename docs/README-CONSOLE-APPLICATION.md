@@ -12,7 +12,7 @@ To install and configure the Urma Deal Genie console application:
    - `appsettings.json`
    - `dealrules.json`
    - `UrmaDealGenieApp-win10-x64.exe`, or `UrmaDealGenieApp-osx-x64` or `UrmaDealGenieApp-linux-x64`
-4. Edit `dealrules.json` file on your machine to match your bots. See [docs/ExampleConfigs.md](./docs/ExampleConfigs.md) for example configs with detailed explanations of rule settings
+4. Edit `dealrules.json` file on your machine to match your bots. See [docs/ExampleConfigs.md](./ExampleConfigs.md) for example configs with detailed explanations of rule settings
 5. Open a command/terminal window:
    - On Windows go to Start->Command Prompt
    - On Mac launch Terminal
