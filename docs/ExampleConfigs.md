@@ -4,9 +4,9 @@
 - Deal rules are specified in JSON format, and [must be valid](https://jsonlint.com/)
 - Each rule is applied in the order defined in the JSON file
 - Rules are applied in 2 parts
-  - finding matching deals based on a set of criteria
-  - applying changes to deals (e.g. the TP)
-- Multiple rules could be applied to the same deal, but this isn't recommended
+  - finding matching deals/bots based on a set of criteria
+  - applying changes to deals/bots (e.g. change the deal's TP or bot's pairs)p
+- Multiple rules could be applied to the same deal, e.g. LunarCrush rule to select pairs, and Safety Order Ranges to change the TP%)
 - Most of the configuration is made up of key/value pairs
   - these pairs are separated by a colon `:`
   - keys are on the left side of a colons, and enclosed in quotes `"`
@@ -18,19 +18,21 @@ The JSON snippet below shows the overall structure of a configuration.
 ```
 {
   "Update": false,
+  "LunarCrushPairRules": [ ... ],  
   "ActiveSafetyOrdersCountRangesDealRules": [ ... ],  
   "ScalingTakeProfitDealRules": [ ... ],
   "SafetyOrderRangesDealRules": [ ... ]
 }
 ```
-There is a set of {} braces around the entire config, with at least 3 sections:
+There is a set of {} braces around the entire config, with at least 1 section:
 - `Update` can be true or false.
   - true means the deals are updated as per the rule criteria
   - false means the deals that would be updated are shown but not updated. This is useful for testing your rules first.
-- [ScalingTakeProfitDealRules](ExampleConfigs-ScalingTakeProfits.md) is a rule type section that contains 1 or more rules of the same type
-- [SafetyOrderRangesDealRules](ExampleConfigs-SafetyOrderRanges.md) is a rule type section that contains 1 or more rules of the same type
-- [ActiveSafetyOrdersCountRangesDealRules](ExampleConfigs-ActiveSafetyOrdersCount.md) is a rule type section that contains 1 or more rultes of the same type
-- You must have at least 1 rule of any type
+- [LunarCrushPairRules](ExampleConfigs-LunarCrushPairRules.md) is a bot rule type section that contains 1 or more rules of the same type
+- [ScalingTakeProfitDealRules](ExampleConfigs-ScalingTakeProfits.md) is a deal rule type section that contains 1 or more rules of the same type
+- [SafetyOrderRangesDealRules](ExampleConfigs-SafetyOrderRanges.md) is a deal rule type section that contains 1 or more rules of the same type
+- [ActiveSafetyOrdersCountRangesDealRules](ExampleConfigs-ActiveSafetyOrdersCount.md) is a deal rule type section that contains 1 or more rultes of the same type
+- You can omit a rule type section completely if you are not using that rule.
 
 ## Defining Multiple Rules
 Each rule type section has rules within it.
@@ -42,6 +44,16 @@ Each rule type section has rules within it.
 ```
 {
   "Update": false,
+  "LunarCrushPairRules": [
+    {
+      "Rule": "My LunarCrush rule",
+      ...
+    },
+    {
+      "Rule": "Another rule that uses LunarCrush",
+      ...
+    }
+  ],
   "ScalingTakeProfitDealRules": [
     {
       "Rule": "My first scaling rule",
@@ -75,6 +87,7 @@ Each rule type section has rules within it.
 }
 ```
 ## Examples by Rule Type
+- [LunarCrushPairRules](ExampleConfigs-LunarCrushPairRules.md)
 - [Scaling Take Profit Deal Rules](ExampleConfigs-ScalingTakeProfits.md)
 - [Safety Order Ranges Deal Rules](ExampleConfigs-SafetyOrderRanges.md)
 - [ActiveSafetyOrdersCountRangesDealRules](ExampleConfigs-ActiveSafetyOrdersCount.md) 
