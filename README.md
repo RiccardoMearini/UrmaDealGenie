@@ -1,9 +1,20 @@
 # Urma-Gurd's 3Commas Deal Genie
-This is a simple function that runs every few minutes, and updates bots and deals with configured [rules](docs/ExampleConfigs.md), e.g. change a deal's Take Profit % (TP) or change a bot's pairs based on coin rankings like LunarCrush and CoinMarketCap.  It can be run as a cloud hosted Amazon Web Services (AWS) Lambda Function (preferred!), a standalone console application or a Docker container.
+This is a 3Commas deal and bot editing platform that runs every few minutes to update bots and deals with configured [rules](docs/ExampleConfigs.md), e.g. change a deal's Take Profit % (TP) or change a bot's pairs based on coin rankings like LunarCrush and CoinMarketCap.
+
+It can be run as a cloud hosted Amazon Web Services (AWS) Lambda Function (preferred!), as a standalone console application or a Docker container.
 
 Typically Urma Deal Genie is used to automatically increase TP% as your bot deals buy more safety orders, so that they take advantage of the extra volume and volatility to make more profit. This strategy works really well with the [Urma DCA bot settings](docs/UrmaBotSettings.md) which scale volume at a high rate over a small number of safety orders. 
 
-**NOTE:** Currently this doesn't work with Paper Trade accounts - thanks to "De smikkelman" for discovering this limitation! Eventually I'll fix this.
+**NOTE:** Currently the deal TP% rules don't work with Paper Trade accounts! This will be fixed soon to work like the LunarCrush bot pair rule that does support paper account.
+
+# UrmaDealGenie Bot and Deal Rules
+These are the rules which UrmaDealGenie currently supports:
+- [LunarCrush Metrics](docs/ExampleConfigs-LunarCrushMetrics.md) (change a bot's pairs based on LunarCrush Galaxy or Altrank metrics and optionally CoinMarketCap rank)
+- [Scaling Take Profits](docs/ExampleConfigs-ScalingTakeProfits.md) (set Take Profit % based on a scaling factor applied to the current Safety Order)
+- [Safety Order Ranges](docs/ExampleConfigs-SafetyOrderRanges.md) (set Take Profit % based on a Safety Order ranges)
+- [Active Safety Orders Count Ranges](docs/ExampleConfigs-ActiveSafetyOrdersCount.md) (aka set Max Active Safety Trade Count MASTC based on Safety Order ranges)
+
+See the [example deal rules](docs/ExampleConfigs.md) for more details of how to define rules.
 
 # Donations
 If you got some value out of this project, please consider donating. A lot of time and effort went into creating this, and I'm hoping to expand the functionality to include more deal rules and functionality.
@@ -40,15 +51,6 @@ If you haven't already, go checkout [TradeAlt's Trading Bots](https://youtu.be/z
 The Urma Deal Genie works with DCA bot deals, and uses bot names to determine which deals to apply rules to. So try to name your bots with meaningful names that represent the strategy of that bot. e.g. "TA Safer BUSD" or "BTC HODL" or "Urma 250"
 
 Checkout the [Urma DCA bot settings](docs/UrmaBotSettings.md) for a low budget, higher profit alternative to TradeAlt's settings.
-
-# UrmaDealGenie Bot and Deal Rules
-These are the rules which UrmaDealGenie currently supports:
-- [LunarCrush Metrics](docs/ExampleConfigs-LunarCrushMetrics.md) (change a bot's pairs based on LunarCrush Galaxy or Altrank metrics and optionally CoinMarketCap rank)
-- [Scaling Take Profits](docs/ExampleConfigs-ScalingTakeProfits.md) (set Take Profit % based on a scaling factor applied to the current Safety Order)
-- [Safety Order Ranges](docs/ExampleConfigs-SafetyOrderRanges.md) (set Take Profit % based on a Safety Order ranges)
-- [Active Safety Orders Count Ranges](docs/ExampleConfigs-ActiveSafetyOrdersCount.md) (aka set Max Active Safety Trade Count MASTC based on Safety Order ranges)
-
-See the [example deal rules](docs/ExampleConfigs.md) for more details of how to define rules.
 
 # Create a 3Commas API key and secret
 The Urma Deal Genie needs to connect to your 3Commas account, and it needs 
