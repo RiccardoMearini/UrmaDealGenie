@@ -1,7 +1,9 @@
 # LunarCrush Pair Rule
-This rule changes a bot's pairs according to the top ranked coins on LunarCrush, either the Altrank or GalaxyScore. 
+This rule changes a bot's pairs according to the top ranked coins on LunarCrush, either the Altrank or GalaxyScore.
 
 **NOTE:** Currently LunarCrush does not need an account or user specific API key to work. This may change in 2022 Q2 when LunarCrush changes their API.
+
+This rule also optionally uses a [CoinMarketCap (CMC) API](/README.md#optionally-create-a-coinmarketcap-api-key) to pick top ranked coins. Note that CMC's free API tier will be ok with a 5 minute frequency of UrmaDealGenie (default), as long as you don't specify more than top 200 coins (default) in the rule (see example 2 below).
 
 ## How to use this rule
 - Create a single or multipair bot in 3Commas (paper or real) and decide it's settings, start conditions etc.
@@ -21,7 +23,7 @@ Each time the rule is run (default 5 minutes) the rule will:
 - all pairs returned will match the base pair of your bot (e.g. if your bot is BUSD_SOL, BUSD_DOGE, BUSD_LUNA, then it knows your base is BUSD)
 - only pairs on your bot's exchange will be returned
 - it will not return pairs that are higher than the MaxMetricScore (default is 1500)
-- if you have a [CoinMarketCap API key](README-CONSOLE-APPLICATION.md#setup-and-run), you can specify that in the UrmaDealGenie installation or environment settings, and the UrmaDealGenie will not return pairs that are higher than the MaxCmcRank (default is 200, which is the free credit threshold in CoinMarketCap API)
+- if you have a [CoinMarketCap API key](/README.md#optionally-create-a-coinmarketcap-api-key), you can specify that in the UrmaDealGenie installation or[ environment settings](/README-CONSOLE-APPLICATION.md#setup-and-run), and the UrmaDealGenie will not return pairs that are higher than the MaxCmcRank (default is 200, which is the free credit threshold in CoinMarketCap API)
 - if your bot has minimum 24 hour BTC volume defined, the rule will not return pairs that are trading less than that volume, according to LunarCrush
 
 # LunarCrush Bot Pair Rules examples
