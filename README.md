@@ -9,7 +9,7 @@ Typically Urma Deal Genie is used to automatically increase TP% as your bot deal
 
 # UrmaDealGenie Bot and Deal Rules
 These are the rules which UrmaDealGenie currently supports:
-- [LunarCrush Metrics](docs/ExampleConfigs-LunarCrushMetrics.md) (change a bot's pairs based on LunarCrush Galaxy or Altrank metrics and optionally CoinMarketCap rank)
+- [LunarCrush Metrics](docs/ExampleConfigs-LunarCrushPairRule.md) (change a bot's pairs based on LunarCrush Galaxy or Altrank metrics and optionally CoinMarketCap rank)
 - [Scaling Take Profits](docs/ExampleConfigs-ScalingTakeProfits.md) (set Take Profit % based on a scaling factor applied to the current Safety Order)
 - [Safety Order Ranges](docs/ExampleConfigs-SafetyOrderRanges.md) (set Take Profit % based on a Safety Order ranges)
 - [Active Safety Orders Count Ranges](docs/ExampleConfigs-ActiveSafetyOrdersCount.md) (aka set Max Active Safety Trade Count MASTC based on Safety Order ranges)
