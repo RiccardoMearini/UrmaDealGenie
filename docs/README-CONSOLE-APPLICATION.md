@@ -29,6 +29,7 @@ To install and configure the Urma Deal Genie console application:
      ```
      export APIKEY=YOUR_API_KEY_HERE
      export SECRET=YOUR_3COMMAS_SECRET_HERE
+     export CMCAPIKEY=OPTIONAL_CMC_API_KEY_HERE
      ```
 5. Run UrmaDealGenieApp depending on your operating system, Windows, Mac or Linux:
      ```
@@ -42,5 +43,6 @@ You can put these 3 commands in a .bat file or .sh script to make it easier. Her
  ```
  set APIKEY=YOUR_API_KEY_HERE
  set SECRET=YOUR_3COMMAS_SECRET_HERE
+ set CMCAPIKEY=OPTIONAL_CMC_API_KEY_HERE
  UrmaDealGenieApp-win10-x64.exe
  ```
