@@ -22,6 +22,7 @@ Each time the rule is run (default 5 minutes) the rule will:
 - only pairs on your bot's exchange will be returned
 - it will not return pairs that are higher than the MaxMetricScore (default is 1500)
 - if you have a [CoinMarketCap API key](README-CONSOLE-APPLICATION.md#setup-and-run), you can specify that in the UrmaDealGenie installation or environment settings, and the UrmaDealGenie will not return pairs that are higher than the MaxCmcRank (default is 200, which is the free credit threshold in CoinMarketCap API)
+- if your bot has minimum 24 hour BTC volume defined, the rule will not return pairs that are trading less than that volume, according to LunarCrush
 
 # LunarCrush Bot Pair Rules examples
 
