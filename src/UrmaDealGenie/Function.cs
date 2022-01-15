@@ -55,7 +55,7 @@ namespace UrmaDealGenie
           string dealRulesString = await BucketFileReader.ReadObjectDataAsync(region, bucket, "dealrules.json");
           if (!string.IsNullOrEmpty(dealRulesString))
           {
-            dealRuleSet = JsonSerializer.Deserialize<DealRuleSet>(dealRulesString);
+            dealRuleSet = JsonSerializer.Deserialize<DealRuleSet>(dealRulesString, this.jsonOptions);
           }
           else
           {
