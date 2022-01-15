@@ -20,42 +20,52 @@ namespace UrmaDealGenie
     private const int DEFAULT_MAX_CMC_RANK = 200; // higher than this has a credit cost on CMC account
     private XCommasApi xCommasClient = null;
     private HttpClient httpClient = null;
+    private readonly string cmcApiKey = null;
 
     public LunarCrushPairRuleProcessor(XCommasApi client)
     {
       this.xCommasClient = client;
       this.httpClient = new HttpClient();
       this.httpClient.BaseAddress = new Uri("https://api.lunarcrush.com");
+      this.cmcApiKey = Environment.GetEnvironmentVariable("CMCAPIKEY");
     }
 
     public async Task ProcessRules(List<LunarCrushPairRule> dealRuleSet, bool update)
     {
       // Get blacklist pairs
       var blacklistPairs = GetBlacklist().Result;
+      CMC.Root cmcData = null;
+      // Optionally get CoinMarketCap data with max rank based on thie highest rank across all rules
+      if (!string.IsNullOrEmpty(this.cmcApiKey))
+      {
+        var maxCmcRank = dealRuleSet.Max(rule => rule.MaxCmcRank == 0 ? DEFAULT_MAX_CMC_RANK : rule.MaxCmcRank);
+        var cmcClient = new CoinMarketCap(this.xCommasClient);
+        cmcData = await cmcClient.GetCoinMarketCapData(this.cmcApiKey, maxCmcRank);
+      }
+      else
+      {        
+        Console.WriteLine($"No CoinMarketCap API key specified'");
+      }
 
       if (dealRuleSet.Any(rule => rule.Metric == LunarCrushMetric.Altrank))
       {
         // Process all LunarCrush Altrank data and rules
         var lunarCrushAltrankData = await GetLunarCrushData(LunarCrushMetric.Altrank);
-        await ProcessLunarCrushData(lunarCrushAltrankData, dealRuleSet.Where(rule => rule.Metric == LunarCrushMetric.Altrank).ToList(), blacklistPairs, update);
+        ProcessLunarCrushData(lunarCrushAltrankData, dealRuleSet.Where(rule => rule.Metric == LunarCrushMetric.Altrank).ToList(), cmcData, blacklistPairs, update);
       }
 
       if (dealRuleSet.Any(rule => rule.Metric == LunarCrushMetric.GalaxyScore))
       {
         // Process all LunarCrush GalaxyScore data and rules
         var lunarCrushGalaxyData = await GetLunarCrushData(LunarCrushMetric.GalaxyScore);
-        await ProcessLunarCrushData(lunarCrushGalaxyData, dealRuleSet.Where(rule => rule.Metric == LunarCrushMetric.GalaxyScore).ToList(), blacklistPairs, update);
+        ProcessLunarCrushData(lunarCrushGalaxyData, dealRuleSet.Where(rule => rule.Metric == LunarCrushMetric.GalaxyScore).ToList(), cmcData, blacklistPairs, update);
       }
     }
 
-    private async Task ProcessLunarCrushData(Root lunarCrushData, List<LunarCrushPairRule> dealRuleSet, string[] blacklistPairs, bool update)
+    private void ProcessLunarCrushData(Root lunarCrushData, List<LunarCrushPairRule> dealRuleSet, CMC.Root cmcData, string[] blacklistPairs, bool update)
     {
       if (lunarCrushData != null)
       {
-        // Get CoinMarketCap data (call just once, so find out the highest rank specified across the rules)
-        var cmcClient = new CoinMarketCap(this.xCommasClient);
-        var maxCmcRank = dealRuleSet.Max(rule => rule.MaxCmcRank == 0 ? DEFAULT_MAX_CMC_RANK : rule.MaxCmcRank);
-        var cmcData = await cmcClient.GetCoinMarketCapData(maxCmcRank);
         if (cmcData != null)
         {
           // Loop through each ruleset updating bots, taking CoinMarketCap data into account

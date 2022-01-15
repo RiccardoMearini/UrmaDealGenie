@@ -7,7 +7,6 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using XCommas.Net;
-using XCommas.Net.Objects;
 
 namespace UrmaDealGenie
 {
@@ -15,7 +14,6 @@ namespace UrmaDealGenie
   {
     private XCommasApi xCommasClient = null;
     private HttpClient httpClient = null;
-    private string cmcApiKey = null;
 
     public CoinMarketCap(XCommasApi client)
     {
@@ -24,10 +22,9 @@ namespace UrmaDealGenie
       this.httpClient.BaseAddress = new Uri("https://pro-api.coinmarketcap.com");
     }
 
-    public async Task<Root> GetCoinMarketCapData(int maxRank)
+    public async Task<Root> GetCoinMarketCapData(string cmcApiKey, int maxRank)
     {
       Root cmcData = null;
-      this.cmcApiKey = Environment.GetEnvironmentVariable("CMCAPIKEY");
 
       var request = BuildCoinMarketCapHttpRequest(1, maxRank);
       request.Headers.Add("X-CMC_PRO_API_KEY", cmcApiKey);
@@ -51,7 +48,7 @@ namespace UrmaDealGenie
       else
       {
         Console.WriteLine($"GetCoinMarketCapData() - FAILED TO RETRIEVE: {result.Result.StatusCode} - {result.Result.ReasonPhrase}");          
-        Console.WriteLine($"GetCoinMarketCapData() - cmcApiKey: {this.cmcApiKey}");
+        Console.WriteLine($"GetCoinMarketCapData() - cmcApiKey: {cmcApiKey}");
       }
       return cmcData;
     }
