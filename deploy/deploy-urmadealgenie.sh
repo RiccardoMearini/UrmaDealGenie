@@ -15,11 +15,11 @@ aws s3 cp ../src/UrmaDealGenieApp/dealrules.json s3://urmagurd/
 # Delete old stack and wait for it to be deleted
 aws cloudformation delete-stack --stack-name urma-deal-genie --region eu-west-1
 aws cloudformation wait stack-delete-complete --stack-name urma-deal-genie --region eu-west-1
+aws logs delete-log-group --log-group-name /aws/lambda/UrmaDealGenie --region eu-west-1
 
 # Deploy package changeset from S3 with CloudFormation
 aws cloudformation deploy --region eu-west-1 --capabilities CAPABILITY_NAMED_IAM \
   --stack-name urma-deal-genie \
   --template-file deploy-urmadealgenie.yml \
   --s3-bucket urmagurd \
-  --parameter-overrides file://parameters.json \
-  
+  --parameter-overrides file://parameters.json
