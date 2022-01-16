@@ -1,7 +1,7 @@
 # Urma Gurd's Bot Settings
 A low cost 3Commas DCA bot setting, designed to cover 60% drop with a small number of safety orders that drive the TP price down.
 
-These settings work well with the [Urma Deal Genie](../README.md) which modifies the TP% as the deal buys more volume with scaled SOs.
+These settings work well with the [Urma Deal Genie](/README.md) which modifies the TP% as the deal buys more volume with scaled SOs.
 
 ## Basic concept
 In July 2021 I set out to find 3Commas DCA bot settings that meet the following goals:		
@@ -9,6 +9,11 @@ In July 2021 I set out to find 3Commas DCA bot settings that meet the following 
 - have strong draw down to lower average price entry, so that the bounce back up to take profit is as good as TradeAlts	
 - low budget options, bot costs $250 per deal minimum but can scale up to whatever you like
 - reduce the desire to overextend by providing returns that are better than TradeAlts safer settings, whilst keeping risk low	
+
+## Donations
+Please consider donating if you get value from these bot settings. I did literally 100s of hours backtesting, testing, supporting people etc and it's really nice when people show their appreciation for effort. Value for Value.
+
+**[Donate here](/README.md#donations)**
 
 ## Settings
 | Setting | Value | Setting description
