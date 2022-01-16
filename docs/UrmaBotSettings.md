@@ -23,7 +23,8 @@ Please consider donating if you get value from these bot settings. I did literal
 | SOS	| 1.87% | Price deviation to open safety orders (% from initial order)
 | OS	| 1.40 | Safety order volume scale
 | SS	| 1.50 | Safety order step scale
-| TP	| 1.5% - 3% | Take profit % - and this is what Deal Genie is designed to automatically adjust during a deal. See tips below.
+| TP	| 1.5%-3% | Take profit % - and this is what Deal Genie is designed to automatically adjust during a deal. See tips below.
+| Start | ASAP | Start condition ASAP</br>With a multipair/composite bot you need a start condition, </br>so for ASAP you can use RSI7 3m < 100 (if your exchange supports it)
 
 <img width="1467" alt="Screenshot 2021-12-02 at 19 44 29" src="https://user-images.githubusercontent.com/13062477/144492044-b71e86c5-325d-4e67-880e-dd00d8382890.png">
 
@@ -54,7 +55,7 @@ Please consider donating if you get value from these bot settings. I did literal
 - Start with a low TP% like 1.5% or 2% just so you can see profits coming in.		
 - After you get comfortable with low TP%, consider higher TP% like 3%.<br/>
   Higher TP% takes longer to close deals, but the evidence suggests it returns more profit over time (see WillieB's spreadsheet) 
-- Consider manually increasing the TP% on a deal when the SOs fill, like 4% on SO4, 5% on SO5, etc. 		Urma Deal Genie automates this TP% increase
+- Consider manually increasing the TP% on a deal when the SOs fill, like 4% on SO4, 5% on SO5, etc.</br>Urma Deal Genie automates this TP% increase so you can start your deal at 1, 1.5, 2% etc and then have [Urma Deal Genie](/README.md) increase it automatically with each SO.
 - Consider 2 or more max active safety trade count (MASTC) to ensure safety orders fill in fast downward movement.   Only really needed on the first 4 SOs, so could set a deal's MASTC back to 1 once you hit SO 4.
   - **Caution** - an MASTC larger than 1 should only be used when fully funded.   Otherwise funds are locked in large volume SOs 5 6 and 7 which can cause lower SOs in newer deals to fail, which will mess up those deals.		
 - Consider increasing TP% when a deal goes more than 3 safety orders on these lite bot settings to increase payout on deal close<br/>
