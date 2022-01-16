@@ -83,7 +83,7 @@ It's useful to test rules without updating your deals. Here's how:
     - Saved event name = `deal-genie-update-false` (or similar)
     - Copy / past body of `test-config-update-false.json`
     - Modify this JSON document - e.g. delete rules you don’t want, change deal rules include/exclude terms to be relative to your bot names
-    - See [ExampleConfigs.md](./docs/ExampleConfigs.md) for example configs with detailed explanations of rule settings
+    - See [ExampleConfigs.md](ExampleConfigs.md) for example configs with detailed explanations of rule settings
     - Click Save changes
     - Click Test and expand the Details and hopefully it runs!!
       - If it ran successfully, you can change `Update` to “true” and see if your deals get updated. 
