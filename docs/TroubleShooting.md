@@ -1,5 +1,7 @@
 # General Issues
 These issues and trouble shooting tips are common across AWS, Windows, Mac, Linux and Docker.
+## My Deals or Bots are not updating
+This quite often is simply because the `Update: false` setting is at the top of your `dealrules.json` file. Modify the file to `Update: true` and try again.
 
 ## GetExchange fails due to Invalid 3C API 
 If you see the following error:
