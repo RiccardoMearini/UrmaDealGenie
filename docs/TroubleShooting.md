@@ -12,5 +12,14 @@ It's usually because your 3Commas API key is invalid or missing permissions. Try
 # AWS Issues
 See [here for AWS Issues](README-AWS.md#troubleshooting)
 
-# Console Application Issues
+# Windows Console Application Issues
+TBD
+
+# Linux Console Application Issues
+TBD
+
+# Mac Console Application Issues
+TBD
+
+# Docker Issues
 TBD
