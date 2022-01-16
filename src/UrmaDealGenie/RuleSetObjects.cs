@@ -54,16 +54,33 @@ namespace UrmaDealGenie
     public bool AllowTpReduction { get; set; }
     public Dictionary<string, decimal> SafetyOrderRanges { get; set; }
   }
-  
+
   public class ActiveSafetyOrdersCountRangesDealRule : DealRuleBase
   {
     public Dictionary<string, int> ActiveSafetyOrdersCountRanges { get; set; }
-  }  
+  }
 
+  public class DealGenieResponse
+  {
+    public DealGenieResponse()
+    {
+      BotPairResponses = new List<BotPairResponse>();
+      DealResponses = new List<DealResponse>();
+    }
+    public List<BotPairResponse> BotPairResponses { get; set; }
+    public List<DealResponse> DealResponses { get; set; }
+  }
   public class DealResponse
   {
     public string Rule { get; set; }
     public int NeedUpdatingCount { get; set; }
     public int UpdatedCount { get; set; }
+  }
+
+  public class BotPairResponse
+  {
+    public string Rule { get; set; }
+    public int PairCount { get; set; }
+    public bool Updated { get; set; }
   }
 }

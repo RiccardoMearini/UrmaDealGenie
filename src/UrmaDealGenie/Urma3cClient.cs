@@ -27,9 +27,9 @@ namespace UrmaDealGenie
     /// </summary>
     /// <param name="dealRuleSet">The deal rule set to process</param>
     /// <returns>Result summary of the updated deals</returns>
-    public async Task<List<DealResponse>> ProcessRules(DealRuleSet dealRuleSet)
+    public async Task<DealGenieResponse> ProcessRules(DealRuleSet dealRuleSet)
     {
-      List<DealResponse> response = new List<DealResponse>();
+      DealGenieResponse response = new DealGenieResponse();
       var update = dealRuleSet.Update;
       Console.WriteLine($"update = {update}");
 
@@ -37,9 +37,7 @@ namespace UrmaDealGenie
       LunarCrushPairRuleProcessor crush = new LunarCrushPairRuleProcessor(this.XCommasClient);
       if (dealRuleSet.LunarCrushPairRules?.Any() ?? false)
       {
-        await crush.ProcessRules(dealRuleSet.LunarCrushPairRules, update);
-        // #### capture response for output
-        // response.Add(updatedDeal);
+        response.BotPairResponses = await crush.ProcessRules(dealRuleSet.LunarCrushPairRules, update);
       }
 
       await RetrieveAllDeals(); // #### Lazy load
@@ -51,7 +49,7 @@ namespace UrmaDealGenie
         foreach (ActiveSafetyOrdersCountRangesDealRule dealRule in dealRuleSet.ActiveSafetyOrdersCountRangesDealRules)
         {
           var updatedDeal = await ProcessDealRule(dealRule, update);
-          response.Add(updatedDeal);
+          response.DealResponses.Add(updatedDeal);
         }
       }
 
@@ -62,7 +60,7 @@ namespace UrmaDealGenie
         foreach (SafetyOrderRangesDealRule dealRule in dealRuleSet.SafetyOrderRangesDealRules)
         {
           var updatedDeal = await ProcessDealRule(dealRule, update);
-          response.Add(updatedDeal);
+          response.DealResponses.Add(updatedDeal);
         }
       }
 
@@ -73,7 +71,7 @@ namespace UrmaDealGenie
         foreach (ScalingTakeProfitDealRule dealRule in dealRuleSet.ScalingTakeProfitDealRules)
         {
           var updatedDeal = await ProcessDealRule(dealRule, update);
-          response.Add(updatedDeal);
+          response.DealResponses.Add(updatedDeal);
         }
       }
       return response;

@@ -18,7 +18,7 @@ namespace UrmaDealGenie
   public class Function
   {
     private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions { 
-      WriteIndented = true,
+      WriteIndented = false,
       Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) } 
     };
 
@@ -64,7 +64,6 @@ namespace UrmaDealGenie
         }
 
         Console.WriteLine($"LoadFromS3 = {dealRuleSet.LoadFromS3}");
-        List<DealResponse> response = new List<DealResponse>();
 
         // By now we should have a deal rule set from S3 bucket or input parameter
         if (dealRuleSet == null)
@@ -77,8 +76,8 @@ namespace UrmaDealGenie
         {
           // We're all set, crack on with the Urma Deal Genie!!
           client = new Urma3cClient(apiKey, secret);
-          response = await client.ProcessRules(dealRuleSet);
-          returnBody = JsonSerializer.Serialize<List<DealResponse>>(response, this.jsonOptions);
+          DealGenieResponse response = await client.ProcessRules(dealRuleSet);
+          returnBody = JsonSerializer.Serialize<DealGenieResponse>(response, this.jsonOptions);
         }
       }
 

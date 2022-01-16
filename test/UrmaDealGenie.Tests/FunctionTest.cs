@@ -29,8 +29,8 @@ namespace UrmaDealGenie.Tests
 
       Console.WriteLine($"Calling function handler...");
       var dealRuleSet = JsonSerializer.Deserialize<DealRuleSet>(text, this.jsonOptions);
-      List<DealResponse> response = await client.ProcessRules(dealRuleSet);
-      Assert.Equal(5, response.Count);
+      DealGenieResponse response = await client.ProcessRules(dealRuleSet);
+      Assert.Equal(5, response.DealResponses.Count);
     }
   }
 }

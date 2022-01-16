@@ -30,7 +30,7 @@ namespace UrmaDealGenie
       this.cmcApiKey = Environment.GetEnvironmentVariable("CMCAPIKEY");
     }
 
-    public async Task ProcessRules(List<LunarCrushPairRule> dealRuleSet, bool update)
+    public async Task<List<BotPairResponse>> ProcessRules(List<LunarCrushPairRule> dealRuleSet, bool update)
     {
       // Get blacklist pairs
       var blacklistPairs = GetBlacklist().Result;
@@ -47,41 +47,47 @@ namespace UrmaDealGenie
         Console.WriteLine($"No CoinMarketCap API key specified'");
       }
 
+      List<BotPairResponse> result = new List<BotPairResponse>();
       if (dealRuleSet.Any(rule => rule.Metric == LunarCrushMetric.Altrank))
       {
         // Process all LunarCrush Altrank data and rules
         var lunarCrushAltrankData = await GetLunarCrushData(LunarCrushMetric.Altrank);
-        ProcessLunarCrushData(lunarCrushAltrankData, dealRuleSet.Where(rule => rule.Metric == LunarCrushMetric.Altrank).ToList(), cmcData, blacklistPairs, update);
+        result.AddRange(ProcessLunarCrushData(lunarCrushAltrankData, dealRuleSet.Where(rule => rule.Metric == LunarCrushMetric.Altrank).ToList(), cmcData, blacklistPairs, update));
       }
 
       if (dealRuleSet.Any(rule => rule.Metric == LunarCrushMetric.GalaxyScore))
       {
         // Process all LunarCrush GalaxyScore data and rules
         var lunarCrushGalaxyData = await GetLunarCrushData(LunarCrushMetric.GalaxyScore);
-        ProcessLunarCrushData(lunarCrushGalaxyData, dealRuleSet.Where(rule => rule.Metric == LunarCrushMetric.GalaxyScore).ToList(), cmcData, blacklistPairs, update);
+        result.AddRange(ProcessLunarCrushData(lunarCrushGalaxyData, dealRuleSet.Where(rule => rule.Metric == LunarCrushMetric.GalaxyScore).ToList(), cmcData, blacklistPairs, update));
       }
+      return result;      
     }
 
-    private void ProcessLunarCrushData(Root lunarCrushData, List<LunarCrushPairRule> dealRuleSet, CMC.Root cmcData, string[] blacklistPairs, bool update)
+    private List<BotPairResponse> ProcessLunarCrushData(Root lunarCrushData, List<LunarCrushPairRule> dealRuleSet, CMC.Root cmcData, string[] blacklistPairs, bool update)
     {
+      List<BotPairResponse> result = new List<BotPairResponse>();
       if (lunarCrushData != null)
       {
         if (cmcData != null)
         {
           // Loop through each ruleset updating bots, taking CoinMarketCap data into account
-          dealRuleSet.ForEach(rule => UpdateBotWithBestPairs(rule, update, lunarCrushData, blacklistPairs, cmcData.Data
-                                        .Select(cmcPair => cmcPair)
-                                        .Take(rule.MaxCmcRank == 0 ? DEFAULT_MAX_CMC_RANK : rule.MaxCmcRank)));
+          result.AddRange(dealRuleSet.Select(
+            rule => UpdateBotWithBestPairs(rule, update, lunarCrushData, blacklistPairs, cmcData.Data
+            .Select(cmcPair => cmcPair)
+            .Take(rule.MaxCmcRank == 0 ? DEFAULT_MAX_CMC_RANK : rule.MaxCmcRank))));
         }
         else
         {
           // Loop through each ruleset updating bots
-          dealRuleSet.ForEach(rule => UpdateBotWithBestPairs(rule, update, lunarCrushData, blacklistPairs, null));
+          result.AddRange(dealRuleSet.Select(
+            rule => UpdateBotWithBestPairs(rule, update, lunarCrushData, blacklistPairs, null)));
         }
       }
+      return result;
     }
 
-    public void UpdateBotWithBestPairs(LunarCrushPairRule rule, bool update, LC.Root lunarCrushData, string[] blacklistPairs, IEnumerable<CMC.Datum> cmcData)
+    private BotPairResponse UpdateBotWithBestPairs(LunarCrushPairRule rule, bool update, LC.Root lunarCrushData, string[] blacklistPairs, IEnumerable<CMC.Datum> cmcData)
     {
       // Get the bot and current pairs
       var bot = this.xCommasClient.ShowBot(rule.BotId).Data;
@@ -113,7 +119,6 @@ namespace UrmaDealGenie
         blacklistPairs = ruleBlacklist.Concat(blacklistPairs).Distinct().ToArray();
       }
 
-
       // BTC price in USDT
       var btcUsdtPrice3C = this.xCommasClient.GetCurrencyRate("USDT_BTC", exchange.MarketCode).Data.Last;
       Console.WriteLine($"Bot {bot.Id} - BTC price on {exchange.MarketCode} exchange ${btcUsdtPrice3C}");
@@ -142,6 +147,7 @@ namespace UrmaDealGenie
         }
       }
 
+      bool botUpdated = false;
       if (update)
       {
         var containSamePairs = new HashSet<string>(newPairs).SetEquals(bot.Pairs);
@@ -155,6 +161,7 @@ namespace UrmaDealGenie
           Console.WriteLine($"Bot {bot.Id} -> {String.Join(", ", newPairs)}");
           var updateData = new BotUpdateData(bot) { Pairs = newPairs.ToArray() };
           this.xCommasClient.UpdateBot(bot.Id, updateData);
+          botUpdated = true;
         }
       }
       else
@@ -162,6 +169,7 @@ namespace UrmaDealGenie
         Console.WriteLine($"Bot {bot.Id} - Update mode DISABLED, but found {newPairs.Count} best pairs for bot '{bot.Name}");
         Console.WriteLine($"Bot {bot.Id} -> {String.Join(", ", newPairs)}");
       }
+      return new BotPairResponse() { Rule = rule.Rule, PairCount = newPairs.Count, Updated = botUpdated};
     }
 
     private Account GetExchange(int accountId)

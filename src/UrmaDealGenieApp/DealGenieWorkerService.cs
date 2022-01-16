@@ -26,7 +26,7 @@ public class DealGenieWorkerService : IntervalWorkerService
 
   public override async void DoWork(object? state)
   {
-    Logger.LogInformation("Run Deal Genie...");
+    Console.WriteLine("Run Deal Genie...");
     if (this.dealRulesFilename != null)
     {
       // Deal settings can be changed and used without restarting worker
@@ -36,10 +36,10 @@ public class DealGenieWorkerService : IntervalWorkerService
         var apiKey = Environment.GetEnvironmentVariable("APIKEY");
         var secret = Environment.GetEnvironmentVariable("SECRET");
         Urma3cClient client = new Urma3cClient(apiKey, secret);
-        List<DealResponse> response = await client.ProcessRules(dealRuleSet);
-        Logger.LogInformation(JsonSerializer.Serialize<List<DealResponse>>(response, this.jsonOptions));
+        DealGenieResponse response = await client.ProcessRules(dealRuleSet);
+        Console.WriteLine(JsonSerializer.Serialize<DealGenieResponse>(response, this.jsonOptions));
       }
     }
-    Logger.LogInformation("Deal Genie completed");
+    Console.WriteLine("Deal Genie completed");
   }
 }
