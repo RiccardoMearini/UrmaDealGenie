@@ -186,7 +186,7 @@ namespace UrmaDealGenie
       Account exchange = null;
       if (accounts == null)
       {
-        Console.WriteLine($"ERROR: 3Commas API key does not have AccountRead permission");
+        Console.WriteLine($"ERROR: 3Commas API key does not have AccountRead permission or there are no exchange accounts");
       }
       else
       {
