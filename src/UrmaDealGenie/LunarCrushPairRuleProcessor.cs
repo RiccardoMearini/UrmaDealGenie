@@ -43,7 +43,7 @@ namespace UrmaDealGenie
         cmcData = await cmcClient.GetCoinMarketCapData(this.cmcApiKey, maxCmcRank);
       }
       else
-      {        
+      {
         Console.WriteLine($"No CoinMarketCap API key specified'");
       }
 
@@ -61,7 +61,7 @@ namespace UrmaDealGenie
         var lunarCrushGalaxyData = await GetLunarCrushData(LunarCrushMetric.GalaxyScore);
         result.AddRange(ProcessLunarCrushData(lunarCrushGalaxyData, dealRuleSet.Where(rule => rule.Metric == LunarCrushMetric.GalaxyScore).ToList(), cmcData, blacklistPairs, update));
       }
-      return result;      
+      return result;
     }
 
     private List<BotPairResponse> ProcessLunarCrushData(Root lunarCrushData, List<LunarCrushPairRule> dealRuleSet, CMC.Root cmcData, string[] blacklistPairs, bool update)
@@ -140,7 +140,7 @@ namespace UrmaDealGenie
         //  Coin is on the bot's exchange
         //  Coin is within the max CoinMarketCap rank (if CMC API available, default is 200)
         //  Coin rank (GalaxyScore or Altrank) is less then the max metric score
-        if (!stablecoin 
+        if (!stablecoin
           && volBTC != 0 && volBTC >= minVolBtc24h
           && String.IsNullOrEmpty(Array.Find(blacklistPairs, blacklistPair => blacklistPair == pair))
           && !String.IsNullOrEmpty(Array.Find(exchangePairs.Data, exchangePair => exchangePair == pair))
@@ -175,7 +175,7 @@ namespace UrmaDealGenie
         Console.WriteLine($"Bot {bot.Id} - Update mode DISABLED, but found {newPairs.Count} best pairs for bot '{bot.Name}");
         Console.WriteLine($"Bot {bot.Id} -> {String.Join(", ", newPairs)}");
       }
-      return new BotPairResponse() { Rule = rule.Rule, PairCount = newPairs.Count, Updated = botUpdated};
+      return new BotPairResponse() { Rule = rule.Rule, PairCount = newPairs.Count, Updated = botUpdated };
     }
 
     private Account GetExchange(int accountId)
@@ -183,15 +183,22 @@ namespace UrmaDealGenie
       // Console.WriteLine($"DEBUG: GetExchange() - accountId: {accountId}");
       this.xCommasClient.UserMode = UserMode.Real;
       var accounts = this.xCommasClient.GetAccounts;
-      var exchange = Array.Find(accounts.Data, account => account.Id == accountId);
-      if (exchange == null)
+      Account exchange = null;
+      if (accounts == null)
       {
-        this.xCommasClient.UserMode = UserMode.Paper;
-        accounts = this.xCommasClient.GetAccounts;
+        Console.WriteLine($"ERROR: 3Commas API key does not have AccountRead permission");
+      }
+      else
+      {
         exchange = Array.Find(accounts.Data, account => account.Id == accountId);
+        if (exchange == null)
+        {
+          this.xCommasClient.UserMode = UserMode.Paper;
+          accounts = this.xCommasClient.GetAccounts;
+          exchange = Array.Find(accounts.Data, account => account.Id == accountId);
+        }
       }
       // Console.WriteLine($"DEBUG: GetExchange() - exchange: {exchange.ExchangeName}");
-
       return exchange;
     }
 
