@@ -1,5 +1,5 @@
 # Active Safety Orders Count Ranges Deal Rules examples
-NOTE: It is strongly recommended to test settings with the `"UpdateDeals": false` value set before you set it to true and update your deals. Make sure the number of deals the function says it thinks needs updating matches what you expect.
+NOTE: It is strongly recommended to test settings with the `"Update": false` value set before you set it to true and update your deals. Make sure the number of deals the function says it thinks needs updating matches what you expect.
 
 ## Example 1 - Reduce the Active Safety Orders Count
 This is the main use of this rule type, to reduce the Active Safety Orders Count as safety orders are filled.
@@ -19,7 +19,7 @@ Although 3Commas supports modifying a deal's MASTC, the settings doesn't take ef
 ### Configuration
 ```
 {
-  "UpdateDeals": true,
+  "Update": true,
   "ActiveSafetyOrdersCountRangesDealRules": [
     {
       "Rule": "Urma MASTC 2 to 1",
@@ -31,14 +31,12 @@ Although 3Commas supports modifying a deal's MASTC, the settings doesn't take ef
         "3": 1
       }
     }
-  ],
-  "SafetyOrderRangesDealRules": [ ],
-  "ScalingTakeProfitDealRules": [ ]
+  ]
 }
 ```
 
 ### Explanation of settings
-- `UpdateDeals` - deals will be updated
+- `Update` - deals will be updated
 - there is only 1 rule under the `ActiveSafetyOrdersCountRangesDealRules` section that is named `Urma MASTC 2 to 1` (name it as you wish)
 - the rule type is `ActiveSafetyOrdersCountRangesDealRules` which tells Urma Deal Genie to lookup the MASTC based on the deal's current SO count
 - it defines 1 **include** terms `urma` which means the rule will match any deal that has a bot name like "My Urma Deals"

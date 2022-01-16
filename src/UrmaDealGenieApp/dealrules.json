@@ -1,5 +1,48 @@
 {
-  "UpdateDeals": false,
+  "Update": false,
+  "LunarCrushPairRules": [
+    {
+      "Rule": "Safira - Paper",
+      "BotId": 7665821,
+      "Metric": "Altrank",
+      "MaxMetricScore": 1000,
+      "MaxCmcRank": 200,
+      "MaxPairCount": 15
+    },
+    {
+      "Rule": "Gala - Paper",
+      "BotId": 7682597,
+      "Metric": "GalaxyScore",
+      "MaxMetricScore": 200,
+      "MaxCmcRank": 200,
+      "MaxPairCount": 1
+    },
+    {
+      "Rule": "Urma Conditions - Paper",
+      "BotId": 7703182,
+      "Metric": "Altrank",
+      "MaxMetricScore": 1500,
+      "MaxCmcRank": 200,
+      "BlacklistCoins": "BTC,ETH,BNB,ADA,XRP",
+      "MaxPairCount": 15
+    },
+    {
+      "Rule": "Urma ASAP - Paper",
+      "BotId": 7732635,
+      "Metric": "Altrank",
+      "MaxMetricScore": 1500,
+      "MaxCmcRank": 150,
+      "MaxPairCount": 20
+    },
+    {
+      "Rule": "Urma ASAP - Paper",
+      "BotId": 7709633,
+      "Metric": "GalaxyScore",
+      "MaxMetricScore": 250,
+      "MaxCmcRank": 100,
+      "MaxPairCount": 10
+    }
+  ],
   "ActiveSafetyOrdersCountRangesDealRules": [
     {
       "Rule": "Urma MASTC 2 to 1",
@@ -14,7 +57,7 @@
   "SafetyOrderRangesDealRules": [
     {
       "Rule": "Urma Low TP Exit",
-      "BotNameIncludeTerms": "lauren",
+      "BotNameIncludeTerms": "stopped",
       "BotNameExcludeTerms": "",
       "IgnoreTtpDeals": true,
       "AllowTpReduction": true,
@@ -29,7 +72,7 @@
     {
       "Rule": "Urma SO scaling",
       "BotNameIncludeTerms": "urma,ftx",
-      "BotNameExcludeTerms": "hodl,lauren",
+      "BotNameExcludeTerms": "hodl",
       "IgnoreTtpDeals": true,
       "AllowTpReduction": false,
       "MaxSafetyOrderCount": 0,

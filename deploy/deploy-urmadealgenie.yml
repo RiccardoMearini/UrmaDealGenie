@@ -8,6 +8,9 @@ Parameters:
   ApiSecret:
     Type: String
     Description: 3commas API secret for the ApiKey
+  CmcApiKey:
+    Type: String
+    Description: Optional CoinMarketCap API Key
   S3Bucket:
     Type: String
     Description: Name of the S3 bucket containing the lambda function package and config
@@ -49,6 +52,7 @@ Resources:
           APIKEY: !Ref ApiKey
           SECRET: !Ref ApiSecret
           BUCKET: !Ref S3Bucket
+          CMCAPIKEY: !Ref CmcApiKey
 
   LambdaExecutionRole:
     Type: AWS::IAM::Role

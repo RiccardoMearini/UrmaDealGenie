@@ -2,13 +2,17 @@ using System.Text.Json;
 using UrmaDealGenie;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Text.Json.Serialization;
 
 public class DealGenieWorkerService : IntervalWorkerService
 {
   private DealRuleSet? dealRuleSet;
   private string dealRulesFilename = "";
-  private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions { WriteIndented = true };
-
+  private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions { 
+    WriteIndented = true,
+    Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) } 
+  };
+  
   public DealGenieWorkerService(ILogger<IntervalWorkerService> logger, IConfiguration configuration)
     : base(logger, configuration)
   {
@@ -26,7 +30,7 @@ public class DealGenieWorkerService : IntervalWorkerService
     if (this.dealRulesFilename != null)
     {
       // Deal settings can be changed and used without restarting worker
-      this.dealRuleSet = JsonSerializer.Deserialize<DealRuleSet>(File.ReadAllText(this.dealRulesFilename));
+      this.dealRuleSet = JsonSerializer.Deserialize<DealRuleSet>(File.ReadAllText(this.dealRulesFilename), this.jsonOptions);
       if (this.dealRuleSet != null)
       {
         var apiKey = Environment.GetEnvironmentVariable("APIKEY");

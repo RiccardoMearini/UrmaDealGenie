@@ -18,16 +18,18 @@ To install and configure the Urma Deal Genie console application:
    - On Mac launch Terminal
    - On Linux... I dunno, google it?
    - navigate to the folder you downloaded the files to (e.g. `cd c:\UrmaDealGenieApp`)
-6. In the console/terminal window, set environment variables for the [APIKEY and SECRET](/README.md#create-a-3commas-api-key-and-secret)
+6. In the console/terminal window, set environment variables for the 3Commas [APIKEY and SECRET](/README.md#create-a-3commas-api-key-and-secret), and optionally [CMCAPIKEY](/README.md#optionally-create-a-coinmarketcap-api-key) for the [LunarCrush rule](ExampleConfigs-LunarCrushPairRule.md)
    - **Windows**
      ```
      set APIKEY=YOUR_API_KEY_HERE
      set SECRET=YOUR_3COMMAS_SECRET_HERE
+     set CMCAPIKEY=OPTIONAL_CMC_API_KEY_HERE
      ```
    - **Mac/Linux**
      ```
      export APIKEY=YOUR_API_KEY_HERE
      export SECRET=YOUR_3COMMAS_SECRET_HERE
+     export CMCAPIKEY=OPTIONAL_CMC_API_KEY_HERE
      ```
 5. Run UrmaDealGenieApp depending on your operating system, Windows, Mac or Linux:
      ```
@@ -41,5 +43,6 @@ You can put these 3 commands in a .bat file or .sh script to make it easier. Her
  ```
  set APIKEY=YOUR_API_KEY_HERE
  set SECRET=YOUR_3COMMAS_SECRET_HERE
+ set CMCAPIKEY=OPTIONAL_CMC_API_KEY_HERE
  UrmaDealGenieApp-win10-x64.exe
  ```

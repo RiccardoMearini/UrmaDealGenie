@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Amazon;
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
-[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
-
+[assembly: LambdaSerializer(typeof(JsonEnumSerializer))]
 namespace UrmaDealGenie
 {
   /// <summary>
@@ -17,7 +17,11 @@ namespace UrmaDealGenie
   /// </summary>
   public class Function
   {
-    private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions { WriteIndented = false };
+    private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions { 
+      WriteIndented = true,
+      Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) } 
+    };
+
     private Urma3cClient client = null;
 
     /// <summary>
@@ -51,7 +55,7 @@ namespace UrmaDealGenie
           string dealRulesString = await BucketFileReader.ReadObjectDataAsync(region, bucket, "dealrules.json");
           if (!string.IsNullOrEmpty(dealRulesString))
           {
-            dealRuleSet = JsonSerializer.Deserialize<DealRuleSet>(dealRulesString);
+            dealRuleSet = JsonSerializer.Deserialize<DealRuleSet>(dealRulesString, this.jsonOptions);
           }
           else
           {

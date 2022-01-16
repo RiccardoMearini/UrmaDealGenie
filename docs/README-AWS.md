@@ -42,6 +42,7 @@ An AWS CloudFormation stack is a bit like install kits for AWS. You create a "st
 1. Enter Parameters:
     - `ApiKey` (that you [created in 3Commas](/README.md#create-a-3commas-api-key-and-secret))
     - `ApiSecret` (ditto)
+    - Optional `CmcApiKey` (API key for CoinMarketCap)
     - `LambdaFunctionName` (name of function, you can change it if you want, otherwise leave it as default)
     - `S3Bucket` (name of the bucket you created)
     - `S3PackageFilename` (name of the UrmaDealGenie zip file you uploaded to the bucket)</br>(**Note:** Make sure you copy this exactly right, case sensitive and .zip extension)
@@ -85,7 +86,7 @@ It's useful to test rules without updating your deals. Here's how:
     - See [docs/ExampleConfigs.md](./docs/ExampleConfigs.md) for example configs with detailed explanations of rule settings
     - Click Save changes
     - Click Test and expand the Details and hopefully it runs!!
-      - If it ran successfully, you can change UpdateDeals to “true” and see if your deals get updated. 
+      - If it ran successfully, you can change `Update` to “true” and see if your deals get updated. 
       - It is strongly recommended to modify the rules’ include/exclude terms fields so that the number of deals that need updating is just a few to start with.
 
 ![image](https://user-images.githubusercontent.com/13062477/147366727-0626c45f-b4d8-4614-b5cc-5c47bcd3a18b.png)

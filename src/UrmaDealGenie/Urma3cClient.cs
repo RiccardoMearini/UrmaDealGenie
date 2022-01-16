@@ -9,7 +9,7 @@ namespace UrmaDealGenie
 {
   public class Urma3cClient
   {
-    private XCommasApi client = null;
+    public XCommasApi XCommasClient = null;
     private List<Deal> cachedDeals = new List<Deal>();
 
     /// <summary>
@@ -19,7 +19,7 @@ namespace UrmaDealGenie
     /// <param name="secret">The 3Commas secret</param>
     public Urma3cClient(string apiKey, string secret)
     {
-      client = new XCommasApi(apiKey, secret);
+      XCommasClient = new XCommasApi(apiKey, secret);
     }
 
     /// <summary>
@@ -30,31 +30,51 @@ namespace UrmaDealGenie
     public async Task<List<DealResponse>> ProcessRules(DealRuleSet dealRuleSet)
     {
       List<DealResponse> response = new List<DealResponse>();
-      await RetrieveAllDeals();
-      var updateDeals = dealRuleSet.UpdateDeals;
-      Console.WriteLine($"updateDeals = {updateDeals}");
-      Console.WriteLine($"======================");
-      Console.WriteLine($"ActiveSafetyOrdersCountRangesDealRules.Count = {dealRuleSet.ActiveSafetyOrdersCountRangesDealRules.Count}");
-      foreach (ActiveSafetyOrdersCountRangesDealRule dealRule in dealRuleSet.ActiveSafetyOrdersCountRangesDealRules)
+      var update = dealRuleSet.Update;
+      Console.WriteLine($"update = {update}");
+
+      // Process the LunarCrush rule sets
+      LunarCrushPairRuleProcessor crush = new LunarCrushPairRuleProcessor(this.XCommasClient);
+      if (dealRuleSet.LunarCrushPairRules?.Any() ?? false)
       {
-        var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
-        response.Add(updatedDeal);
+        await crush.ProcessRules(dealRuleSet.LunarCrushPairRules, update);
+        // #### capture response for output
+        // response.Add(updatedDeal);
       }
 
-      Console.WriteLine($"======================");
-      Console.WriteLine($"SafetyOrderRangesDealRules.Count = {dealRuleSet.SafetyOrderRangesDealRules.Count}");
-      foreach (SafetyOrderRangesDealRule dealRule in dealRuleSet.SafetyOrderRangesDealRules)
+      await RetrieveAllDeals(); // #### Lazy load
+
+      if (dealRuleSet.ActiveSafetyOrdersCountRangesDealRules?.Any() ?? false)
       {
-        var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
-        response.Add(updatedDeal);
+        Console.WriteLine($"==================================================");
+        Console.WriteLine($"ActiveSafetyOrdersCountRangesDealRules.Count = {dealRuleSet.ActiveSafetyOrdersCountRangesDealRules.Count}");
+        foreach (ActiveSafetyOrdersCountRangesDealRule dealRule in dealRuleSet.ActiveSafetyOrdersCountRangesDealRules)
+        {
+          var updatedDeal = await ProcessDealRule(dealRule, update);
+          response.Add(updatedDeal);
+        }
       }
 
-      Console.WriteLine($"======================");
-      Console.WriteLine($"ScalingTakeProfitDealRules.Count = {dealRuleSet.ScalingTakeProfitDealRules.Count}");
-      foreach (ScalingTakeProfitDealRule dealRule in dealRuleSet.ScalingTakeProfitDealRules)
+      if (dealRuleSet.SafetyOrderRangesDealRules?.Any() ?? false)
       {
-        var updatedDeal = await ProcessDealRule(dealRule, updateDeals);
-        response.Add(updatedDeal);
+        Console.WriteLine($"==================================================");
+        Console.WriteLine($"SafetyOrderRangesDealRules.Count = {dealRuleSet.SafetyOrderRangesDealRules.Count}");
+        foreach (SafetyOrderRangesDealRule dealRule in dealRuleSet.SafetyOrderRangesDealRules)
+        {
+          var updatedDeal = await ProcessDealRule(dealRule, update);
+          response.Add(updatedDeal);
+        }
+      }
+
+      if (dealRuleSet.ScalingTakeProfitDealRules?.Any() ?? false)
+      {
+        Console.WriteLine($"==================================================");
+        Console.WriteLine($"ScalingTakeProfitDealRules.Count = {dealRuleSet.ScalingTakeProfitDealRules.Count}");
+        foreach (ScalingTakeProfitDealRule dealRule in dealRuleSet.ScalingTakeProfitDealRules)
+        {
+          var updatedDeal = await ProcessDealRule(dealRule, update);
+          response.Add(updatedDeal);
+        }
       }
       return response;
     }
@@ -361,7 +381,7 @@ namespace UrmaDealGenie
           // Determine the SO count to compare against - if a max SO count is specified, don't go higher than it
           var soCount = maxSoCount > 0 ? Math.Min(maxSoCount, deal.CompletedSafetyOrdersCount) : deal.CompletedSafetyOrdersCount;
           update.TakeProfit = soCount * scaleTp;
-          var response = await client.UpdateDealAsync(deal.Id, update);
+          var response = await XCommasClient.UpdateDealAsync(deal.Id, update);
           if (!response.IsSuccess)
           {
             Console.WriteLine($"Error: UpdateDealsScalingTakeProfit: UpdateDealAsync() - {response.Error}");
@@ -443,7 +463,7 @@ namespace UrmaDealGenie
           var lookupResult = soRangesDictionary.Where(x => x.Key <= deal.CompletedSafetyOrdersCount)
                                                .OrderByDescending(x => x.Key);
           update.TakeProfit = soRangesDictionary[lookupResult.First().Key];
-          var response = await client.UpdateDealAsync(deal.Id, update);
+          var response = await XCommasClient.UpdateDealAsync(deal.Id, update);
           if (!response.IsSuccess)
           {
             Console.WriteLine($"Error: UpdateDealsSafetyOrderRanges: UpdateDealAsync() - {response.Error}");
@@ -522,7 +542,7 @@ namespace UrmaDealGenie
           var lookupResult = soRangesDictionary.Where(x => x.Key <= deal.CompletedSafetyOrdersCount)
                                                .OrderByDescending(x => x.Key);
           update.MaxSafetyOrdersCount = soRangesDictionary[lookupResult.First().Key];
-          var response = await client.UpdateDealAsync(deal.Id, update);
+          var response = await XCommasClient.UpdateDealAsync(deal.Id, update);
           if (!response.IsSuccess)
           {
             Console.WriteLine($"Error: UpdateDealsActiveSafetyOrderCountRanges: UpdateDealAsync() - {response.Error}");
@@ -555,7 +575,8 @@ namespace UrmaDealGenie
     {
       if (this.cachedDeals == null || this.cachedDeals.Count == 0)
       {
-        var response = await client.GetDealsAsync(limit: 100, dealScope: DealScope.Active, dealOrder: DealOrder.CreatedAt);
+        Console.WriteLine($"==================================================");
+        var response = await XCommasClient.GetDealsAsync(limit: 100, dealScope: DealScope.Active, dealOrder: DealOrder.CreatedAt);
         if (response.IsSuccess)
         {
           Console.WriteLine($"Retrieved {response.Data.Length} deals from 3Commas");
@@ -569,7 +590,7 @@ namespace UrmaDealGenie
         }
         else
         {
-          Console.WriteLine($"Error: GetDeals(): GetDealsAsync() - {response.Error}");
+          Console.WriteLine($"Error: GetDealsAsync() - {response.Error}");
         }
       }
     }
