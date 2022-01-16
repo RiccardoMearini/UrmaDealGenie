@@ -23,3 +23,9 @@ aws cloudformation deploy --region eu-west-1 --capabilities CAPABILITY_NAMED_IAM
   --template-file deploy-urmadealgenie.yml \
   --s3-bucket urmagurd \
   --parameter-overrides file://parameters.json
+
+exit 0
+
+# Build and update lambda function
+dotnet lambda package UrmaDealGenieAWS-localbuild.zip -pl ../src/UrmaDealGenie
+aws lambda update-function-code --function-name UrmaDealGenie --zip-file fileb://UrmaDealGenieAWS-localbuild.zip --region eu-west-1

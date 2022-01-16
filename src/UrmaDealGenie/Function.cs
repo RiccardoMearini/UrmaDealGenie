@@ -18,7 +18,7 @@ namespace UrmaDealGenie
   public class Function
   {
     private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions { 
-      WriteIndented = false,
+      WriteIndented = true,
       Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) } 
     };
 
@@ -70,7 +70,6 @@ namespace UrmaDealGenie
         {
           returnCode = (int)HttpStatusCode.BadRequest;
           returnBody = $"ERROR {returnCode}: Cannot find deal rules from input parameter or S3 bucket";
-          Console.WriteLine($"{returnBody}");
         }
         else
         {
@@ -79,6 +78,7 @@ namespace UrmaDealGenie
           DealGenieResponse response = await client.ProcessRules(dealRuleSet);
           returnBody = JsonSerializer.Serialize<DealGenieResponse>(response, this.jsonOptions);
         }
+        Console.WriteLine($"{returnBody}");
       }
 
       return new APIGatewayProxyResponse
