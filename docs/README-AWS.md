@@ -25,10 +25,11 @@ An S3 bucket is like cloud file storage. You create a "bucket" which is a bit li
 
 ## 3. Upload Urma Deal Genie files to S3 Bucket
 An AWS Lambda function is code that runs in the cloud, but first you need to download Urma Deal Genie files and upload them to your S3 bucket.
-1. Download the Urma Deal Genie files from my GitHub to your PC:
-    - [UrmaDealGenieAWS-2.3.zip](https://github.com/UrmaGurd/UrmaDealGenie/releases/download/2.3/UrmaDealGenieAWS-2.3.zip)
-    - [dealrules.json](https://github.com/UrmaGurd/UrmaDealGenie/releases/download/2.3/dealrules.json)
-    - [deploy-urmadealgenie.yml](https://github.com/UrmaGurd/UrmaDealGenie/releases/download/2.3//deploy-urmadealgenie.yml)
+1. Download the Urma Deal Genie files from my [GitHub releases](https://github.com/UrmaGurd/UrmaDealGenie/releases) to your PC:
+    - UrmaDealGenieAWS-x.x.zip
+    - dealrules.json
+    - deploy-urmadealgenie.yml
+    </br>**NOTE:** Make sure you download the latest "Urma Deal Genie AWS Lambda" files from the Github release page.
 1. Go to [S3 Management Console](https://s3.console.aws.amazon.com/s3) and click on your bucket that you created above.
 1. Click "Upload" and choose the 3 files above that you downloaded to the S3 bucket (drag and drop them, or browse for them), and click "Upload"
 1. Click on the `deploy-urmadealgenie.yml` file and copy the `Object URL` 
