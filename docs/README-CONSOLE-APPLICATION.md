@@ -8,10 +8,12 @@ This application requires .NET 6.0 Runtime:
 _First off, **SORRY** this is so complicated!! I'm working on making this one-click!_
 
 To install and configure the Urma Deal Genie console application:
-1. Download [UrmaDealGenieApp release files](https://github.com/UrmaGurd/UrmaDealGenie/releases/tag/app-2.3 ) depending on your operating system file to a local folder, e.g. `c:\UrmaDealGenieApp`
-   - `appsettings.json`
+1. Download the Urma Deal Genie files from my [GitHub releases](https://github.com/UrmaGurd/UrmaDealGenie/releases) to your PC in a local folder e.g. `c:\UrmaDealGenieApp`:
+   - `UrmaDealGenieAWS-x.x.zip`
    - `dealrules.json`
+   - `appsettings.json`
    - `UrmaDealGenieApp-win10-x64.exe`, or `UrmaDealGenieApp-osx-x64` or `UrmaDealGenieApp-linux-x64`
+    </br>**NOTE:** Make sure you download the latest "Urma Deal Genie Console App" files from the Github release page.
 4. Edit `dealrules.json` file on your machine to match your bots. See [docs/ExampleConfigs.md](./ExampleConfigs.md) for example configs with detailed explanations of rule settings
 5. Open a command/terminal window:
    - On Windows go to Start->Command Prompt
