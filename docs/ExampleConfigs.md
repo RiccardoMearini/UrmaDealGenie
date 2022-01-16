@@ -28,7 +28,7 @@ There is a set of {} braces around the entire config, with at least 1 section:
 - `Update` can be true or false.
   - true means the deals are updated as per the rule criteria
   - false means the deals that would be updated are shown but not updated. This is useful for testing your rules first.
-- [LunarCrushPairRules](ExampleConfigs-LunarCrushPairRules.md) is a bot rule type section that contains 1 or more rules of the same type
+- [LunarCrushPairRules](ExampleConfigs-LunarCrushPairRule.md) is a bot rule type section that contains 1 or more rules of the same type
 - [ScalingTakeProfitDealRules](ExampleConfigs-ScalingTakeProfits.md) is a deal rule type section that contains 1 or more rules of the same type
 - [SafetyOrderRangesDealRules](ExampleConfigs-SafetyOrderRanges.md) is a deal rule type section that contains 1 or more rules of the same type
 - [ActiveSafetyOrdersCountRangesDealRules](ExampleConfigs-ActiveSafetyOrdersCount.md) is a deal rule type section that contains 1 or more rultes of the same type
@@ -87,7 +87,7 @@ Each rule type section has rules within it.
 }
 ```
 ## Examples by Rule Type
-- [LunarCrushPairRules](ExampleConfigs-LunarCrushPairRules.md)
+- [LunarCrushPairRules](ExampleConfigs-LunarCrushPairRule.md)
 - [Scaling Take Profit Deal Rules](ExampleConfigs-ScalingTakeProfits.md)
 - [Safety Order Ranges Deal Rules](ExampleConfigs-SafetyOrderRanges.md)
 - [ActiveSafetyOrdersCountRangesDealRules](ExampleConfigs-ActiveSafetyOrdersCount.md) 
