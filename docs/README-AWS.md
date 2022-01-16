@@ -73,6 +73,11 @@ The deal rules configuration is kept in the S3 bucket file `dealrules.json`. It'
 1. Select and delete the `dealrules.json` file (confirm as AWS ask you to)
 1. Upload the modified `dealrules.json` file from your local machine
 
+The easiest way to upload updated rules to your bucket is using the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html) command:
+```
+    aws s3 cp dealrules.json s3://yourbucketname/
+```
+
 The next time UrmaDealGenie runs, it will pick up your new configuration automatically.
 
 ## Testing Rules
