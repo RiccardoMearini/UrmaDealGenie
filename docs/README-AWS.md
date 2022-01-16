@@ -42,7 +42,7 @@ An AWS CloudFormation stack is a bit like install kits for AWS. You create a "st
 1. Enter Parameters:
     - `ApiKey` (that you [created in 3Commas](/README.md#create-a-3commas-api-key-and-secret))
     - `ApiSecret` (ditto)
-    - Optional `CmcApiKey` (API key for CoinMarketCap)
+    - **Optional** `CmcApiKey` (API key for CoinMarketCap in the [LunarCrush rule](ExampleConfigs-LunarCrushPairRule.md))
     - `LambdaFunctionName` (name of function, you can change it if you want, otherwise leave it as default)
     - `S3Bucket` (name of the bucket you created)
     - `S3PackageFilename` (name of the UrmaDealGenie zip file you uploaded to the bucket)</br>(**Note:** Make sure you copy this exactly right, case sensitive and .zip extension)
