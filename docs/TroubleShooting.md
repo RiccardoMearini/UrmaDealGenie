@@ -1,4 +1,5 @@
 # General Issues
+These issues and trouble shooting tips are common across AWS, Windows, Mac, Linux and Docker.
 
 ## GetExchange fails due to Invalid 3C API 
 If you see the following error:
