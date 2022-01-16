@@ -135,11 +135,17 @@ namespace UrmaDealGenie
         var stablecoin = crushData.Categories.Contains("stablecoin");
 
         // Only add pair if it meets all the approved criteria
-        if (!stablecoin && crushData.Acr <= maxMetricScore
+        //  Coin's 24 vol more than bot's min vol
+        //  Coin is not in the blacklists
+        //  Coin is on the bot's exchange
+        //  Coin is within the max CoinMarketCap rank (if CMC API available, default is 200)
+        //  Coin rank (GalaxyScore or Altrank) is less then the max metric score
+        if (!stablecoin 
           && volBTC != 0 && volBTC >= minVolBtc24h
           && String.IsNullOrEmpty(Array.Find(blacklistPairs, blacklistPair => blacklistPair == pair))
           && !String.IsNullOrEmpty(Array.Find(exchangePairs.Data, exchangePair => exchangePair == pair))
-          && (cmcData == null || (cmcData.Any(cmcPair => cmcPair.Symbol == crushData.S)))
+          && (cmcData == null || (cmcData.Any(cmcPair => cmcPair.Symbol == crushData.S))
+          && (rule.Metric == LunarCrushMetric.Altrank ? crushData.Acr : crushData.Gs) <= maxMetricScore)
         )
         {
           newPairs.Add(pair);
