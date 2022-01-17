@@ -35,7 +35,7 @@
       "MaxPairCount": 20
     },
     {
-      "Rule": "Urma ASAP - Paper",
+      "Rule": "TEST - Real",
       "BotId": 7709633,
       "Metric": "GalaxyScore",
       "MaxMetricScore": 250,
@@ -69,6 +69,16 @@
     }
   ],
   "ScalingTakeProfitDealRules": [
+    {
+      "Rule": "Paper Urma Lites",
+      "Paper": true,
+      "BotNameIncludeTerms": "urma lite",
+      "BotNameExcludeTerms": "",
+      "IgnoreTtpDeals": false,
+      "AllowTpReduction": false,
+      "MaxSafetyOrderCount": 0,
+      "TpScale": 1
+    },
     {
       "Rule": "Urma SO scaling",
       "BotNameIncludeTerms": "urma,ftx",
