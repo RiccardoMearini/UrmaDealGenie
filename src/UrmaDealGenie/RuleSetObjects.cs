@@ -19,6 +19,7 @@ namespace UrmaDealGenie
   public abstract class DealRuleBase
   {
     public string Rule { get; set; }
+    public bool Paper { get; set; }
     public string BotNameIncludeTerms { get; set; }
     public string BotNameExcludeTerms { get; set; }
     public bool IgnoreTtpDeals { get; set; }

@@ -10,7 +10,9 @@ namespace UrmaDealGenie
   public class Urma3cClient
   {
     public XCommasApi XCommasClient = null;
-    private List<Deal> cachedDeals = new List<Deal>();
+    private List<Deal> cachedDeals = null;
+    private List<Deal> cachedPaperDeals = null;
+
 
     /// <summary>
     /// Constructor
@@ -39,8 +41,6 @@ namespace UrmaDealGenie
       {
         response.BotPairResponses = await crush.ProcessRules(dealRuleSet.LunarCrushPairRules, update);
       }
-
-      await RetrieveAllDeals(); // #### Lazy load
 
       if (dealRuleSet.ActiveSafetyOrdersCountRangesDealRules?.Any() ?? false)
       {
@@ -84,15 +84,18 @@ namespace UrmaDealGenie
     public async Task<DealResponse> ProcessDealRule(ScalingTakeProfitDealRule dealRule, bool updateDeal)
     {
       var rule = dealRule.Rule;
+      var paper = dealRule.Paper;
       var includeTerms = dealRule.BotNameIncludeTerms;
       var excludeTerms = dealRule.BotNameExcludeTerms;
       var ignoreTtpDeals = dealRule.IgnoreTtpDeals;
       var allowTpReduction = dealRule.AllowTpReduction;
       var maxSoCount = dealRule.MaxSafetyOrderCount;
       var scaleTp = dealRule.TpScale;
+      var userMode = paper ? UserMode.Paper : UserMode.Real;
 
       Console.WriteLine($"----------------------");
       Console.WriteLine($"RULE = {rule}");
+      Console.WriteLine($" userMode = {userMode}");
       Console.WriteLine($" includeTerms = {includeTerms}");
       Console.WriteLine($" excludeTerms = {excludeTerms}");
       Console.WriteLine($" ignoreTtpDeals = {ignoreTtpDeals}");
@@ -108,8 +111,13 @@ namespace UrmaDealGenie
 
       if (scaleTp > 0)
       {
+        await CheckCachedDeals(userMode);
+        
         // Get list of deals needing updating
-        List<Deal> deals = GetMatchingDealsScalingTakeProfit(includeTerms.Split(','), excludeTerms.Split(','), ignoreTtpDeals, allowTpReduction, scaleTp, maxSoCount);
+        List<Deal> deals = GetMatchingDealsScalingTakeProfit(
+          includeTerms.Split(','), excludeTerms.Split(','), 
+          ignoreTtpDeals, allowTpReduction, scaleTp, maxSoCount, userMode);
+
         response.NeedUpdatingCount = deals.Count;
         Console.WriteLine($"Found {response.NeedUpdatingCount} deals needing updating");
 
@@ -321,15 +329,18 @@ namespace UrmaDealGenie
     /// <param name="allowTpReduction">Allow new TP to be less than the current TP</param>
     /// <param name="scaleTp">Scale modifier to use on the completed SO count when checking the TP %</param>    
     /// <param name="maxSoCount">If more than 0, set TP based on a max SO count</param>
+    /// <param name="userMode">Retrieve Real account deals (default) or Paper account deals</param>
     /// <returns>List of deals needing to be updated</returns>
     public List<Deal> GetMatchingDealsScalingTakeProfit(
       string[] includeTerms, string[] excludeTerms,
       bool ignoreTtpDeals, bool allowTpReduction,
-      decimal scaleTp, int maxSoCount)
+      decimal scaleTp, int maxSoCount, UserMode userMode)
     {
       Console.WriteLine($"GetMatchingDealsScalingTakeProfit()");
+      var deals = (userMode == UserMode.Real ? this.cachedDeals : this.cachedPaperDeals);
+      
       List<Deal> dealsToUpdate = new List<Deal>();
-      foreach (var deal in cachedDeals)
+      foreach (var deal in deals)
       {
         // Ignore TTP deals if configured to
         if (!deal.IsTrailingEnabled || (deal.IsTrailingEnabled && !ignoreTtpDeals))
@@ -567,30 +578,53 @@ namespace UrmaDealGenie
     }
 
     /// <summary>
+    /// Check if deals have been cached for the specified UserMode
+    /// </summary>
+    /// <param name="userMode">Retrieve Real account deals or Paper account deals</param>
+    private async Task CheckCachedDeals(UserMode userMode)
+    {
+      if (this.cachedDeals == null && userMode == UserMode.Real)
+      {
+        // Lazy load real deals
+        this.cachedDeals = await RetrieveAllDeals(UserMode.Real);
+      }
+
+      if (this.cachedPaperDeals == null && userMode == UserMode.Paper)
+      {
+        // Lazy load real deals
+        this.cachedPaperDeals = await RetrieveAllDeals(UserMode.Paper);
+      }
+
+    }    
+
+    /// <summary>
     /// Get deals if they haven't been retrieved already and cache them
     /// </summary>
-    public async Task RetrieveAllDeals()
+    /// <param name="userMode">Retrieve Real account deals or Paper account deals</param>
+    /// <returns>List of deals</returns>
+    private async Task<List<Deal>> RetrieveAllDeals(UserMode userMode)
     {
-      if (this.cachedDeals == null || this.cachedDeals.Count == 0)
+      this.XCommasClient.UserMode = userMode;
+      List<Deal> deals = new List<Deal>();
+
+      Console.WriteLine($"==================================================");
+      var response = await XCommasClient.GetDealsAsync(limit: 100, dealScope: DealScope.Active, dealOrder: DealOrder.CreatedAt);
+      if (response.IsSuccess)
       {
-        Console.WriteLine($"==================================================");
-        var response = await XCommasClient.GetDealsAsync(limit: 100, dealScope: DealScope.Active, dealOrder: DealOrder.CreatedAt);
-        if (response.IsSuccess)
+        deals = response.Data.ToList();
+        Console.WriteLine($"Retrieved {deals.Count} {userMode} deals");
+
+        foreach (var deal in response.Data) // this loop is for DEBUG only
         {
-          Console.WriteLine($"Retrieved {response.Data.Length} deals from 3Commas");
-          foreach (var deal in response.Data)
-          {
-            var trailingTp = deal.IsTrailingEnabled ? $"TTP({deal.TrailingDeviation})" : "TP";
-            Console.WriteLine($"{deal.BotName}.{deal.Pair} = SO {deal.CompletedSafetyOrdersCount}, {trailingTp} {deal.TakeProfit}%, MASTC {deal.ActiveSafetyOrdersCount}");
-            this.cachedDeals.Add(deal);
-          }
-          Console.WriteLine($"Cached {cachedDeals.Count} deals");
-        }
-        else
-        {
-          Console.WriteLine($"Error: GetDealsAsync() - {response.Error}");
+          var trailingTp = deal.IsTrailingEnabled ? $"TTP({deal.TrailingDeviation})" : "TP";
+          Console.WriteLine($"DEBUG: {deal.BotName}.{deal.Pair} = SO {deal.CompletedSafetyOrdersCount}, {trailingTp} {deal.TakeProfit}%, MASTC {deal.ActiveSafetyOrdersCount}");
         }
       }
+      else
+      {
+        Console.WriteLine($"Error: GetDealsAsync() - {response.Error}");
+      }
+      return deals;
     }
   }
 }
